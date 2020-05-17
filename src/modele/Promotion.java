@@ -10,5 +10,14 @@ package modele;
  * @author apple
  */
 public class Promotion {
-    public Promotion () {}
+    
+    // Attributs
+    int id;
+    String nom;
+    
+    // Constructeurs
+    public Promotion (int id, String nom) {
+        this.id = id;
+        this.nom = nom;
+    }
 }

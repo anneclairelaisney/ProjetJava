@@ -5,10 +5,22 @@
  */
 package modele;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author apple
  */
-public class SeanceSalles extends Seance {
+public class SeanceSalles {
     
+    // Attributs
+    Seance seance;
+    ArrayList<Salle> salles;
+    
+    // Constructeurs
+
+    public SeanceSalles(Seance seance, ArrayList<Salle> salles) {
+        this.seance = seance;
+        this.salles = salles;
+    }
 }

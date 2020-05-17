@@ -11,4 +11,13 @@ package modele;
  */
 public class Cours {
     
+    // Attributs
+    int id;
+    String nom;
+    
+    // Constructeurs
+    public Cours (int id, String nom) {
+        this.id = id;
+        this.nom = nom;
+    }
 }

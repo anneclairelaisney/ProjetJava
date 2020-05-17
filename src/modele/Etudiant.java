@@ -10,8 +10,9 @@ package modele;
  * @author apple
  */
 public class Etudiant extends Utilisateur {
+    
     // Attributs
-    private int numero;
+    int numero;
     
     // Constructeurs
     public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero) {

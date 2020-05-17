@@ -11,4 +11,13 @@ package modele;
  */
 public class Site {
     
+    // Attributs
+    int id;
+    String nom;
+    
+    // Constructeurs
+    public Site(int id, String nom) {
+        this.id = id;
+        this.nom = nom;
+    }
 }

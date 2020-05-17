@@ -10,6 +10,18 @@ package modele;
  * @author apple
  */
 public class Salle {
-    public Salle () {}
     
+    // Attributs
+    int id;
+    String nom;
+    int capacite;
+    int idSite;
+    
+    // Constructeurs
+    public Salle(int id, String nom, int capacite, int idSite) {
+        this.id = id;
+        this.nom = nom;
+        this.capacite = capacite;
+        this.idSite = idSite;
+    }
 }

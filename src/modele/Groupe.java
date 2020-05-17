@@ -10,5 +10,16 @@ package modele;
  * @author apple
  */
 public class Groupe {
-    public Groupe () {}
+    
+    // Attributs
+    int id;
+    String nom;
+    int idPromotion;
+    
+    // Constructeurs
+    public Groupe(int id, String nom, int idPromotion) {
+        this.id = id;
+        this.nom = nom;
+        this.idPromotion = idPromotion;
+    }
 }

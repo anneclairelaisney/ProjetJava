@@ -11,4 +11,21 @@ package modele;
  */
 public class Seance {
     
+    //Attributs
+    int id;
+    int semaine;
+    int date;
+    int heureDebut;
+    int heureFin;
+    int etat;
+    
+    // Constructeurs
+    public Seance (int id, int semaine, int date, int heureDebut, int heureFin, int etat) {
+        this.id = id;
+        this.semaine = semaine;
+        this.date = date;
+        this.heureDebut = heureDebut;
+        this.heureFin = heureFin;
+        this.etat = etat;
+    }
 }

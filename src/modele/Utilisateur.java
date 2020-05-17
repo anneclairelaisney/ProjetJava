@@ -10,6 +10,7 @@ package modele;
  * @author apple
  */
 public abstract class Utilisateur {
+    
     //Attributs
     int id;
     String email;
