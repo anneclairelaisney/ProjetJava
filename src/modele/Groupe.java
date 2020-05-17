@@ -10,5 +10,5 @@ package modele;
  * @author apple
  */
 public class Groupe {
-    
+    public Groupe () {}
 }
