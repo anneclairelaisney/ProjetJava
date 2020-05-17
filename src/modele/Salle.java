@@ -10,5 +10,6 @@ package modele;
  * @author apple
  */
 public class Salle {
+    public Salle () {}
     
 }
