@@ -20,4 +20,13 @@ public class Promotion {
         this.id = id;
         this.nom = nom;
     }
+    
+    // Accesseurs
+    public int getId() {
+        return id;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
 }

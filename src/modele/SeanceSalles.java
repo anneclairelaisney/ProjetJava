@@ -11,16 +11,18 @@ import java.util.ArrayList;
  *
  * @author apple
  */
-public class SeanceSalles {
+public class SeanceSalles extends Seance {
     
     // Attributs
-    Seance seance;
     ArrayList<Salle> salles;
     
     // Constructeurs
-
-    public SeanceSalles(Seance seance, ArrayList<Salle> salles) {
-        this.seance = seance;
+    public SeanceSalles(int id, int semaine, int date, int heureDebut, int heureFin, int etat, ArrayList<Salle> salles) {
+        super(id, semaine, date, heureDebut, heureFin, etat);
         this.salles = salles;
+    }
+    
+    public ArrayList<Salle> getSalles() {
+        return salles;
     }
 }

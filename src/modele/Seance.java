@@ -28,4 +28,29 @@ public class Seance {
         this.heureFin = heureFin;
         this.etat = etat;
     }
+    
+    // Accesseurs
+    public int getId() {
+        return id;
+    }
+    
+    public int getSemaine() {
+        return semaine;
+    }
+    
+    public int getDate() {
+        return date;
+    }
+    
+    public int getHeureDebut() {
+        return heureDebut;
+    }
+    
+    public int getHeureFin() {
+        return heureFin;
+    }
+    
+    public int getEtat() {
+        return etat;
+    }
 }

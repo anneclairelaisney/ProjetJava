@@ -22,4 +22,17 @@ public class Groupe {
         this.nom = nom;
         this.idPromotion = idPromotion;
     }
+    
+    // Accesseurs
+    public int getId() {
+        return id;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public int getIdPromotion() {
+        return idPromotion;
+    }
 }

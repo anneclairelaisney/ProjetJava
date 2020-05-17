@@ -24,4 +24,9 @@ public class Etudiant extends Utilisateur {
         droit = 4;
         this.numero = numero;
     }
+    
+    // Accesseurs
+    public int getNumero() {
+        return numero;
+    }
 }

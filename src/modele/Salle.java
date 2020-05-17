@@ -24,4 +24,21 @@ public class Salle {
         this.capacite = capacite;
         this.idSite = idSite;
     }
+    
+    // Accesseurs
+    public int getId() {
+        return id;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public int getCapacite() {
+        return capacite;
+    }
+    
+    public int getIdSite() {
+        return idSite;
+    }
 }

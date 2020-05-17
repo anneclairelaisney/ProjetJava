@@ -25,4 +25,9 @@ public class Enseignant extends Utilisateur {
         droit = 3;
         this.cours = cours;
     }
+    
+    // Accesseurs
+    public ArrayList<Cours> getCours() {
+        return cours;
+    }
 }
