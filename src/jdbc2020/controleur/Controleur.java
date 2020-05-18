@@ -2,7 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdbc2020;
+
+package jdbc2020.controleur;
+
+import jdbc2020.vue.*;
 
 /**
  *
@@ -19,7 +22,6 @@ public class Controleur {
      * @param
      */
     public static void main(String[] s) {
-        // creation de la fenetre
-        Fenetre f = new Fenetre();
+        new Generateur();
     }
 }

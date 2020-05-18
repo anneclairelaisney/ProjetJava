@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 /**
  *
@@ -12,14 +12,15 @@ package modele;
 public class Seance {
     
     //Attributs
-    int id;
-    int semaine;
-    int date;
-    int heureDebut;
-    int heureFin;
-    int etat;
+    private int id;
+    private int semaine;
+    private int date;
+    private int heureDebut;
+    private int heureFin;
+    private int etat;
     
     // Constructeurs
+    public Seance() {}
     public Seance (int id, int semaine, int date, int heureDebut, int heureFin, int etat) {
         this.id = id;
         this.semaine = semaine;
@@ -31,26 +32,26 @@ public class Seance {
     
     // Accesseurs
     public int getId() {
-        return id;
+        return this.id;
     }
     
     public int getSemaine() {
-        return semaine;
+        return this.semaine;
     }
     
     public int getDate() {
-        return date;
+        return this.date;
     }
     
     public int getHeureDebut() {
-        return heureDebut;
+        return this.heureDebut;
     }
     
     public int getHeureFin() {
-        return heureFin;
+        return this.heureFin;
     }
     
     public int getEtat() {
-        return etat;
+        return this.etat;
     }
 }

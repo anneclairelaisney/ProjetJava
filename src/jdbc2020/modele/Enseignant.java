@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 import java.util.ArrayList;
 /**
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Enseignant extends Utilisateur {
     
     // Attributs
-    ArrayList<Cours> cours;
+    private ArrayList<Cours> cours;
     
     // Constructeurs
     public Enseignant (int id, String email, String passwd, String nom, String prenom, ArrayList<Cours> cours) {
@@ -28,6 +28,6 @@ public class Enseignant extends Utilisateur {
     
     // Accesseurs
     public ArrayList<Cours> getCours() {
-        return cours;
+        return this.cours;
     }
 }

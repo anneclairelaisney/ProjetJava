@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 /**
  *
@@ -12,12 +12,12 @@ package modele;
 public abstract class Utilisateur {
     
     //Attributs
-    int id;
-    String email;
-    String passwd;
-    String nom;
-    String prenom;
-    int droit;
+    protected int id;
+    protected String email;
+    protected String passwd;
+    protected String nom;
+    protected String prenom;
+    protected int droit;
     
     // Accesseurs
     public int getId() {

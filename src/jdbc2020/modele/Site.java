@@ -3,36 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 /**
  *
  * @author apple
  */
-public class Groupe {
+public class Site {
     
     // Attributs
-    int id;
-    String nom;
-    int idPromotion;
+    private int id;
+    private String nom;
     
     // Constructeurs
-    public Groupe(int id, String nom, int idPromotion) {
+    public Site(int id, String nom) {
         this.id = id;
         this.nom = nom;
-        this.idPromotion = idPromotion;
     }
     
     // Accesseurs
     public int getId() {
-        return id;
+        return this.id;
     }
     
     public String getNom() {
-        return nom;
-    }
-    
-    public int getIdPromotion() {
-        return idPromotion;
+        return this.nom;
     }
 }

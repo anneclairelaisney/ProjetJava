@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdbc2020;
 
+package jdbc2020.vue;
+
+import jdbc2020.controleur.*;
 /*
  * 
  * Librairies importées
@@ -178,7 +180,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      * Méthode privée qui initialise la liste des requetes de MAJ
      */
     private void remplirRequetesMaj() throws SQLException{
-    // Requêtes d'insertion
+        // Requêtes d'insertion
         maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
         maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
 
