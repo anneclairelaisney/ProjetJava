@@ -3,25 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 /**
  *
  * @author apple
  */
-public class Etudiant extends Utilisateur {
+public class Promotion {
     
     // Attributs
-    int numero;
+    private int id;
+    private String nom;
     
     // Constructeurs
-    public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero) {
+    public Promotion (int id, String nom) {
         this.id = id;
-        this.email = email;
-        this.passwd = passwd;
         this.nom = nom;
-        this.prenom = prenom;
-        droit = 4;
-        this.numero = numero;
+    }
+    
+    // Accesseurs
+    public int getId() {
+        return this.id;
+    }
+    
+    public String getNom() {
+        return this.nom;
     }
 }

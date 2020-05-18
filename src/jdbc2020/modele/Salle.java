@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package jdbc2020.modele;
 
 /**
  *
@@ -12,10 +12,10 @@ package modele;
 public class Salle {
     
     // Attributs
-    int id;
-    String nom;
-    int capacite;
-    int idSite;
+    private int id;
+    private String nom;
+    private int capacite;
+    private int idSite;
     
     // Constructeurs
     public Salle(int id, String nom, int capacite, int idSite) {
@@ -23,5 +23,22 @@ public class Salle {
         this.nom = nom;
         this.capacite = capacite;
         this.idSite = idSite;
+    }
+    
+    // Accesseurs
+    public int getId() {
+        return this.id;
+    }
+    
+    public String getNom() {
+        return this.nom;
+    }
+    
+    public int getCapacite() {
+        return this.capacite;
+    }
+    
+    public int getIdSite() {
+        return this.idSite;
     }
 }
