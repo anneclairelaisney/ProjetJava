@@ -22,7 +22,7 @@ public class Enseignant extends Utilisateur {
         this.passwd = passwd;
         this.nom = nom;
         this.prenom = prenom;
-        droit = 3;
+        this.droit = 3;
         this.cours = cours;
     }
     

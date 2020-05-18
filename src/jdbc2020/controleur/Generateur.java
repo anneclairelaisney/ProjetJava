@@ -24,7 +24,7 @@ public class Generateur {
     
     // Constructeurs
     public Generateur() {
-        //this.fenetre = new Fenetre();
+        this.fenetre = new Fenetre();
         this.lesEnseignants = new SeanceEnseignants();
         this.lesGroupes = new SeanceGroupes();
         this.lesSalles = new SeanceSalles();

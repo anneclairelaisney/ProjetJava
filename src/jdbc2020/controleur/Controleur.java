@@ -5,6 +5,7 @@
 
 package jdbc2020.controleur;
 
+import jdbc2020.modele.*;
 import jdbc2020.vue.*;
 
 /**

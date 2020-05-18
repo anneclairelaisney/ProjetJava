@@ -167,7 +167,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      * Méthode privée qui initialise la liste des requetes de selection
      */
     private void remplirRequetes() {
-        maconnexion.ajouterRequete("SELECT * FROM Utilisateur ORDER BY nom;");
+        maconnexion.ajouterRequete("SELECT * FROM Utilisateur ORDER BY prenom;");
         /*maconnexion.ajouterRequete("SELECT Dept.*, Emp.*, Mission.* FROM Dept, Emp, Mission WHERE Dept.deptno=Emp.deptno AND Emp.empno=Mission.empno;");
         maconnexion.ajouterRequete("SELECT AVG (Emp.sal) FROM Emp, Mission WHERE Emp.empno = Mission.empno;");
         maconnexion.ajouterRequete("SELECT Dept.*, Emp.* FROM Dept, Emp WHERE Dept.deptno=Emp.deptno AND comm>0;");
@@ -181,18 +181,18 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      */
     private void remplirRequetesMaj() throws SQLException{
         // Requêtes d'insertion
-       /* maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
-        maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");*/
+        /*maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
+        maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
         
         maconnexion.ajouterRequeteMaj("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
         maconnexion.executeUpdate("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
 
         // Requêtes de modification
-        /*maconnexion.ajouterRequeteMaj("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
-        maconnexion.executeUpdate("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");*/
+        maconnexion.ajouterRequeteMaj("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
+        maconnexion.executeUpdate("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
 
         // Requêtes de suppression
-       /* maconnexion.ajouterRequeteMaj("DELETE FROM Promotion WHERE nom='2023';");
+        maconnexion.ajouterRequeteMaj("DELETE FROM Promotion WHERE nom='2023';");
         maconnexion.executeUpdate("DELETE FROM Promotion WHERE nom='2023';");*/
     }
 

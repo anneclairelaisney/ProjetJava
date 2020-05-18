@@ -15,18 +15,26 @@ public class Etudiant extends Utilisateur {
     private int numero;
     
     // Constructeurs
+    public Etudiant() {
+        this.droit = 17;
+    }
     public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero) {
         this.id = id;
         this.email = email;
         this.passwd = passwd;
         this.nom = nom;
         this.prenom = prenom;
-        droit = 4;
+        this.droit = 4;
         this.numero = numero;
     }
     
     // Accesseurs
     public int getNumero() {
         return this.numero;
+    }
+    
+    // Manipulateurs
+    public void setNumero(int num) {
+        this.numero = num;
     }
 }
