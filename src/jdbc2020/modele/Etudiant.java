@@ -15,9 +15,7 @@ public class Etudiant extends Utilisateur {
     private int numero;
     
     // Constructeurs
-    public Etudiant() {
-        this.droit = 17;
-    }
+    public Etudiant() {}
     public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero) {
         this.id = id;
         this.email = email;
