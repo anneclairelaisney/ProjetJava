@@ -24,5 +24,6 @@ public class Controleur {
      */
     public static void main(String[] s) {
         new Generateur();
+        //InterfaceGraphique i = new InterfaceGraphique();
     }
 }
