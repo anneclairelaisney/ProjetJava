@@ -30,7 +30,7 @@ public class SeanceEnseignants extends Seance {
     }
     
     // Methodes
-    public void ajoutGroupe(Enseignant enseignant) {
+    public void ajoutEnseignant(Enseignant enseignant) {
         this.enseignants.add(enseignant);
         JOptionPane.showMessageDialog(null, "L'enseignant " + enseignant.getNom() + " a été ajouté."); 
         System.out.println("Nom du groupe : " + enseignant.getNom());

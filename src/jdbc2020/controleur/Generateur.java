@@ -28,6 +28,5 @@ public class Generateur {
         this.lesEnseignants = new SeanceEnseignants();
         this.lesGroupes = new SeanceGroupes();
         this.lesSalles = new SeanceSalles();
-        new InterfaceGraphique();
     }
 }
