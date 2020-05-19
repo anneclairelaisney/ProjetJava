@@ -5,6 +5,8 @@
 
 package jdbc2020.controleur;
 
+import java.sql.SQLException;
+import jdbc2020.dao.*;
 import jdbc2020.modele.*;
 import jdbc2020.vue.*;
 
@@ -22,8 +24,7 @@ public class Controleur {
      *
      * @param
      */
-    public static void main(String[] s) {
+    public static void main(String[] s) throws SQLException, ClassNotFoundException {
         new Generateur();
-        //InterfaceGraphique i = new InterfaceGraphique();
     }
 }
