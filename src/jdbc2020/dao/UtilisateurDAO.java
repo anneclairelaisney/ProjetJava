@@ -24,15 +24,33 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
   }
 
   public boolean create(Utilisateur utilisateur) {
-    return false;
+      try {
+            this.connect.executeUpdate("INSERT INTO Utilisateur(id,email,passwd,nom,prenom,droit) VALUES(" + utilisateur.getId() + "," + utilisateur.getEmail() + "," + utilisateur.getPasswd() + "," + utilisateur.getNom() + "," + utilisateur.getPrenom() +  "," + utilisateur.getDroit() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
+        return false;
   }
 
   public boolean delete(Utilisateur utilisateur) {
-    return false;
+      try {
+            this.connect.getStatement().executeUpdate("DELETE FROM Utilisateur WHERE id =" + utilisateur.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
+        return false;
   }
    
   public boolean update(Utilisateur utilisateur) {
-    return false;
+      try {
+            this.connect.getStatement().executeUpdate("UPDATE Promotion SET email ='" + utilisateur.getEmail() +"', passwd = '" + utilisateur.getPasswd() + "', nom ='" + utilisateur.getNom() + "', prenom = '" + utilisateur.getPrenom() + " WHERE id =" + utilisateur.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
+        return false;
   }
    
   public Utilisateur find(int id) {
