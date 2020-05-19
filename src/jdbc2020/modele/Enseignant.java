@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class Enseignant extends Utilisateur {
     
     // Attributs
-    private ArrayList<Cours> cours;
     private int idCours;
     
     // Constructeurs
@@ -26,12 +25,11 @@ public class Enseignant extends Utilisateur {
     public Enseignant (int id, ArrayList<Cours> cours, int id_cours) {
         this.id = id;
         this.droit = 4;
-        this.cours = cours;
         this.idCours = id_cours;
     }
     
     // Accesseurs
-    public ArrayList<Cours> getCours() {
-        return this.cours;
+    public int getIdCours() {
+        return this.idCours;
     }
 }

@@ -22,14 +22,32 @@ public class PromotionDAO extends DAO<Promotion> {
     }
 
     public boolean create(Promotion promotion) {
+        try {
+            this.connect.executeUpdate("INSERT INTO Promotion(id,nom) VALUES(" + promotion.getId() + "," + promotion.getNom() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean delete(Promotion promotion) {
+        try {
+            this.connect.getStatement().executeUpdate("DELETE FROM Promotion WHERE id =" + promotion.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean update(Promotion promotion) {
+        try {
+            this.connect.getStatement().executeUpdate("UPDATE Promotion SET nom ='" + promotion.getNom() +"' WHERE id =" + promotion.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 

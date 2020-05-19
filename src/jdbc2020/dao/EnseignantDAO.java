@@ -22,10 +22,23 @@ public class EnseignantDAO extends DAO<Enseignant> {
     }
 
     public boolean create(Enseignant enseignant) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO Enseignant(ID_UTILISATEUR,ID_COURS) VALUES ((SELECT id FROM Utilisateur WHERE id =" + enseignant.getId() + ")," + enseignant.getIdCours() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean delete(Enseignant enseignant) {
+        try {
+            this.connect.getStatement().executeUpdate("DELETE FROM Enseignant WHERE id =" + enseignant.getId() + ");");
+            this.connect.getStatement().executeUpdate("DELETE FROM Utilisateur WHERE id =" + enseignant.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
