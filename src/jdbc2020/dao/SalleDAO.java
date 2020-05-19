@@ -22,14 +22,32 @@ public class SalleDAO extends DAO<Salle> {
     }
 
     public boolean create(Salle salle) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO Salle(ID,NOM,CAPACITE,ID_SITE) VALUES (" + salle.getId() + ",'" + salle.getNom() + "," + salle.getCapacite() + ",(SELECT id FROM Site WHERE id =" + salle.getIdSite() + "));");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean delete(Salle salle) {
+        try {
+            this.connect.getStatement().executeUpdate("DELETE FROM Salle WHERE id =" + salle.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean update(Salle salle) {
+        try {
+            this.connect.getStatement().executeUpdate("UPDATE Salle SET nom ='" + salle.getNom() +"', capacite = '" + salle.getCapacite() + "' WHERE id =" + salle.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 

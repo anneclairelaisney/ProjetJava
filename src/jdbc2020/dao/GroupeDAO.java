@@ -22,14 +22,32 @@ public class GroupeDAO extends DAO<Groupe> {
     }
 
     public boolean create(Groupe groupe) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO Groupe(ID,NOM,ID_PROMOTION) VALUES (" + groupe.getId() + ",'" + groupe.getNom() + "',(SELECT id FROM Promotion WHERE id =" + groupe.getIdPromotion() + "));");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean delete(Groupe groupe) {
+        try {
+            this.connect.getStatement().executeUpdate("DELETE FROM Groupe WHERE id =" + groupe.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
     public boolean update(Groupe groupe) {
+        try {
+            this.connect.getStatement().executeUpdate("UPDATE Groupe SET nom ='" + groupe.getNom() +"' WHERE id =" + groupe.getId() + ");");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  
         return false;
     }
 
