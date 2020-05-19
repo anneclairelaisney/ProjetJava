@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package jdbc2020.vue;
 
 import jdbc2020.controleur.*;
+import jdbc2020.dao.*;
+import jdbc2020.modele.Etudiant;
 /*
  * 
  * Librairies importées
@@ -17,6 +18,7 @@ import javax.swing.*;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  *
@@ -31,7 +33,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      * Attribut privés : objets de Connexion, AWT et Swing
      * 
      */
-
     private Connexion maconnexion;
     private final JLabel tab, req, res, lignes;
     private final JLabel nameBDD, requeteLabel;
@@ -65,7 +66,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeDeRequetes = new java.awt.List(10, false);
 
         // creation des textes
-
         nameBDDTexte = new JTextField();
         fenetreLignes = new JTextArea();
         fenetreRes = new JTextArea();
@@ -94,7 +94,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         p3.setLayout(new GridLayout(1, 3));
 
         // ajout des objets graphqiues dans les panneaux
-
         p0.add(nameBDD);
         p0.add(nameBDDTexte);
         p0.add(local);
@@ -160,7 +159,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         maconnexion.ajouterTable("SITE");
         maconnexion.ajouterTable("TYPE_COURS");
         maconnexion.ajouterTable("UTILISATEUR");
-        
+
     }
 
     /**
@@ -168,18 +167,12 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      */
     private void remplirRequetes() {
         maconnexion.ajouterRequete("SELECT * FROM Utilisateur ORDER BY prenom;");
-        /*maconnexion.ajouterRequete("SELECT Dept.*, Emp.*, Mission.* FROM Dept, Emp, Mission WHERE Dept.deptno=Emp.deptno AND Emp.empno=Mission.empno;");
-        maconnexion.ajouterRequete("SELECT AVG (Emp.sal) FROM Emp, Mission WHERE Emp.empno = Mission.empno;");
-        maconnexion.ajouterRequete("SELECT Dept.*, Emp.* FROM Dept, Emp WHERE Dept.deptno=Emp.deptno AND comm>0;");
-        maconnexion.ajouterRequete("SELECT hiredate, empno, ename FROM Emp WHERE (((hiredate)>='1981-05-01' And (hiredate)<'1981-05-31'))ORDER BY hiredate;");
-        maconnexion.ajouterRequete("SELECT ename, job FROM Emp ORDER BY job;");
-        maconnexion.ajouterRequete("SELECT DISTINCT dname, job FROM Dept, Emp WHERE Dept.deptno=Emp.deptno AND job='Clerk';");*/
     }
 
     /**
      * Méthode privée qui initialise la liste des requetes de MAJ
      */
-    private void remplirRequetesMaj() throws SQLException{
+    private void remplirRequetesMaj() throws SQLException {
         // Requêtes d'insertion
         /*maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
         maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
@@ -254,7 +247,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         for (String requete : maconnexion.requetes) {
             listeDeRequetes.add(requete);
         }
-        
+
         for (String requete : maconnexion.requetesMaj) {
             listeDeRequetes.add(requete);
         }
