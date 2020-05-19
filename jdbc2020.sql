@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 16, 2020 at 08:54 AM
+-- Generation Time: May 19, 2020 at 11:25 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -13,8 +13,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `jdbc2020`
 --
-CREATE DATABASE IF NOT EXISTS `jdbc2020` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `jdbc2020`;
 
 -- --------------------------------------------------------
 
@@ -22,7 +20,6 @@ USE `jdbc2020`;
 -- Table structure for table `COURS`
 --
 
-DROP TABLE IF EXISTS `COURS`;
 CREATE TABLE `COURS` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL
@@ -33,7 +30,8 @@ CREATE TABLE `COURS` (
 --
 
 INSERT INTO `COURS` (`ID`, `NOM`) VALUES
-(1, 'POO JAVA');
+(1, 'POO JAVA'),
+(2, 'Analyse de Fourier');
 
 -- --------------------------------------------------------
 
@@ -41,7 +39,6 @@ INSERT INTO `COURS` (`ID`, `NOM`) VALUES
 -- Table structure for table `ENSEIGNANT`
 --
 
-DROP TABLE IF EXISTS `ENSEIGNANT`;
 CREATE TABLE `ENSEIGNANT` (
   `ID_UTILISATEUR` int(11) NOT NULL,
   `ID_COURS` int(11) NOT NULL
@@ -52,7 +49,8 @@ CREATE TABLE `ENSEIGNANT` (
 --
 
 INSERT INTO `ENSEIGNANT` (`ID_UTILISATEUR`, `ID_COURS`) VALUES
-(1, 1);
+(1, 1),
+(6, 2);
 
 -- --------------------------------------------------------
 
@@ -60,7 +58,6 @@ INSERT INTO `ENSEIGNANT` (`ID_UTILISATEUR`, `ID_COURS`) VALUES
 -- Table structure for table `ETUDIANT`
 --
 
-DROP TABLE IF EXISTS `ETUDIANT`;
 CREATE TABLE `ETUDIANT` (
   `ID_UTILISATEUR` int(11) NOT NULL,
   `NUMERO` int(11) NOT NULL,
@@ -74,7 +71,8 @@ CREATE TABLE `ETUDIANT` (
 INSERT INTO `ETUDIANT` (`ID_UTILISATEUR`, `NUMERO`, `ID_GROUPE`) VALUES
 (2, 1, 6),
 (3, 2, 6),
-(4, 3, 6);
+(4, 3, 6),
+(5, 4, 7);
 
 -- --------------------------------------------------------
 
@@ -82,7 +80,6 @@ INSERT INTO `ETUDIANT` (`ID_UTILISATEUR`, `NUMERO`, `ID_GROUPE`) VALUES
 -- Table structure for table `GROUPE`
 --
 
-DROP TABLE IF EXISTS `GROUPE`;
 CREATE TABLE `GROUPE` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL,
@@ -94,7 +91,17 @@ CREATE TABLE `GROUPE` (
 --
 
 INSERT INTO `GROUPE` (`ID`, `NOM`, `ID_PROMOTION`) VALUES
-(6, 'TD6', 1);
+(1, 'TD1', 1),
+(2, 'TD2', 1),
+(3, 'TD3', 1),
+(4, 'TD4', 1),
+(5, 'TD5', 1),
+(6, 'TD6', 1),
+(7, 'TD7', 1),
+(8, 'TD8', 1),
+(9, 'TD9', 1),
+(10, 'TD10', 1),
+(11, 'TD11', 1);
 
 -- --------------------------------------------------------
 
@@ -102,7 +109,6 @@ INSERT INTO `GROUPE` (`ID`, `NOM`, `ID_PROMOTION`) VALUES
 -- Table structure for table `PROMOTION`
 --
 
-DROP TABLE IF EXISTS `PROMOTION`;
 CREATE TABLE `PROMOTION` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL
@@ -113,7 +119,8 @@ CREATE TABLE `PROMOTION` (
 --
 
 INSERT INTO `PROMOTION` (`ID`, `NOM`) VALUES
-(1, '2022');
+(1, '2022'),
+(2, '2021');
 
 -- --------------------------------------------------------
 
@@ -121,7 +128,6 @@ INSERT INTO `PROMOTION` (`ID`, `NOM`) VALUES
 -- Table structure for table `SALLE`
 --
 
-DROP TABLE IF EXISTS `SALLE`;
 CREATE TABLE `SALLE` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL,
@@ -134,6 +140,8 @@ CREATE TABLE `SALLE` (
 --
 
 INSERT INTO `SALLE` (`ID`, `NOM`, `CAPACITE`, `ID_SITE`) VALUES
+(1, 'EM009', 200, 1),
+(2, 'EM010', 200, 1),
 (316, 'P316', 40, 2);
 
 -- --------------------------------------------------------
@@ -142,7 +150,6 @@ INSERT INTO `SALLE` (`ID`, `NOM`, `CAPACITE`, `ID_SITE`) VALUES
 -- Table structure for table `SEANCE`
 --
 
-DROP TABLE IF EXISTS `SEANCE`;
 CREATE TABLE `SEANCE` (
   `ID` int(11) NOT NULL,
   `SEMAINE` int(11) NOT NULL,
@@ -167,7 +174,6 @@ INSERT INTO `SEANCE` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT
 -- Table structure for table `SEANCE_ENSEIGNANTS`
 --
 
-DROP TABLE IF EXISTS `SEANCE_ENSEIGNANTS`;
 CREATE TABLE `SEANCE_ENSEIGNANTS` (
   `ID_SEANCE` int(11) NOT NULL,
   `ID_ENSEIGNANT` int(11) NOT NULL
@@ -186,7 +192,6 @@ INSERT INTO `SEANCE_ENSEIGNANTS` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES
 -- Table structure for table `SEANCE_GROUPES`
 --
 
-DROP TABLE IF EXISTS `SEANCE_GROUPES`;
 CREATE TABLE `SEANCE_GROUPES` (
   `ID_SEANCE` int(11) NOT NULL,
   `ID_GROUPE` int(11) NOT NULL
@@ -205,7 +210,6 @@ INSERT INTO `SEANCE_GROUPES` (`ID_SEANCE`, `ID_GROUPE`) VALUES
 -- Table structure for table `SEANCE_SALLES`
 --
 
-DROP TABLE IF EXISTS `SEANCE_SALLES`;
 CREATE TABLE `SEANCE_SALLES` (
   `ID_SEANCE` int(11) NOT NULL,
   `ID_SALLE` int(11) NOT NULL
@@ -224,7 +228,6 @@ INSERT INTO `SEANCE_SALLES` (`ID_SEANCE`, `ID_SALLE`) VALUES
 -- Table structure for table `SITE`
 --
 
-DROP TABLE IF EXISTS `SITE`;
 CREATE TABLE `SITE` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL
@@ -244,7 +247,6 @@ INSERT INTO `SITE` (`ID`, `NOM`) VALUES
 -- Table structure for table `TYPE_COURS`
 --
 
-DROP TABLE IF EXISTS `TYPE_COURS`;
 CREATE TABLE `TYPE_COURS` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(255) NOT NULL
@@ -263,7 +265,6 @@ INSERT INTO `TYPE_COURS` (`ID`, `NOM`) VALUES
 -- Table structure for table `UTILISATEUR`
 --
 
-DROP TABLE IF EXISTS `UTILISATEUR`;
 CREATE TABLE `UTILISATEUR` (
   `ID` int(11) NOT NULL,
   `EMAIL` varchar(255) NOT NULL,
@@ -281,7 +282,9 @@ INSERT INTO `UTILISATEUR` (`ID`, `EMAIL`, `PASSWD`, `NOM`, `PRENOM`, `DROIT`) VA
 (1, 'jean-pierre.segado@ece.fr', 'ece', 'SEGADO', 'JEAN-PIERRE', 3),
 (2, 'remy.ghidaglia@edu.ece.fr', 'ece', 'GHIDAGLIA', 'REMY', 4),
 (3, 'anneclaire.laisney@edu.ece.fr', 'ece', 'LAISNEY', 'ANNE-CLAIRE', 4),
-(4, 'rayan.perrin@edu.ece.fr', 'ece', 'PERRIN', 'RAYAN', 4);
+(4, 'rayan.perrin@edu.ece.fr', 'ece', 'PERRIN', 'RAYAN', 4),
+(5, 'elia.levy@edu.ece.fr', 'ece', 'LEVY', 'Elia', 4),
+(6, 'fabienne.coudray@ece.fr', 'ece', 'COUDRAY', 'FABIENNE', 3);
 
 --
 -- Indexes for dumped tables
@@ -384,13 +387,13 @@ ALTER TABLE `UTILISATEUR`
 -- AUTO_INCREMENT for table `GROUPE`
 --
 ALTER TABLE `GROUPE`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `PROMOTION`
 --
 ALTER TABLE `PROMOTION`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `SALLE`
@@ -420,7 +423,7 @@ ALTER TABLE `TYPE_COURS`
 -- AUTO_INCREMENT for table `UTILISATEUR`
 --
 ALTER TABLE `UTILISATEUR`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
