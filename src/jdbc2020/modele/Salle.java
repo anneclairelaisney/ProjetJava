@@ -18,6 +18,7 @@ public class Salle {
     private int idSite;
     
     // Constructeurs
+    public Salle () {}
     public Salle(int id, String nom, int capacite, int idSite) {
         this.id = id;
         this.nom = nom;

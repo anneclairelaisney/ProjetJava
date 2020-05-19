@@ -16,6 +16,7 @@ public class Promotion {
     private String nom;
     
     // Constructeurs
+    public Promotion () {}
     public Promotion (int id, String nom) {
         this.id = id;
         this.nom = nom;
