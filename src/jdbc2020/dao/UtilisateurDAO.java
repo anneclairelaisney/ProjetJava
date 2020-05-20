@@ -45,7 +45,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
    
   public boolean update(Utilisateur utilisateur) {
       try {
-            this.connect.getStatement().executeUpdate("UPDATE Promotion SET email ='" + utilisateur.getEmail() +"', passwd = '" + utilisateur.getPasswd() + "', nom ='" + utilisateur.getNom() + "', prenom = '" + utilisateur.getPrenom() + " WHERE id =" + utilisateur.getId() + ");");
+            this.connect.getStatement().executeUpdate("UPDATE Utilisateur SET email ='" + utilisateur.getEmail() +"', passwd = '" + utilisateur.getPasswd() + "', nom ='" + utilisateur.getNom() + "', prenom = '" + utilisateur.getPrenom() + " WHERE id =" + utilisateur.getId() + ");");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

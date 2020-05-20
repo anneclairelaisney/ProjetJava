@@ -10,8 +10,6 @@ package jdbc2020.controleur;
  */
 import java.sql.*;
 import java.util.ArrayList;
-import jdbc2020.dao.*;
-import jdbc2020.modele.*;
 
 /**
  * 
