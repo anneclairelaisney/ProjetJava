@@ -10,10 +10,11 @@ import jdbc2020.modele.*;
 import jdbc2020.controleur.Connexion;
 import jdbc2020.dao.*;
 
+import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.MouseInfo;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.SQLException;
@@ -27,60 +28,77 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
     public ModeleSouris modeleSouris;
     private final JButton local;
     private final JPanel p0, p1, p2, p3, center;
-    private final JTextField nomUtilisateurTexte, motDePasseTexte;
-    private final JLabel titreConnexion;
+    private final JTextField nomUtilisateurTexte;
+    private final JLabel titreConnexion, logo;
     private final JLabel nomUtilisateur, motDePasse;
+    private final JPasswordField motDePasseTexte;
 
     // Constructeur
     public PageConnexion() {
 
         // mise en page (layout) de la fenetre visible
-        this.setSize(1000, 800); // Taille en hauteur et largeur de la fenêtre
+        this.setSize(750, 500); // Taille en hauteur et largeur de la fenêtre
         this.setTitle("BIENVENUE SUR L'INTRANET DE L'ECE PARIS-LYON");
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setResizable(true);
+        this.setResizable(false);
 
         // creation des boutons
         //connect = new JButton("Connexion ECE");
         local = new JButton("Connexion");
+        local.setHorizontalAlignment(JTextField.CENTER);
 
         // creation des panneaux
         p0 = new JPanel();
         p1 = new JPanel();
         p2 = new JPanel();
         p3 = new JPanel();
+        logo = new JLabel(new ImageIcon(PageConnexion.class.getResource("logo.png")));
         center = new JPanel();
 
         // creation des textes
-        nomUtilisateurTexte = new JTextField(JTextField.CENTER);
-        motDePasseTexte = new JTextField(JTextField.CENTER);
+        nomUtilisateurTexte = new JTextField();
+        nomUtilisateurTexte.setHorizontalAlignment(JTextField.CENTER);
+        motDePasseTexte = new JPasswordField(JLabel.CENTER);
+        motDePasseTexte.setHorizontalAlignment(JPasswordField.CENTER);
 
         // creation des labels
-        titreConnexion = new JLabel("CONNECTION", JLabel.CENTER);
-        nomUtilisateur = new JLabel("Nom Utilisateur :", JLabel.CENTER);
+        titreConnexion = new JLabel("Connection", JLabel.CENTER);
+        nomUtilisateur = new JLabel("Nom d'Utilisateur :", JLabel.CENTER);
         motDePasse = new JLabel("Mot de Passe :", JLabel.CENTER);
 
         // mise en page des panneaux
-        p0.setLayout(new GridLayout(0, 1));
-        p1.setLayout(new GridLayout(1, 4));
-        p2.setLayout(new GridLayout(1, 4));
-        p3.setLayout(new GridLayout(1, 4));
-        center.setLayout(new GridLayout(3, 1));
+        Font font = new Font("Helvetica",Font.BOLD,36);
+        Font font1 = new Font("Helvetica",Font.BOLD,16);
+        titreConnexion.setFont(font);
+        titreConnexion.setForeground(new Color(4,116,124));
+        nomUtilisateur.setFont(font1);
+        motDePasse.setFont(font1);
+        nomUtilisateur.setForeground(Color.white);
+        motDePasse.setForeground(Color.white);
+        p0.setLayout(new GridLayout(2, 1));
+        p1.setLayout(new GridLayout(1, 2));
+        p2.setLayout(new GridLayout(1, 2));
+        center.setLayout(new GridLayout(3, 3));
 
         // ajout des objets graphiques dans les panneaux
+        p0.add(logo);
         p0.add(titreConnexion);
 
         p1.add(nomUtilisateur);
         p1.add(nomUtilisateurTexte);
-        p1.setBackground(Color.LIGHT_GRAY);
+        p1.setBackground(new Color(4,116,124));
+        p1.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
 
         p2.add(motDePasse);
         p2.add(motDePasseTexte);
-        p2.setBackground(Color.LIGHT_GRAY);
-
-        p3.add(local);
+        p2.setBackground(new Color(4,116,124));
+        p2.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
+        
+        local.setPreferredSize(new Dimension(100, 33));  
+        local.setLayout(new BoxLayout(local, BoxLayout.PAGE_AXIS));
+        p3.add(local, BorderLayout.SOUTH);
 
         this.add(p0);
         this.add(p1);
@@ -94,7 +112,6 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         local.addActionListener(this);
 
         // couleurs des objets graphiques
-        titreConnexion.setBackground(Color.MAGENTA);
 
         // disposition geographique des panneaux
         add("North", p0);
@@ -123,16 +140,19 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
                     System.out.println("Connexion dans BDD reussie");
 
                     DAO<Utilisateur> utilisateurDao = new UtilisateurDAO(this.maconnexion);
-                    for (int i = 1; i < 7; i++) {
+                    for (int i = 1; i < 5000; i++) {
                         Utilisateur utilisateur = utilisateurDao.find(i);
-                        if (utilisateur.getEmail().equals(nomUtilisateurTexte.getText())) {
-                            if (utilisateur.getPasswd().equals(motDePasseTexte.getText())) {
-                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + utilisateur.getPrenom() + " " + utilisateur.getNom() + " !");
-                                break;
+                        if (utilisateur.getId() != 0) {
+                            if (utilisateur.getEmail().equals(nomUtilisateurTexte.getText())) {
+                                if (utilisateur.getPasswd().equals(motDePasseTexte.getText())) {
+                                    System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + utilisateur.getPrenom() + " " + utilisateur.getNom() + " !");
+                                    this.dispose();
+                                    new Fenetre(utilisateur.getEmail(), utilisateur.getPasswd(), "jdbc2020");
+                                }
                             }
                         }
                     }
-                    
+
                 } catch (ClassNotFoundException cnfe) {
                     System.out.println("Connexion echouee : probleme de classe");
                     cnfe.printStackTrace();
