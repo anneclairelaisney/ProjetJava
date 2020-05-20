@@ -39,13 +39,13 @@ public class Test2 {
         }
 
         DAO<Groupe> groupeDao = new GroupeDAO(conn);
-        for (int i = 1; i < 12; i++) {
+        for (int i = 1; i < 13; i++) {
             Groupe groupe = groupeDao.find(i);
             System.out.println("Groupe N°" + groupe.getId() + "  - " + groupe.getNom() + " " + groupe.getIdPromotion());
         }
 
         DAO<Promotion> promotionDao = new PromotionDAO(conn);
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i < 5; i++) {
             Promotion promotion = promotionDao.find(i);
             System.out.println("Promotion N°" + promotion.getId() + "  - " + promotion.getNom());
         }
