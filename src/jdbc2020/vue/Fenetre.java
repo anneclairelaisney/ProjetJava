@@ -5,8 +5,6 @@
 package jdbc2020.vue;
 
 import jdbc2020.controleur.*;
-import jdbc2020.dao.*;
-import jdbc2020.modele.Etudiant;
 /*
  * 
  * Librairies importées
@@ -51,10 +49,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         super("Projet d'utilisation de JDBC dans MySQL");
 
         // mise en page (layout) de la fenetre visible
-        setLayout(new BorderLayout());
-        setBounds(0, 0, 400, 400);
-        setResizable(true);
-        setVisible(true);
+        this.setSize(800,600);
+	this.setTitle("INTRANET ECE PARIS-LYON");
+        this.setLayout(new BorderLayout());
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	this.setLocationRelativeTo(null);
+	this.setResizable(true);
+	this.setVisible(true);
+        
 
         // creation des boutons
         //connect = new JButton("Connexion ECE");
@@ -240,6 +242,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         for (String requete : maconnexion.requetesMaj) {
             listeDeRequetes.add(requete);
+            maconnexion.executeUpdate(requete);
         }
     }
 
