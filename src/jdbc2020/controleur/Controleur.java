@@ -14,7 +14,6 @@ import java.sql.SQLException;
  * @author segado
  */
 public class Controleur {
-
     /**
      *
      * une methode principal (main) pour lancer l'application
