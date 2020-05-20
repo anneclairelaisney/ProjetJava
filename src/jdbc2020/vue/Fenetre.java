@@ -5,8 +5,6 @@
 package jdbc2020.vue;
 
 import jdbc2020.controleur.*;
-import jdbc2020.dao.*;
-import jdbc2020.modele.Etudiant;
 /*
  * 
  * Librairies importées
@@ -51,10 +49,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         super("Projet d'utilisation de JDBC dans MySQL");
 
         // mise en page (layout) de la fenetre visible
-        setLayout(new BorderLayout());
-        setBounds(0, 0, 400, 400);
-        setResizable(true);
-        setVisible(true);
+        this.setSize(800,600);
+	this.setTitle("INTRANET ECE PARIS-LYON");
+        this.setLayout(new BorderLayout());
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	this.setLocationRelativeTo(null);
+	this.setResizable(true);
+	this.setVisible(true);
+        
 
         // creation des boutons
         //connect = new JButton("Connexion ECE");
@@ -166,7 +168,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      * Méthode privée qui initialise la liste des requetes de selection
      */
     private void remplirRequetes() {
-        maconnexion.ajouterRequete("SELECT * FROM Utilisateur ORDER BY prenom;");
     }
 
     /**
@@ -174,19 +175,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      */
     private void remplirRequetesMaj() throws SQLException {
         // Requêtes d'insertion
-        /*maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
-        maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
-        
-        maconnexion.ajouterRequeteMaj("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
-        maconnexion.executeUpdate("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
 
         // Requêtes de modification
-        maconnexion.ajouterRequeteMaj("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
-        maconnexion.executeUpdate("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
 
         // Requêtes de suppression
-        maconnexion.ajouterRequeteMaj("DELETE FROM Promotion WHERE nom='2023';");
-        maconnexion.executeUpdate("DELETE FROM Promotion WHERE nom='2023';");*/
     }
 
     /**
@@ -250,6 +242,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         for (String requete : maconnexion.requetesMaj) {
             listeDeRequetes.add(requete);
+            maconnexion.executeUpdate(requete);
         }
     }
 

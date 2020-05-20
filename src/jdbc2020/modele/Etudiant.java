@@ -34,6 +34,10 @@ public class Etudiant extends Utilisateur {
         return this.numero;
     }
     
+    public int getGroupe() {
+        return this.numero;
+    }
+    
     // Manipulateurs
     public void setNumero(int num) {
         this.numero = num;

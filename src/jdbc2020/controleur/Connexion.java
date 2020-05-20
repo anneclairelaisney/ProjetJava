@@ -10,8 +10,6 @@ package jdbc2020.controleur;
  */
 import java.sql.*;
 import java.util.ArrayList;
-import jdbc2020.dao.*;
-import jdbc2020.modele.*;
 
 /**
  * 
@@ -64,46 +62,7 @@ public class Connexion {
 
         // création d'un ordre SQL (statement)
         stmt = conn.createStatement();
-        
-        DAO<Utilisateur> utilisateurDao = new UtilisateurDAO(this);
-        for (int i = 1; i < 7; i++) {
-            Utilisateur utilisateur = utilisateurDao.find(i);
-            System.out.println("Utilisateur N°" + utilisateur.getId() + "  - " + utilisateur.getNom() + " " + utilisateur.getPrenom() + " " + utilisateur.getEmail() + " " + utilisateur.getPasswd() + " " + utilisateur.getDroit());
-        }
-        
-        DAO<Etudiant> etudiantDao = new EtudiantDAO(this);
-        for (int i = 2; i < 6; i++) {
-            Etudiant etudiant = etudiantDao.find(i);
-            System.out.println("Etudiant N°" + etudiant.getId() + "  - " + etudiant.getNom() + " " + etudiant.getPrenom() + " " + etudiant.getEmail() + " " + etudiant.getPasswd());
-        }
-        
-        DAO<Enseignant> enseignantDao = new EnseignantDAO(this);
-        for (int i = 1; i < 7; i++) {
-            Enseignant enseignant = enseignantDao.find(i);
-            if (enseignant.getId() != 0)
-                System.out.println("Enseignant N°" + enseignant.getId() + "  - " + enseignant.getNom() + " " + enseignant.getPrenom() + " " + enseignant.getEmail() + " " + enseignant.getPasswd());
-        }
-        
-        DAO<Groupe> groupeDao = new GroupeDAO(this);
-        for (int i = 1; i < 12; i++) {
-            Groupe groupe = groupeDao.find(i);
-            System.out.println("Groupe N°" + groupe.getId() + "  - " + groupe.getNom() + " " + groupe.getIdPromotion());
-        }
-        
-        DAO<Promotion> promotionDao = new PromotionDAO(this);
-        for (int i = 1; i < 3; i++) {
-            Promotion promotion = promotionDao.find(i);
-            System.out.println("Promotion N°" + promotion.getId() + "  - " + promotion.getNom());
-        }
-        
-        DAO<Salle> salleDao = new SalleDAO(this);
-        for (int i = 1; i < 5000; i++) {
-            Salle salle = salleDao.find(i);
-            if (salle.getId() != 0)
-                System.out.println("Salle N°" + salle.getId() + "  - " + salle.getNom() + " " + salle.getCapacite() + " " + salle.getIdSite());
-        }
     }
-
 
     /**
      * Méthode qui ajoute la table en parametre dans son ArrayList
