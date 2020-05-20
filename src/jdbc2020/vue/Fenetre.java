@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package jdbc2020.vue;
 
 import jdbc2020.controleur.*;
@@ -18,6 +17,7 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * Affiche dans la fenetre graphique les champs de tables et les requetes de la
@@ -31,7 +31,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
      * Attribut privés : objets de Connexion, AWT et Swing
      * 
      */
-
     private Connexion maconnexion;
     private final JLabel tab, req, res, lignes;
     private final JLabel nameBDD, requeteLabel;
@@ -50,10 +49,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         super("Projet d'utilisation de JDBC dans MySQL");
 
         // mise en page (layout) de la fenetre visible
-        setLayout(new BorderLayout());
-        setBounds(0, 0, 400, 400);
-        setResizable(true);
-        setVisible(true);
+        this.setSize(800,600);
+	this.setTitle("INTRANET ECE PARIS-LYON");
+        this.setLayout(new BorderLayout());
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	this.setLocationRelativeTo(null);
+	this.setResizable(true);
+	this.setVisible(true);
+        
 
         // creation des boutons
         //connect = new JButton("Connexion ECE");
@@ -65,7 +68,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeDeRequetes = new java.awt.List(10, false);
 
         // creation des textes
-
         nameBDDTexte = new JTextField();
         fenetreLignes = new JTextArea();
         fenetreRes = new JTextArea();
@@ -94,7 +96,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         p3.setLayout(new GridLayout(1, 3));
 
         // ajout des objets graphqiues dans les panneaux
-
         p0.add(nameBDD);
         p0.add(nameBDDTexte);
         p0.add(local);
@@ -160,40 +161,24 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         maconnexion.ajouterTable("SITE");
         maconnexion.ajouterTable("TYPE_COURS");
         maconnexion.ajouterTable("UTILISATEUR");
-        
+
     }
 
     /**
      * Méthode privée qui initialise la liste des requetes de selection
      */
     private void remplirRequetes() {
-        maconnexion.ajouterRequete("SELECT * FROM Utilisateur ORDER BY prenom;");
-        /*maconnexion.ajouterRequete("SELECT Dept.*, Emp.*, Mission.* FROM Dept, Emp, Mission WHERE Dept.deptno=Emp.deptno AND Emp.empno=Mission.empno;");
-        maconnexion.ajouterRequete("SELECT AVG (Emp.sal) FROM Emp, Mission WHERE Emp.empno = Mission.empno;");
-        maconnexion.ajouterRequete("SELECT Dept.*, Emp.* FROM Dept, Emp WHERE Dept.deptno=Emp.deptno AND comm>0;");
-        maconnexion.ajouterRequete("SELECT hiredate, empno, ename FROM Emp WHERE (((hiredate)>='1981-05-01' And (hiredate)<'1981-05-31'))ORDER BY hiredate;");
-        maconnexion.ajouterRequete("SELECT ename, job FROM Emp ORDER BY job;");
-        maconnexion.ajouterRequete("SELECT DISTINCT dname, job FROM Dept, Emp WHERE Dept.deptno=Emp.deptno AND job='Clerk';");*/
     }
 
     /**
      * Méthode privée qui initialise la liste des requetes de MAJ
      */
-    private void remplirRequetesMaj() throws SQLException{
+    private void remplirRequetesMaj() throws SQLException {
         // Requêtes d'insertion
-        /*maconnexion.ajouterRequeteMaj("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
-        maconnexion.executeUpdate("INSERT INTO Utilisateur(ID, EMAIL, PASSWD, NOM, PRENOM, DROIT) VALUES (5,'elia.levy@edu.ece.fr','ece','LEVY','Elia',4);");
-        
-        maconnexion.ajouterRequeteMaj("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
-        maconnexion.executeUpdate("INSERT INTO Promotion(ID, NOM) VALUES (2,2021);");
 
         // Requêtes de modification
-        maconnexion.ajouterRequeteMaj("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
-        maconnexion.executeUpdate("UPDATE Groupe SET nom='TD6' WHERE nom='TD5';");
 
         // Requêtes de suppression
-        maconnexion.ajouterRequeteMaj("DELETE FROM Promotion WHERE nom='2023';");
-        maconnexion.executeUpdate("DELETE FROM Promotion WHERE nom='2023';");*/
     }
 
     /**
@@ -254,9 +239,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         for (String requete : maconnexion.requetes) {
             listeDeRequetes.add(requete);
         }
-        
+
         for (String requete : maconnexion.requetesMaj) {
             listeDeRequetes.add(requete);
+            maconnexion.executeUpdate(requete);
         }
     }
 

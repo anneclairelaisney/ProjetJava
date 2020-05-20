@@ -64,7 +64,6 @@ public class Connexion {
         stmt = conn.createStatement();
     }
 
-
     /**
      * Méthode qui ajoute la table en parametre dans son ArrayList
      *
@@ -178,5 +177,17 @@ public class Connexion {
      */
     public void executeUpdate(String requeteMaj) throws SQLException {
        stmt.executeUpdate(requeteMaj);
+    }
+
+    public Object createStatement(int TYPE_SCROLL_INSENSITIVE, int CONCUR_READ_ONLY) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public ResultSet getResultSet() {
+        return this.rset;
+    }
+    
+    public Statement getStatement() {
+        return this.stmt;
     }
 }
