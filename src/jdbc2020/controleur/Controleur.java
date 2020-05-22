@@ -24,5 +24,6 @@ import javax.swing.JPanel;
 public class Controleur {
     public static void main(String[] s) throws SQLException, ClassNotFoundException {
         new Generateur();
+        //new Liste(new Connexion("jdbc2020", "root", "root"));
     }
 }
