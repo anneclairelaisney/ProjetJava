@@ -15,18 +15,24 @@ import jdbc2020.vue.*;
 public class Generateur {
 
     // Attributs
-    private Fenetre fenetre;
-    private InterfaceGraphique interfaceGraphique;
+    private PageConnexion pageConnexion;
     private SeanceEnseignants lesEnseignants;
     private SeanceGroupes lesGroupes;
     private SeanceSalles lesSalles;
 
     // Constructeurs
     public Generateur() {
-        this.fenetre = new Fenetre();
-        this.interfaceGraphique = new InterfaceGraphique();
+        this.pageConnexion = new PageConnexion();
+        this.pageConnexion.setVisible(true);
         this.lesEnseignants = new SeanceEnseignants();
         this.lesGroupes = new SeanceGroupes();
         this.lesSalles = new SeanceSalles();
+        
+        setupActionButton();
+    }
+    
+    // Methodes
+    public void setupActionButton() {
+        
     }
 }
