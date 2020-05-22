@@ -54,7 +54,7 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         p1 = new JPanel();
         p2 = new JPanel();
         p3 = new JPanel();
-        logo = new JLabel(new ImageIcon(PageConnexion.class.getResource("logo.png")));
+        logo = new JLabel(new ImageIcon(PageConnexion.class.getResource("ece.png")));
         center = new JPanel();
 
         // creation des textes
@@ -64,7 +64,7 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         motDePasseTexte.setHorizontalAlignment(JPasswordField.CENTER);
 
         // creation des labels
-        titreConnexion = new JLabel("Connection", JLabel.CENTER);
+        titreConnexion = new JLabel("Connexion", JLabel.CENTER);
         nomUtilisateur = new JLabel("Nom d'Utilisateur :", JLabel.CENTER);
         motDePasse = new JLabel("Mot de Passe :", JLabel.CENTER);
 
@@ -167,12 +167,5 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
     @Override
     public void itemStateChanged(ItemEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public class Panneau extends JPanel {
-
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-        }
     }
 }

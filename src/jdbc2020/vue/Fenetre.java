@@ -17,6 +17,9 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.layout.Border;
+import jdbc2020.dao.DAO;
+import jdbc2020.dao.UtilisateurDAO;
+import jdbc2020.modele.Utilisateur;
 
 /**
  *
@@ -29,8 +32,35 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
     //Attributs
     private Connexion maconnexion;
-    private final JPanel p0, edt;
-    private CardLayout cardLayout;
+    private final JPanel p0, p1, edt;
+    private JLabel logo;
+    private JMenuBar menuBar;
+    private JMenu cours = new JMenu("Cours"),
+            etudiants = new JMenu("Etudiants"),
+            promotions = new JMenu("Promotions"),
+            enseignants = new JMenu("Enseignants"),
+            salles = new JMenu("Salles");
+
+    private JMenuItem listeCours = new JMenuItem("Emploi du temps"),
+            recapCours = new JMenuItem("Récapitulatif des cours");
+
+    private JMenuItem edtEtudiant = new JMenuItem("Emploi du temps"),
+            recapEtudiant = new JMenuItem("Récapitulatif des cours"),
+            coursAnnules = new JMenuItem("Cours annulés"),
+            listeEtudiants = new JMenuItem("Liste des étudiants");
+
+    private JMenuItem listePromotions = new JMenuItem("Liste des Promotions"),
+            listeGroupes = new JMenuItem("Liste des groupes"),
+            listeIntervenants = new JMenuItem("Liste des intervenants");
+
+    private JMenuItem edtEnseignant = new JMenuItem("Emploi du temps"),
+            recapEnseignants = new JMenuItem("Récapitulatif des cours"),
+            listeEnseignants = new JMenuItem("Liste des Enseignants");
+
+    private JMenuItem listeSalles = new JMenuItem("Listes des salles");
+    private final JTextField barreDeRechercheTexte;
+    private final JLabel barreDeRecherche;
+    private final JButton recherche;
 
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
@@ -48,13 +78,30 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.setResizable(true);
         this.setVisible(true);
 
+        this.menuBar = new JMenuBar();
+        this.logo = new JLabel(new ImageIcon(Fenetre.class.getResource("logo.png")));
+        this.logo.setPreferredSize(new Dimension(50, 100));
+        
         // creation des boutons
-        // creation des listes pour les tables et les requetes
-        // creation des textes
-        // creation des labels
-        // creation des panneaux
+        recherche = new JButton("Search");
+        recherche.setHorizontalAlignment(JTextField.CENTER);
+        
+        // creation des Panneaux
         p0 = new JPanel();
+        p1 = new JPanel();
         edt = new JPanel();
+        
+        // creation des textes
+        barreDeRechercheTexte = new JTextField();
+        
+        // creation des labels
+        barreDeRecherche = new JLabel("Saisie du nom", JLabel.CENTER);
+        
+        // ajout des objets graphqiues dans les panneaux 
+        p1.add(barreDeRecherche);
+        p1.add(barreDeRechercheTexte);
+        p1.add(recherche);
+        
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.black, 1);
         for (int i = 0; i < 65; i++) {
             JPanel ptest = new JPanel();
@@ -64,15 +111,17 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         // mise en page des panneaux
         p0.setLayout(new GridLayout(1, 3));
-        edt.setLayout(new GridLayout(13, 5));
+        p1.setLayout(new GridLayout(1, 1));
+        
+        // ajout des listeners
+        recherche.addActionListener(this);
 
         this.add(p0);
-        this.add(edt);
-        // ajout des objets graphiques dans les panneaux
-        // ajout des listeners
-        // couleurs des objets graphiques
-        // disposition geographique des panneaux
-
+        this.add(p1, BorderLayout.NORTH);
+        edt.setLayout(new GridLayout(13, 5));
+        this.add(edt, BorderLayout.CENTER);
+        this.initMenu();
+        
         // pour fermer la fenetre
         addWindowListener(new WindowAdapter() {
             @Override
@@ -80,6 +129,48 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 System.exit(0); // tout fermer												System.exit(0); // tout fermer
             }
         });
+    }
+
+    private void initMenu() {
+        //Menu Cours
+        cours.add(listeCours);
+        cours.add(recapCours);
+        cours.setBackground(new Color(4, 116, 124));
+
+        //Menu Etudiants
+        etudiants.add(edtEtudiant);
+        etudiants.add(recapEtudiant);
+        etudiants.add(coursAnnules);
+        etudiants.add(listeEtudiants);
+        //etudiants.setBackground(new Color(4, 116, 124));
+        
+
+        //Menu Promotions
+        promotions.add(listePromotions);
+        promotions.add(listeGroupes);
+        promotions.add(listeIntervenants);
+        promotions.setBackground(new Color(4, 116, 124));
+
+        //Menu Enseignants
+        enseignants.add(edtEnseignant);
+        enseignants.add(recapEnseignants);
+        enseignants.add(listeEnseignants);
+        enseignants.setBackground(new Color(4, 116, 124));
+
+        //Menu Salles
+        salles.add(listeSalles);
+        salles.setBackground(new Color(4, 116, 124));
+
+        //Ajout des menus dans la barre de menus
+        menuBar.add(logo);
+        menuBar.add(cours);
+        menuBar.add(etudiants);
+        menuBar.add(promotions);
+        menuBar.add(enseignants);
+        menuBar.add(salles);
+
+        //Ajout de la barre de menus sur la fenêtre
+        this.setJMenuBar(menuBar);
     }
 
     // Initialisation des tables
@@ -108,6 +199,26 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     @Override
     @SuppressWarnings("CallToThreadDumpStack")
     public void actionPerformed(ActionEvent evt) {
+        Object source = evt.getSource();
+
+        // tester cas de la commande evenementielle
+        if (source == recherche) {
+            ArrayList<String> liste;
+            try {
+                try {
+                    // tentative de connexion si les 4 attributs sont remplis
+                    this.maconnexion = new Connexion("jdbc2020", "root", "root");
+                    System.out.println("Connexion dans BDD reussie");
+
+                } catch (ClassNotFoundException cnfe) {
+                    System.out.println("Connexion echouee : probleme de classe");
+                    cnfe.printStackTrace();
+                }
+            } catch (SQLException exc) {
+                System.out.println("Connexion echouee : probleme SQL");
+                exc.printStackTrace();
+            }
+        }
     }
 
     @Override
