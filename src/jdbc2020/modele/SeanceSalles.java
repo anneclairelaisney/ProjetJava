@@ -5,6 +5,8 @@
  */
 package jdbc2020.modele;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -19,8 +21,8 @@ public class SeanceSalles extends Seance {
     
     // Constructeurs
     public SeanceSalles() {}
-    public SeanceSalles(int id, int semaine, int date, int heureDebut, int heureFin, int etat, ArrayList<Salle> salles) {
-        super(id, semaine, date, heureDebut, heureFin, etat);
+    public SeanceSalles(int id, int semaine, Date date, int heureDebut, int heureFin, int etat, int id_cours, int id_type, ArrayList<Salle> salles) {
+        super(id, semaine, date, heureDebut, heureFin, etat, id_cours, id_type);
         this.salles = salles;
     }
     
