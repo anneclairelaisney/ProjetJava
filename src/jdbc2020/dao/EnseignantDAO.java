@@ -27,7 +27,7 @@ public class EnseignantDAO extends DAO<Enseignant> {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }  
+        }
         return false;
     }
 
@@ -38,7 +38,7 @@ public class EnseignantDAO extends DAO<Enseignant> {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }  
+        }
         return false;
     }
 
@@ -52,11 +52,17 @@ public class EnseignantDAO extends DAO<Enseignant> {
         try {
             ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE droit = 3 AND id = " + id);
             if (rset.first()) {
-                enseignant = new Enseignant(id, rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"),3);
+                enseignant = new Enseignant(id, rset.getString("email"), rset.getString("passwd"), rset.getString("nom"), rset.getString("prenom"), 3);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return enseignant;
+    }
+
+    public void display(Enseignant enseignant) {
+        if (enseignant.getId() != 0) {
+            System.out.println("Nom : " + enseignant.getNom() + " - Prenom : " + enseignant.getPrenom() + " - E-mail : " + enseignant.getEmail() + " - Mot de passe : " + enseignant.getPasswd());
+        }
     }
 }

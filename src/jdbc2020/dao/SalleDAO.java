@@ -64,4 +64,10 @@ public class SalleDAO extends DAO<Salle> {
         }
         return salle;
     }
+    
+    public void display(Salle salle) {
+        if (salle.getId() != 0) {
+            System.out.println("Nom : " + salle.getNom());
+        }
+    }
 }
