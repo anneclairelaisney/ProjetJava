@@ -38,8 +38,13 @@ public class Etudiant extends Utilisateur {
         return this.numero;
     }
     
+    public int getIdGroupe() {
+        return this.idGroupe;
+    }
+    
     // Manipulateurs
     public void setNumero(int num) {
         this.numero = num;
     }
+
 }
