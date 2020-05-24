@@ -10,13 +10,13 @@ import jdbc2020.modele.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
  * @author apple
  */
 public class PromotionDAO extends DAO<Promotion> {
-
     public PromotionDAO(Connexion conn) {
         super(conn);
     }
@@ -63,5 +63,11 @@ public class PromotionDAO extends DAO<Promotion> {
             e.printStackTrace();
         }
         return promotion;
+    }
+    
+    public void display(Promotion promotion) {
+        if (promotion.getId() != 0) {
+            System.out.println("Nom : " + promotion.getNom());
+        }
     }
 }
