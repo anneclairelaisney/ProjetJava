@@ -6,7 +6,6 @@
 package jdbc2020.controleur;
 
 import java.sql.SQLException;
-import java.util.Calendar;
 
 /**
  *
@@ -17,6 +16,5 @@ public class Controleur {
 
     public static void main(String[] s) throws SQLException, ClassNotFoundException {
         new Generateur();
-        
     }
 }
