@@ -65,13 +65,12 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JButton recherche;
 
     /* EDT */
-    private CardLayout cardLayout;
-    private JButton boutonPrecedent, boutonSuivant;
-    private JPanel panelGlobal, panelBoutonPrecedent, panelBoutonSuivant;
+    ;
+    private JPanel heures;
+    private Panneau pan;
 
     /* LISTES */
     private Liste listes;
-    private JComboBox<String> cmbChoixList, cmbTypeList;
 
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
@@ -81,7 +80,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.maconnexion = new Connexion(database, "root", "root");
 
         // mise en page (layout) de la fenetre visible
-        this.setSize(765, 920);
+        this.setSize(950, 850);
         this.setTitle("INTRANET ECE PARIS-LYON");
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,11 +88,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.setResizable(false);
         this.setVisible(true);
 
-        this.getContentPane().add(menuBar(), BorderLayout.NORTH);
-        this.getContentPane().add(p1(), BorderLayout.SOUTH);
-        //this.getContentPane().add(new JScrollPane(edt()), BorderLayout.CENTER);
-        this.getContentPane().add(panelGlobal(), BorderLayout.CENTER);
+        pan = new Panneau();
 
+        this.getContentPane().add(menuBar(), BorderLayout.NORTH);
+        this.getContentPane().add(heures(), BorderLayout.WEST);
+        this.add(pan);
+        this.getContentPane().add(p1(), BorderLayout.SOUTH);
+
+        // ajout des listeners
         recherche.addActionListener(this);
         // pour fermer la fenetre
         addWindowListener(new WindowAdapter() {
@@ -175,140 +177,37 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return p1;
     }
 
-    /* JPanel contenant le bouton précedent */
-    private JPanel panelBoutonPrecedent() {
-        panelBoutonPrecedent = new JPanel();
-        boutonPrecedent = new JButton("◄");
-        panelBoutonPrecedent.add(boutonPrecedent, BorderLayout.CENTER);
-        return panelBoutonPrecedent;
-    }
+    private JPanel heures() {
+        this.heures = new JPanel();
+        javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+        JLabel day = new JLabel();
+        day.setBorder(blackline);
+        day.setBackground(new Color(4, 116, 124));
+        day.setPreferredSize(new Dimension(160, 50));
+        day.add(new JLabel());
+        this.heures.add(day);
 
-    /* JPanel contenant le bouton suivant */
-    private JPanel panelBoutonSuivant() {
-        panelBoutonSuivant = new JPanel();
-        boutonSuivant = new JButton("►");
-        panelBoutonSuivant.add(boutonSuivant, BorderLayout.CENTER);
-        return panelBoutonSuivant;
-    }
-
-    /* JPanel global qui contient cardCreation & cardEDT */
-    private JPanel panelGlobal() throws SQLException, ClassNotFoundException {
-        cardLayout = new CardLayout();
-        panelGlobal = new JPanel();
-        panelGlobal.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
-        panelGlobal.setBackground(new Color(4, 116, 124));
-
-        javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.black, 1);
-
-        JPanel jour = new JPanel();
-        jour.setPreferredSize(new Dimension(120, 30));
-        jour.setBorder(blackline);
-        jour.add(new JLabel());
-        jour.add(new JLabel(""));
-        panelGlobal.add(jour);
-
-        Calendar cal = Calendar.getInstance();
-
-        System.out.println("Jour de la semaine: " + 5);
-        for (int i = 1; i <= 7; i++) {
-            Calendar calendarNomJourSemaine = Calendar.getInstance();
-            calendarNomJourSemaine.set(Calendar.YEAR, 2020);
-            calendarNomJourSemaine.set(Calendar.MONTH, 11);
-            calendarNomJourSemaine.set(Calendar.DAY_OF_MONTH, 23);
-            int semaine = calendarNomJourSemaine.get(Calendar.DAY_OF_WEEK);
-            String nomjourSemaine = "";
-            switch (semaine) {
-                case 1:
-                    nomjourSemaine = "Dimanche";
-                    break;
-                case 2:
-                    nomjourSemaine = "Lundi";
-                    break;
-                case 3:
-                    nomjourSemaine = "Mardi";
-                    break;
-                case 4:
-                    nomjourSemaine = "Mercredi";
-                    break;
-                case 5:
-                    nomjourSemaine = "Jeudi";
-                    break;
-                case 6:
-                    nomjourSemaine = "Vendredi";
-                    break;
-                case 7:
-                    nomjourSemaine = "Samedi";
-                    break;
-            }
-            System.out.println(nomjourSemaine);
-        }
-
-        JPanel lundi = new JPanel();
-        lundi.setPreferredSize(new Dimension(120, 30));
-        lundi.setBorder(blackline);
-        lundi.add(new JLabel());
-        lundi.add(new JLabel("Lundi", JLabel.CENTER));
-        panelGlobal.add(lundi);
-
-        JPanel mardi = new JPanel();
-        mardi.setPreferredSize(new Dimension(120, 30));
-        mardi.setBorder(blackline);
-        mardi.add(new JLabel());
-        mardi.add(new JLabel("Mardi", JLabel.CENTER));
-        panelGlobal.add(mardi);
-
-        JPanel mercredi = new JPanel();
-        mercredi.setPreferredSize(new Dimension(120, 30));
-        mercredi.setBorder(blackline);
-        mercredi.add(new JLabel());
-        mercredi.add(new JLabel("Mercredi", JLabel.CENTER));
-        panelGlobal.add(mercredi);
-
-        JPanel jeudi = new JPanel();
-        jeudi.setPreferredSize(new Dimension(120, 30));
-        jeudi.setBorder(blackline);
-        jeudi.add(new JLabel());
-        jeudi.add(new JLabel("Jeudi", JLabel.CENTER));
-        panelGlobal.add(jeudi);
-
-        JPanel vendredi = new JPanel();
-        vendredi.setPreferredSize(new Dimension(120, 30));
-        vendredi.setBorder(blackline);
-        vendredi.add(new JLabel());
-        vendredi.add(new JLabel("Vendredi", JLabel.CENTER));
-        panelGlobal.add(vendredi);
         int debut = 7;
         int fin = 8;
-        for (int i = 0; i < 84; i++) {
-            SeanceLabel seance = new SeanceLabel();
-            seance.remplirSeance(2);
-            if (i % 6 == 0) {
-                debut += 1;
-                fin += 1;
-                JPanel heure = new JPanel();
-                heure.setPreferredSize(new Dimension(120, 50));
-                heure.setBorder(blackline);
-                heure.add(new JLabel());
-                heure.add(new JLabel(debut + ":00 - " + fin + ":00", JLabel.CENTER));
-                panelGlobal.add(heure);
-
-            } else {
-                if (seance.getSeance().getHeureDebut() == debut) {
-                    seance.setBorder(blackline);
-                    seance.setPreferredSize(new Dimension(120, 50));
-                    panelGlobal.add(seance);
-                } else {
-                    JPanel vide = new JPanel();
-                    vide.setPreferredSize(new Dimension(120, 50));
-                    vide.setBorder(blackline);
-                    panelGlobal.add(vide);
-                }
-            }
+        for (int i = 0; i < 13; i++) {
+            debut += 1;
+            fin += 1;
+            String h = debut + ":00 - " + fin + ":00";
+            JLabel heure = new JLabel(h, JLabel.CENTER);
+            heure.setBorder(blackline);
+            Font font = new Font("Arial", Font.BOLD, 14);
+            heure.setFont(font);
+            heure.setForeground(Color.WHITE);
+            heure.setBackground(new Color(4, 116, 124));
+            heure.setPreferredSize(new Dimension(160, 50));
+            this.heures.add(heure);
         }
-        return panelGlobal;
+        this.heures.setLayout(new GridLayout(14, 0, 0, 2));
+        this.heures.setBackground(new Color(4, 116, 124));
+        return this.heures;
     }
 
-    // Initialisation des tables
+// Initialisation des tables
     private void remplirTables() {
         this.listes.listePromotions();
         this.listes.listeGroupes();
@@ -321,7 +220,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     @SuppressWarnings("CallToThreadDumpStack")
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
-        if (source == listeEtudiants){
+        if (source == listeEtudiants) {
             System.out.println("non");
         }
         // tester cas de la commande evenementielle
