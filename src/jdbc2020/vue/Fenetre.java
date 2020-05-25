@@ -12,11 +12,10 @@ import jdbc2020.modele.*;
  */
 import java.awt.event.*;
 import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import java.util.*;
 import javax.swing.*;
 import java.sql.*;
-import javax.swing.border.Border;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -41,20 +40,21 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             salles = new JMenu("Salles");
 
     private JMenuItem listeCours = new JMenuItem("Emploi du temps"),
-            recapCours = new JMenuItem("Récapitulatif des cours");
+            recapCours = new JMenuItem("Récapitulatif des cours"),
+            listeUtilisateurs = new JMenuItem("Liste des utilisateurs");
 
     private JMenuItem edtEtudiant = new JMenuItem("Emploi du temps"),
             recapEtudiant = new JMenuItem("Récapitulatif des cours"),
             coursAnnules = new JMenuItem("Cours annulés"),
             listeEtudiants = new JMenuItem("Liste des étudiants");
 
-    private JMenuItem listePromotions = new JMenuItem("Liste des Promotions"),
+    private JMenuItem listePromotions = new JMenuItem("Liste des promotions"),
             listeGroupes = new JMenuItem("Liste des groupes"),
             listeIntervenants = new JMenuItem("Liste des intervenants");
 
     private JMenuItem edtEnseignant = new JMenuItem("Emploi du temps"),
             recapEnseignants = new JMenuItem("Récapitulatif des cours"),
-            listeEnseignants = new JMenuItem("Liste des Enseignants");
+            listeEnseignants = new JMenuItem("Liste des enseignants");
 
     private JMenuItem listeSalles = new JMenuItem("Listes des salles");
 
@@ -65,12 +65,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JButton recherche;
 
     /* EDT */
-    ;
-    private JPanel heures;
     private Panneau pan;
-
-    /* LISTES */
-    private Liste listes;
+    private PanneauListePromotion panelPromotion;
+    private PanneauListeUtilisateur panelUtilisateur;
+    private PanneauListeGroupe panelGroupe;
+    private PanneauListeEtudiant panelEtudiant;
 
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
@@ -85,18 +84,42 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setResizable(false);
+        this.setResizable(true);
         this.setVisible(true);
 
-        pan = new Panneau();
-
         this.getContentPane().add(menuBar(), BorderLayout.NORTH);
-        this.getContentPane().add(heures(), BorderLayout.WEST);
-        this.add(pan);
+
+        this.pan = new Panneau();
+        this.pan.setVisible(false);
+        this.add(this.pan, BorderLayout.CENTER);
+
+        this.panelPromotion = new PanneauListePromotion();
+        this.panelPromotion.setVisible(false);
+        this.add(this.panelPromotion, BorderLayout.CENTER);
+
+        this.panelUtilisateur = new PanneauListeUtilisateur();
+        this.panelUtilisateur.setVisible(false);
+        this.add(this.panelUtilisateur, BorderLayout.CENTER);
+
+        this.panelGroupe = new PanneauListeGroupe();
+        this.panelGroupe.setVisible(false);
+        this.add(this.panelGroupe, BorderLayout.CENTER);
+
+        this.panelEtudiant = new PanneauListeEtudiant();
+        this.panelEtudiant.setVisible(false);
+        this.add(this.panelEtudiant, BorderLayout.CENTER);
+
         this.getContentPane().add(p1(), BorderLayout.SOUTH);
 
         // ajout des listeners
+        edtEtudiant.addActionListener(this);
+        listePromotions.addActionListener(this);
+        listeUtilisateurs.addActionListener(this);
+        listeGroupes.addActionListener(this);
+        listeEtudiants.addActionListener(this);
+
         recherche.addActionListener(this);
+
         // pour fermer la fenetre
         addWindowListener(new WindowAdapter() {
             @Override
@@ -114,6 +137,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         //Menu Cours
         cours.add(listeCours);
         cours.add(recapCours);
+        cours.add(listeUtilisateurs);
         cours.setBackground(new Color(4, 116, 124));
 
         //Menu Etudiants
@@ -177,75 +201,91 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return p1;
     }
 
-    private JPanel heures() {
-        this.heures = new JPanel();
-        javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
-        JLabel day = new JLabel();
-        day.setBorder(blackline);
-        day.setBackground(new Color(4, 116, 124));
-        day.setPreferredSize(new Dimension(160, 50));
-        day.add(new JLabel());
-        this.heures.add(day);
-
-        int debut = 7;
-        int fin = 8;
-        for (int i = 0; i < 13; i++) {
-            debut += 1;
-            fin += 1;
-            String h = debut + ":00 - " + fin + ":00";
-            JLabel heure = new JLabel(h, JLabel.CENTER);
-            heure.setBorder(blackline);
-            Font font = new Font("Arial", Font.BOLD, 14);
-            heure.setFont(font);
-            heure.setForeground(Color.WHITE);
-            heure.setBackground(new Color(4, 116, 124));
-            heure.setPreferredSize(new Dimension(160, 50));
-            this.heures.add(heure);
-        }
-        this.heures.setLayout(new GridLayout(14, 0, 0, 2));
-        this.heures.setBackground(new Color(4, 116, 124));
-        return this.heures;
+    private Panneau pan() throws SQLException, ClassNotFoundException {
+        this.pan.remplirEDT();
+        return this.pan;
     }
 
-// Initialisation des tables
-    private void remplirTables() {
-        this.listes.listePromotions();
-        this.listes.listeGroupes();
-        this.listes.listeEtudiants();
-        this.listes.listeEnseignants();
-        this.listes.listeSalles();
+    private PanneauListePromotion panelPromotion() throws SQLException, ClassNotFoundException {
+        this.panelPromotion.remplirListe();
+        return this.panelPromotion;
+    }
+
+    private PanneauListeUtilisateur panelUtilisateur() throws SQLException, ClassNotFoundException {
+        this.panelUtilisateur.remplirListe();
+        return this.panelUtilisateur;
+    }
+
+    private PanneauListeGroupe panelGroupe() throws SQLException, ClassNotFoundException {
+        this.panelGroupe.remplirListe();
+        return this.panelGroupe;
+    }
+
+    private PanneauListeEtudiant panelEtudiant() throws SQLException, ClassNotFoundException {
+        this.panelEtudiant.remplirListe();
+        return this.panelEtudiant;
+    }
+
+    public void setInvisible() {
+        this.pan.setVisible(false);
+        this.panelPromotion.setVisible(false);
+        this.panelUtilisateur.setVisible(false);
+        this.panelGroupe.setVisible(false);
+        this.panelEtudiant.setVisible(false);
     }
 
     @Override
     @SuppressWarnings("CallToThreadDumpStack")
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
-        if (source == listeEtudiants) {
-            System.out.println("non");
-        }
-        // tester cas de la commande evenementielle
-        if (source == recherche) {
-            ArrayList<String> liste;
+        if (source == edtEtudiant) {
             try {
-                try {
-                    // tentative de connexion si les 4 attributs sont remplis
-                    this.maconnexion = new Connexion("jdbc2020", "root", "root");
-                    this.listes = new Liste(this.maconnexion);
-                    for (Etudiant u : listes.etudiants) {
-                        if (u.getPrenom().equals(barreDeRechercheTexte.getText())) {
-                            System.out.println("OUI");
-                        }
-                        if (u.getNom().equals(barreDeRechercheTexte.getText())) {
-                            System.out.println("OUI");
-                        }
-                    }
-                } catch (ClassNotFoundException cnfe) {
-                    System.out.println("Connexion echouee : probleme de classe");
-                    cnfe.printStackTrace();
-                }
-            } catch (SQLException exc) {
-                System.out.println("Connexion echouee : probleme SQL");
-                exc.printStackTrace();
+                setInvisible();
+                this.pan = this.pan();
+                this.add(this.pan);
+                System.out.println("Panneau EDT");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == listePromotions) {
+            try {
+                setInvisible();
+
+                this.panelPromotion = this.panelPromotion();
+                this.add(this.panelPromotion);
+                System.out.println("Panneau Liste Promotions");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == listeUtilisateurs) {
+            try {
+                setInvisible();
+
+                this.panelUtilisateur = this.panelUtilisateur();
+                this.add(this.panelUtilisateur);
+                System.out.println("Panneau Liste Utilisateurs");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == listeGroupes) {
+            try {
+                setInvisible();
+
+                this.panelGroupe = this.panelGroupe();
+                this.add(this.panelGroupe);
+                System.out.println("Panneau Liste Groupes");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == listeEtudiants) {
+            try {
+                setInvisible();
+
+                this.panelEtudiant = this.panelEtudiant();
+                this.add(this.panelEtudiant);
+                System.out.println("Panneau Liste Etudiants");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
