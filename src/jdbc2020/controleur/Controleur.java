@@ -13,7 +13,6 @@ import java.sql.SQLException;
  */
 
 public class Controleur {
-
     public static void main(String[] s) throws SQLException, ClassNotFoundException {
         new Generateur();
     }

@@ -5,6 +5,7 @@
  */
 package jdbc2020.vue;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import jdbc2020.controleur.*;
 import jdbc2020.dao.*;
@@ -26,8 +27,8 @@ public class Liste {
     public ArrayList<Salle> salles;
 
     // Constructeurs
-    public Liste(Connexion conn) {
-        this.conn = conn;
+    public Liste() throws SQLException, ClassNotFoundException {
+        this.conn = new Connexion("jdbc2020", "root", "root");
         this.listePromotions();
         this.listeGroupes();
         this.listeEtudiants();

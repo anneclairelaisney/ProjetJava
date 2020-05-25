@@ -59,7 +59,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
     try {
       ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
       if(rset.first())
-        utilisateur = new Utilisateur(id,rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"),4);
+        utilisateur = new Utilisateur(id,rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"), rset.getInt("droit"));
     } catch (SQLException e) {
       e.printStackTrace();
     }
