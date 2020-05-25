@@ -54,15 +54,24 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
   }
    
   public Utilisateur find(int id) {
-    Utilisateur etudiant = new Utilisateur();    
+    Utilisateur utilisateur = new Utilisateur();    
       
     try {
       ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
       if(rset.first())
-        etudiant = new Utilisateur(id,rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"),4);
+        utilisateur = new Utilisateur(id,rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"), rset.getInt("droit"));
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return etudiant;
+    return utilisateur;
   }
+  
+  public void display(Utilisateur utilisateur) {
+        if (utilisateur.getId() != 0) {
+            System.out.println("Nom - " + utilisateur.getNom() + "\n");
+            System.out.println("Prenom - " + utilisateur.getPrenom() + "\n");
+            System.out.println("E-mail - " + utilisateur.getEmail() + "\n");
+            System.out.println("Mot de passe - " + utilisateur.getPasswd() + "\n");
+        }
+    }
 }

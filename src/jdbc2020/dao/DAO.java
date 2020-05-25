@@ -46,4 +46,11 @@ public abstract class DAO<T> {
   * @return T
   */
   public abstract T find(int id);
+  
+  /**
+  * Méthode d'affichage
+  * @param obj
+  * @return boolean
+  */
+  public abstract void display(T obj);
 }
