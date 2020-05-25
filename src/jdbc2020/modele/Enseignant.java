@@ -24,7 +24,7 @@ public class Enseignant extends Utilisateur {
     }
     public Enseignant (int id, ArrayList<Cours> cours, int id_cours) {
         this.id = id;
-        this.droit = 4;
+        this.droit = 3;
         this.idCours = id_cours;
     }
     
