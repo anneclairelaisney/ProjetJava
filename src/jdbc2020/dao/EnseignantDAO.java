@@ -10,6 +10,8 @@ import jdbc2020.modele.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -52,12 +54,54 @@ public class EnseignantDAO extends DAO<Enseignant> {
         try {
             ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE droit = 3 AND id = " + id);
             if (rset.first()) {
-                enseignant = new Enseignant(id, rset.getString("email"), rset.getString("passwd"), rset.getString("nom"), rset.getString("prenom"), 3);
+                enseignant = new Enseignant(id, rset.getString("email"), rset.getString("passwd"), rset.getString("nom"), rset.getString("prenom"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return enseignant;
+    }
+
+    public ArrayList<Enseignant> getAllTeachers() throws Exception {
+        ArrayList<Enseignant> list = new ArrayList<Enseignant>();
+        Statement myStatement = null;
+        ResultSet rset = null;
+        try {
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur where droit=3");
+            while (rset.next()) {
+                Enseignant tempTeacher = convertRowToTeacher(rset);
+                list.add(tempTeacher);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            close(myStatement, rset);
+            return list;
+        }
+    }
+
+    private Enseignant convertRowToTeacher(ResultSet myResult) throws SQLException {
+        int id = myResult.getInt("ID");
+        String nom = myResult.getString("Nom");
+        String prenom = myResult.getString("Prenom");
+        String email = myResult.getString("Email");
+        String passwd = myResult.getString("Passwd");
+        Enseignant tempTeacher = new Enseignant(id, email, passwd, nom, prenom);
+        return tempTeacher;
+    }
+
+    private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
+        if (myResult != null) {
+            myResult.close();
+        }
+        if (myStatement != null) {
+        }
+        if (myConnection != null) {
+        }
+    }
+
+    private void close(Statement myStmt, ResultSet myRs) throws SQLException {
+        close(null, myStmt, myRs);
     }
 
     public void display(Enseignant enseignant) {

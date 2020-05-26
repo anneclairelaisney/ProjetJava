@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import jdbc2020.dao.DAO;
-import jdbc2020.dao.GroupeDAO;
+import jdbc2020.dao.SalleDAO;
 
 /**
  *
@@ -24,12 +24,12 @@ import jdbc2020.dao.GroupeDAO;
  *
  * @author segado
  */
-public class PanneauListeGroupe extends JPanel {
+public class PanneauListeSalle extends JPanel {
 
     private Connexion maconnexion;
 
     // Constructeur
-    public PanneauListeGroupe() throws SQLException, ClassNotFoundException {
+    public PanneauListeSalle() throws SQLException, ClassNotFoundException {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
@@ -42,11 +42,11 @@ public class PanneauListeGroupe extends JPanel {
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
         
-        GroupeDAO groupeDao = new GroupeDAO(this.maconnexion);
-        ArrayList<Groupe> listeGroupes = new ArrayList<>();
-        listeGroupes = groupeDao.getAllGroupes();
+        SalleDAO salleDao = new SalleDAO(this.maconnexion);
+        ArrayList<Salle> listeSalles = new ArrayList<>();
+        listeSalles = salleDao.getAllSalles();
 
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 4; i++) {
             int j = 0;
             String titre = "";
             switch (i) {
@@ -59,8 +59,12 @@ public class PanneauListeGroupe extends JPanel {
                     j = 1;
                     break;
                 case 3:
-                    titre = "Id Promotion";
+                    titre = "Capacité";
                     j = 2;
+                    break;
+                case 4:
+                    titre = "ID Site";
+                    j = 3;
                     break;
             }
             JLabel weekDayPanel = new JLabel(titre);
@@ -75,23 +79,27 @@ public class PanneauListeGroupe extends JPanel {
 
         int j = 0;
         int n = 1;
-        for (int k = 0; k < listeGroupes.size(); k++) {
-            for (int i = 1; i <= 3; i++) {
+        for (int k = 0; k < listeSalles.size(); k++) {
+            for (int i = 1; i <= 4; i++) {
                 String titre = "";
-                Groupe groupe = listeGroupes.get(k);
-                if (groupe.getId() != 0) {
+                Salle salle = listeSalles.get(k);
+                if (salle.getId() != 0) {
                     switch (i) {
                         case 1:
-                            titre = " " + groupe.getId();
+                            titre = " " + salle.getId();
                             j = 0;
                             break;
                         case 2:
-                            titre = " " + groupe.getNom();
+                            titre = " " + salle.getNom();
                             j = 1;
                             break;
                         case 3:
-                            titre = " " + groupe.getIdPromotion();
+                            titre = " " + salle.getCapacite();
                             j = 2;
+                            break;
+                        case 4:
+                            titre = " " + salle.getIdSite();
+                            j = 3;
                             break;
                     }
                     JLabel weekDayPanel = new JLabel(titre);

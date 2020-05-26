@@ -5,7 +5,6 @@
 package jdbc2020.vue;
 
 import jdbc2020.controleur.*;
-import jdbc2020.modele.*;
 /*
  * 
  * Librairies importées
@@ -40,8 +39,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             salles = new JMenu("Salles");
 
     private JMenuItem listeCours = new JMenuItem("Emploi du temps"),
-            recapCours = new JMenuItem("Récapitulatif des cours"),
-            listeUtilisateurs = new JMenuItem("Liste des utilisateurs");
+            recapCours = new JMenuItem("Récapitulatif des cours");
 
     private JMenuItem edtEtudiant = new JMenuItem("Emploi du temps"),
             recapEtudiant = new JMenuItem("Récapitulatif des cours"),
@@ -67,10 +65,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     /* EDT */
     private Panneau pan;
     private PanneauListePromotion panelPromotion;
-    private PanneauListeUtilisateur panelUtilisateur;
     private PanneauListeGroupe panelGroupe;
     private PanneauListeEtudiant panelEtudiant;
-
+    private PanneauListeSalle panelSalle;
+    private PanneauListeEnseignant panelEnseignant;
+    
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
 
@@ -97,10 +96,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelPromotion.setVisible(false);
         this.add(this.panelPromotion, BorderLayout.CENTER);
 
-        this.panelUtilisateur = new PanneauListeUtilisateur();
-        this.panelUtilisateur.setVisible(false);
-        this.add(this.panelUtilisateur, BorderLayout.CENTER);
-
         this.panelGroupe = new PanneauListeGroupe();
         this.panelGroupe.setVisible(false);
         this.add(this.panelGroupe, BorderLayout.CENTER);
@@ -108,16 +103,25 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEtudiant = new PanneauListeEtudiant();
         this.panelEtudiant.setVisible(false);
         this.add(this.panelEtudiant, BorderLayout.CENTER);
+        
+        this.panelSalle = new PanneauListeSalle();
+        this.panelSalle.setVisible(false);
+        this.add(this.panelSalle, BorderLayout.CENTER);
+        
+        this.panelEnseignant = new PanneauListeEnseignant();
+        this.panelEnseignant.setVisible(false);
+        this.add(this.panelEnseignant, BorderLayout.CENTER);
 
         this.getContentPane().add(p1(), BorderLayout.SOUTH);
 
         // ajout des listeners
         edtEtudiant.addActionListener(this);
         listePromotions.addActionListener(this);
-        listeUtilisateurs.addActionListener(this);
         listeGroupes.addActionListener(this);
         listeEtudiants.addActionListener(this);
-
+        listeSalles.addActionListener(this);
+        listeEnseignants.addActionListener(this);
+        
         recherche.addActionListener(this);
 
         // pour fermer la fenetre
@@ -137,7 +141,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         //Menu Cours
         cours.add(listeCours);
         cours.add(recapCours);
-        cours.add(listeUtilisateurs);
         cours.setBackground(new Color(4, 116, 124));
 
         //Menu Etudiants
@@ -206,32 +209,38 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return this.pan;
     }
 
-    private PanneauListePromotion panelPromotion() throws SQLException, ClassNotFoundException {
+    private PanneauListePromotion panelPromotion() throws SQLException, ClassNotFoundException, Exception {
         this.panelPromotion.remplirListe();
         return this.panelPromotion;
     }
 
-    private PanneauListeUtilisateur panelUtilisateur() throws SQLException, ClassNotFoundException {
-        this.panelUtilisateur.remplirListe();
-        return this.panelUtilisateur;
-    }
-
-    private PanneauListeGroupe panelGroupe() throws SQLException, ClassNotFoundException {
+    private PanneauListeGroupe panelGroupe() throws SQLException, ClassNotFoundException, Exception {
         this.panelGroupe.remplirListe();
         return this.panelGroupe;
     }
 
-    private PanneauListeEtudiant panelEtudiant() throws SQLException, ClassNotFoundException {
+    private PanneauListeEtudiant panelEtudiant() throws SQLException, ClassNotFoundException, Exception {
         this.panelEtudiant.remplirListe();
         return this.panelEtudiant;
+    }
+    
+    private PanneauListeSalle panelSalle() throws SQLException, ClassNotFoundException, Exception {
+        this.panelSalle.remplirListe();
+        return this.panelSalle;
+    }
+
+    private PanneauListeEnseignant panelEnseignant() throws SQLException, ClassNotFoundException {
+        this.panelEnseignant.remplirListe();
+        return this.panelEnseignant;
     }
 
     public void setInvisible() {
         this.pan.setVisible(false);
         this.panelPromotion.setVisible(false);
-        this.panelUtilisateur.setVisible(false);
         this.panelGroupe.setVisible(false);
         this.panelEtudiant.setVisible(false);
+        this.panelSalle.setVisible(false);
+        this.panelEnseignant.setVisible(false);
     }
 
     @Override
@@ -256,15 +265,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 System.out.println("Panneau Liste Promotions");
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (source == listeUtilisateurs) {
-            try {
-                setInvisible();
-
-                this.panelUtilisateur = this.panelUtilisateur();
-                this.add(this.panelUtilisateur);
-                System.out.println("Panneau Liste Utilisateurs");
-            } catch (SQLException | ClassNotFoundException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == listeGroupes) {
@@ -276,6 +277,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 System.out.println("Panneau Liste Groupes");
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == listeEtudiants) {
             try {
@@ -284,6 +287,32 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.panelEtudiant = this.panelEtudiant();
                 this.add(this.panelEtudiant);
                 System.out.println("Panneau Liste Etudiants");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else if (source == listeSalles) {
+            try {
+                setInvisible();
+
+                this.panelSalle = this.panelSalle();
+                this.add(this.panelSalle);
+                System.out.println("Panneau Liste Salles");
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else if (source == listeEnseignants) {
+            try {
+                setInvisible();
+
+                this.panelEnseignant = this.panelEnseignant();
+                this.add(this.panelEnseignant);
+                System.out.println("Panneau Liste Enseignants");
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }

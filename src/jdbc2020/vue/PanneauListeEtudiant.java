@@ -13,6 +13,9 @@ import jdbc2020.modele.*;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jdbc2020.dao.DAO;
 import jdbc2020.dao.EtudiantDAO;
 
@@ -37,11 +40,15 @@ public class PanneauListeEtudiant extends JPanel {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
-    public void remplirListe() {
+    public void remplirListe() throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+
+        EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
+        ArrayList<Etudiant> listeEtudiants = new ArrayList<>();
+        listeEtudiants = etudiantdao.getAllStudents();
 
         for (int i = 1; i < 8; i++) {
             int j = 0;
@@ -87,11 +94,10 @@ public class PanneauListeEtudiant extends JPanel {
 
         int j = 0;
         int n = 1;
-        for (int k = 1; k < 15; k++) {
+        for (int k = 0; k < listeEtudiants.size(); k++) {
             for (int i = 1; i < 8; i++) {
                 String titre = "";
-                DAO<Etudiant> etudiantDAO = new EtudiantDAO(this.maconnexion);
-                Etudiant etudiant = etudiantDAO.find(k);
+                Etudiant etudiant = listeEtudiants.get(k);
                 if (etudiant.getId() != 0) {
                     switch (i) {
                         case 1:
@@ -139,11 +145,5 @@ public class PanneauListeEtudiant extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 7; i++) {
-            for (int j = 1; j <= 14; j++) {
-                g.setColor(Color.WHITE);
-                g.drawRect(134 * i, 50 * j, 134, 50);
-            }
-        }
     }
 }

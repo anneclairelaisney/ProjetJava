@@ -13,6 +13,7 @@ import jdbc2020.modele.*;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 import jdbc2020.dao.DAO;
 import jdbc2020.dao.PromotionDAO;
 
@@ -34,11 +35,15 @@ public class PanneauListePromotion extends JPanel {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
-    public void remplirListe() throws SQLException, ClassNotFoundException {
+    public void remplirListe() throws SQLException, ClassNotFoundException, Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+        
+        PromotionDAO etudiantdao = new PromotionDAO(this.maconnexion);
+        ArrayList<Promotion> listePromotions = new ArrayList<>();
+        listePromotions = etudiantdao.getAllPromotions();
 
         for (int i = 1; i <= 2; i++) {
             int j = 0;
@@ -65,11 +70,10 @@ public class PanneauListePromotion extends JPanel {
 
         int j = 0;
         int n = 1;
-        for (int k = 1; k < 6; k++) {
+        for (int k = 0; k < listePromotions.size(); k++) {
             for (int i = 1; i <= 2; i++) {
                 String titre = "";
-                DAO<Promotion> promotionDAO = new PromotionDAO(this.maconnexion);
-                Promotion promotion = promotionDAO.find(k);
+                Promotion promotion = listePromotions.get(k);
                 if (promotion.getId() != 0) {
                     switch (i) {
                         case 1:
