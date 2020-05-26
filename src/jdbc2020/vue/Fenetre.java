@@ -229,7 +229,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return this.panelSalle;
     }
 
-    private PanneauListeEnseignant panelEnseignant() throws SQLException, ClassNotFoundException {
+    private PanneauListeEnseignant panelEnseignant() throws SQLException, ClassNotFoundException, Exception {
         this.panelEnseignant.remplirListe();
         return this.panelEnseignant;
     }
@@ -252,7 +252,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 setInvisible();
                 this.pan = this.pan();
                 this.add(this.pan);
-                System.out.println("Panneau EDT");
+                System.out.println("Panneau EDT Etudiant");
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -314,6 +314,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.add(this.panelEnseignant);
                 System.out.println("Panneau Liste Enseignants");
             } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
