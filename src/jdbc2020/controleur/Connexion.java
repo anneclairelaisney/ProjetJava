@@ -54,7 +54,11 @@ public class Connexion {
         Class.forName("com.mysql.jdbc.Driver");
 
         // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
+<<<<<<< HEAD
         String urlDatabase = "jdbc:mysql://localhost/" + nameDatabase;
+=======
+        String urlDatabase = "jdbc:mysql://localhost:8889/" + nameDatabase + "?useSSL=false";
+>>>>>>> master
        // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
 
         //création d'une connexion JDBC à la base 
