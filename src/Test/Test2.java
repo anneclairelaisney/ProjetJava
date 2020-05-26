@@ -18,11 +18,6 @@ public class Test2 {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Connexion conn = new Connexion("jdbc2020", "root", "root");
-        DAO<Utilisateur> utilisateurDao = new UtilisateurDAO(conn);
-        for (int i = 1; i < 7; i++) {
-            Utilisateur utilisateur = utilisateurDao.find(i);
-            System.out.println("Utilisateur N°" + utilisateur.getId() + "  - " + utilisateur.getNom() + " " + utilisateur.getPrenom() + " " + utilisateur.getEmail() + " " + utilisateur.getPasswd() + " " + utilisateur.getDroit());
-        }
 
         DAO<Etudiant> etudiantDao = new EtudiantDAO(conn);
         for (int i = 2; i < 6; i++) {

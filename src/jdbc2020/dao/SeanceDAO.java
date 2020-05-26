@@ -5,8 +5,11 @@
  */
 package jdbc2020.dao;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import jdbc2020.controleur.Connexion;
 import jdbc2020.modele.Seance;
 
@@ -55,6 +58,36 @@ public class SeanceDAO extends DAO<Seance> {
             e.printStackTrace();
         }
         return seance;
+    }
+    
+    public ArrayList<Seance> getAllSeances() throws Exception {
+        ArrayList<Seance> list = new ArrayList<Seance>();
+        Statement myStatement = null;
+        ResultSet rset = null;
+        try {
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance");
+            while (rset.next()) {
+                Seance tempSeance = convertRowToSeance(rset);
+                list.add(tempSeance);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            return list;
+        }
+    }
+
+    private Seance convertRowToSeance(ResultSet myResult) throws SQLException {
+        int id = myResult.getInt("ID");
+        int semaine = myResult.getInt("Semaine");
+        Date date = myResult.getDate("Date");
+        int heure_debut = myResult.getInt("Heure_debut");
+        int heure_fin = myResult.getInt("Heure_fin");
+        int etat = myResult.getInt("Etat");
+        int id_cours = myResult.getInt("Id_cours");
+        int id_type = myResult.getInt("Id_type");
+        Seance tempSeance = new Seance(id,semaine,date,heure_debut,heure_fin,etat,id_cours,id_type);
+        return tempSeance;
     }
 
     public void display(Seance seance) {
