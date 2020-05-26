@@ -13,6 +13,7 @@ import jdbc2020.modele.*;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 import jdbc2020.dao.DAO;
 import jdbc2020.dao.EnseignantDAO;
 
@@ -37,11 +38,15 @@ public class PanneauListeEnseignant extends JPanel {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
-    public void remplirListe() {
+    public void remplirListe() throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+        
+        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+        ArrayList<Enseignant> listeEnseignants = new ArrayList<>();
+        listeEnseignants = enseignantdao.getAllTeachers();
 
         for (int i = 1; i < 7; i++) {
             int j = 0;
@@ -83,11 +88,10 @@ public class PanneauListeEnseignant extends JPanel {
 
         int j = 0;
         int n = 1;
-        for (int k = 1; k < 15; k++) {
+        for (int k = 0; k < listeEnseignants.size(); k++) {
             for (int i = 1; i < 7; i++) {
                 String titre = "";
-                DAO<Enseignant> enseignantDAO = new EnseignantDAO(this.maconnexion);
-                Enseignant enseignant = enseignantDAO.find(k);
+                Enseignant enseignant = listeEnseignants.get(k);
                 if (enseignant.getId() != 0) {
                     switch (i) {
                         case 1:
