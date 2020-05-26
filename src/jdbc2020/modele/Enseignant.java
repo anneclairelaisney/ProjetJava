@@ -15,21 +15,53 @@ import java.util.ArrayList;
 public class Enseignant extends Utilisateur {
     
     // Attributs
+    private ArrayList<Cours> cours;
     private int idCours;
     
     // Constructeurs
     public Enseignant() {}
-    public Enseignant (int id, String email, String passwd, String nom, String prenom, int droit) {
-        super(id,email,passwd,nom,prenom,droit);
+    public Enseignant (int id, String email, String passwd, String nom, String prenom) {
+        this.id = id;
+        this.email = email;
+        this.passwd = passwd;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.droit = 3;
     }
-    public Enseignant (int id, ArrayList<Cours> cours, int id_cours) {
+    public Enseignant (int id, int idCours) {
         this.id = id;
         this.droit = 3;
-        this.idCours = id_cours;
+        this.idCours = idCours;
     }
     
     // Accesseurs
+    public int getId() {
+        return this.id;
+    }
+    
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public String getPasswd() {
+        return this.passwd;
+    }
+    
+    public String getNom() {
+        return this.nom;
+    }
+    
+    public String getPrenom() {
+        return this.prenom;
+    }
+    
+    public int getDroit() {
+        return this.droit;
+    }
     public int getIdCours() {
         return this.idCours;
+    }
+    public void ajouterCours(Cours cours) {
+        this.cours.add(cours);
     }
 }

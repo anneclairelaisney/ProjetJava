@@ -19,6 +19,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /* Interface graphique */
 public class PageConnexion extends JFrame implements ActionListener, ItemListener {
@@ -69,10 +71,10 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         motDePasse = new JLabel("Mot de Passe :", JLabel.CENTER);
 
         // mise en page des panneaux
-        Font font = new Font("Helvetica",Font.BOLD,36);
-        Font font1 = new Font("Helvetica",Font.BOLD,16);
+        Font font = new Font("Helvetica", Font.BOLD, 36);
+        Font font1 = new Font("Helvetica", Font.BOLD, 16);
         titreConnexion.setFont(font);
-        titreConnexion.setForeground(new Color(4,116,124));
+        titreConnexion.setForeground(new Color(4, 116, 124));
         nomUtilisateur.setFont(font1);
         motDePasse.setFont(font1);
         nomUtilisateur.setForeground(Color.white);
@@ -88,15 +90,15 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
 
         p1.add(nomUtilisateur);
         p1.add(nomUtilisateurTexte);
-        p1.setBackground(new Color(4,116,124));
+        p1.setBackground(new Color(4, 116, 124));
         p1.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
 
         p2.add(motDePasse);
         p2.add(motDePasseTexte);
-        p2.setBackground(new Color(4,116,124));
+        p2.setBackground(new Color(4, 116, 124));
         p2.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
-        
-        local.setPreferredSize(new Dimension(100, 33));  
+
+        local.setPreferredSize(new Dimension(100, 33));
         local.setLayout(new BoxLayout(local, BoxLayout.PAGE_AXIS));
         p3.add(local, BorderLayout.SOUTH);
 
@@ -112,7 +114,6 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         local.addActionListener(this);
 
         // couleurs des objets graphiques
-
         // disposition geographique des panneaux
         add("North", p0);
         add("Center", center);
@@ -132,34 +133,48 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
 
         // tester cas de la commande evenementielle
         if (source == local) {
-            ArrayList<String> liste;
             try {
-                try {
-                    // tentative de connexion si les 4 attributs sont remplis
-                    this.maconnexion = new Connexion("jdbc2020", "root", "root");
-                    System.out.println("Connexion dans BDD reussie");
+                // tentative de connexion si les 4 attributs sont remplis
+                this.maconnexion = new Connexion("jdbc2020", "root", "root");
+                System.out.println("Connexion dans BDD reussie");
 
-                    DAO<Utilisateur> utilisateurDao = new UtilisateurDAO(this.maconnexion);
-                    for (int i = 1; i < 5000; i++) {
-                        Utilisateur utilisateur = utilisateurDao.find(i);
-                        if (utilisateur.getId() != 0) {
-                            if (utilisateur.getEmail().equals(nomUtilisateurTexte.getText())) {
-                                if (utilisateur.getPasswd().equals(motDePasseTexte.getText())) {
-                                    System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + utilisateur.getPrenom() + " " + utilisateur.getNom() + " !");
-                                    this.dispose();
-                                    new Fenetre(utilisateur.getEmail(), utilisateur.getPasswd(), "jdbc2020");
-                                }
+                EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
+                ArrayList<Etudiant> listeEtudiants = new ArrayList<>();
+                listeEtudiants = etudiantdao.getAllStudents();
+
+                for (int i = 0; i < listeEtudiants.size(); i++) {
+                    Etudiant etudiant = listeEtudiants.get(i);
+                    if (etudiant.getId() != 0) {
+                        if (etudiant.getEmail().equals(nomUtilisateurTexte.getText())) {
+                            if (etudiant.getPasswd().equals(motDePasseTexte.getText())) {
+                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + etudiant.getPrenom() + " " + etudiant.getNom() + " !");
+                                this.dispose();
+                                new Fenetre(etudiant.getEmail(), etudiant.getPasswd(), "jdbc2020");
                             }
                         }
                     }
-
-                } catch (ClassNotFoundException cnfe) {
-                    System.out.println("Connexion echouee : probleme de classe");
-                    cnfe.printStackTrace();
                 }
-            } catch (SQLException exc) {
-                System.out.println("Connexion echouee : probleme SQL");
-                exc.printStackTrace();
+
+                EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+                ArrayList<Enseignant> listeEnseignants = new ArrayList<>();
+                listeEnseignants = enseignantdao.getAllTeachers();
+
+                for (int i = 0; i < listeEnseignants.size(); i++) {
+                    Enseignant enseignant = listeEnseignants.get(i);
+                    if (enseignant.getId() != 0) {
+                        if (enseignant.getEmail().equals(nomUtilisateurTexte.getText())) {
+                            if (enseignant.getPasswd().equals(motDePasseTexte.getText())) {
+                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + enseignant.getPrenom() + " " + enseignant.getNom() + " !");
+                                this.dispose();
+                                new Fenetre(enseignant.getEmail(), enseignant.getPasswd(), "jdbc2020");
+                            }
+                        }
+                    }
+                }
+            } catch (ClassNotFoundException cnfe) {
+                System.out.println("Connexion echouee : probleme de classe");
+            } catch (Exception ex) {
+                Logger.getLogger(PageConnexion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
