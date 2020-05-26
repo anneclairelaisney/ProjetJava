@@ -5,6 +5,7 @@
         <group>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <file>file:/C:/wamp64/www/ProjetJava/src/jdbc2020/controleur/Controleur.java</file>
             <file>file:/C:/wamp64/www/ProjetJava/src/jdbc2020/controleur/Generateur.java</file>
             <file>file:/C:/wamp64/www/ProjetJava/src/jdbc2020/vue/Fenetre.java</file>
@@ -16,6 +17,8 @@
             <file>file:/Applications/MAMP/htdocs/ProjetJava/src/jdbc2020/vue/Fenetre.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/src/jdbc2020/vue/SeanceLabel.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/src/Test/Test3.java</file>
+=======
+>>>>>>> master
             <file>file:/Applications/MAMP/htdocs/ProjetJava/src/jdbc2020/controleur/Controleur.java</file>
 >>>>>>> master
         </group>
