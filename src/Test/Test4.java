@@ -5,12 +5,11 @@
  */
 package Test;
 
-import java.awt.Insets;
+import java.sql.Date;
 import java.sql.SQLException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import jdbc2020.controleur.Connexion;
+import jdbc2020.dao.SeanceDAO;
+import jdbc2020.modele.Seance;
 import jdbc2020.vue.MaFenetre;
 
 /**
@@ -20,6 +19,9 @@ import jdbc2020.vue.MaFenetre;
 public class Test4 {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        MaFenetre frame = new MaFenetre();
+        Connexion maconnexion = new Connexion("jdbc2020", "root", "root");
+        Seance seance = new Seance(4, 23, new Date((2020-1900),4,27), 10, 11, 1,1,1);
+        SeanceDAO seancedao = new SeanceDAO(maconnexion);
+        seancedao.create(seance);
     }
 }

@@ -27,8 +27,12 @@ public class Etudiant extends Utilisateur {
         this.prenom = prenom;
         this.droit = 4;
     }
-    public Etudiant (int id, int numero, int id_groupe) {
+    public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero, int id_groupe) {
         this.id = id;
+        this.email = email;
+        this.passwd = passwd;
+        this.nom = nom;
+        this.prenom = prenom;
         this.droit = 4;
         this.numero = numero;
         this.idGroupe = id_groupe;
@@ -59,10 +63,6 @@ public class Etudiant extends Utilisateur {
         return this.droit;
     }
     public int getNumero() {
-        return this.numero;
-    }
-    
-    public int getGroupe() {
         return this.numero;
     }
     

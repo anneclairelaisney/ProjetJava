@@ -125,7 +125,7 @@ public class PanneauListeEtudiant extends JPanel {
                             j = 5;
                             break;
                         case 7:
-                            titre = " " + etudiant.getGroupe();
+                            titre = " " + etudiant.getIdGroupe();
                             j = 6;
                             break;
                     }
