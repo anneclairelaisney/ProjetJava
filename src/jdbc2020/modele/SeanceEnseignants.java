@@ -14,27 +14,23 @@ import javax.swing.JOptionPane;
  *
  * @author apple
  */
-public class SeanceEnseignants extends Seance {
-    
-    // Attributs
-    private ArrayList<Enseignant> enseignants;
+public class SeanceEnseignants {
+    //Attributs
+    private int seance;
+    private int enseignant;
     
     // Constructeurs
     public SeanceEnseignants() {}
-    public SeanceEnseignants(int id, int semaine, Date date, int heureDebut, int heureFin, int etat, int id_cours, int id_type, ArrayList<Enseignant> enseignants) {
-        super(id, semaine, date, heureDebut, heureFin, etat, id_cours, id_type);
-        this.enseignants = enseignants;
-    }
-    
-    // Accesseurs 
-    public ArrayList<Enseignant> getEnseignants() {
-        return this.enseignants;
+    public SeanceEnseignants(int id_seance, int id_enseignant) {
+        this.seance = id_seance;
+        this.enseignant = id_enseignant;
     }
     
     // Methodes
-    public void ajoutEnseignant(Enseignant enseignant) {
-        this.enseignants.add(enseignant);
-        JOptionPane.showMessageDialog(null, "L'enseignant " + enseignant.getNom() + " a été ajouté."); 
-        System.out.println("Nom du groupe : " + enseignant.getNom());
+    public int getSeance() {
+        return this.seance;
     }
+    public int getEnseignant() {
+        return this.enseignant;
+    }   
 }

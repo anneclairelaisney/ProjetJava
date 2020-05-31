@@ -34,7 +34,6 @@ public class PanneauListeEtudiant extends JPanel {
 
     // Constructeur
     public PanneauListeEtudiant() throws SQLException, ClassNotFoundException {
-        this.add(new JScrollPane());
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));

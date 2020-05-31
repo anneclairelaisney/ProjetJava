@@ -68,7 +68,8 @@ public class SeanceLabel extends JButton {
             }
             this.p0.add(cours);
 
-            rset = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = (SELECT id_groupe FROM Seance_Groupes WHERE id_seance=" + a.getId() + ")");
+            
+            rset = this.maconnexion.getStatement().executeQuery("SELECT id_groupe FROM SeanceGroupes WHERE id = (SELECT id_groupe FROM Seance_Groupes WHERE id_seance=" + a.getId() + ")");
             if (rset.first()) {
                 groupe = new JLabel(rset.getString("nom"));
                 groupe.setHorizontalAlignment(SwingConstants.CENTER);

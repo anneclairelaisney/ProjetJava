@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import jdbc2020.dao.*;
 import jdbc2020.modele.*;
@@ -91,29 +92,6 @@ public class Generateur {
                 Object source = e.getSource();
                 if (source == fenetre.getValiderSeance()) {
 
-                    String selectedData = null;
-
-                    int[] selectedRow = fenetre.getEnseignantsSeance().getSelectedRows();
-                    for (int i = 0; i < selectedRow.length; i++) {
-                        for (int j = 0; j <= 1; j++) {
-                            EnseignantDAO enseignantdao = new EnseignantDAO(conn);
-                            Enseignant tempEns = enseignants.get(fenetre.getEnseignantsSeance().getSelectedRow());
-                            Enseignant enseignant = enseignantdao.find(tempEns.getId());
-                            System.out.println("Selected: ");
-                            enseignantdao.display(enseignant);
-                        }
-                    }
-
-                    /*
-
-                    GroupeDAO groupedao = new GroupeDAO(conn);
-                    Groupe tempG = groupes.get(fenetre.getGroupesSeance().getSelectedIndex());
-                    Groupe groupe = groupedao.find(tempG.getId());
-
-                    SalleDAO salledao = new SalleDAO(conn);
-                    Salle tempS = salles.get(fenetre.getSallesSeance().getSelectedIndex());
-                    Salle salle = salledao.find(tempS.getId());
-
                     CoursDAO coursdao = new CoursDAO(conn);
                     Cours tempCours = cours.get(fenetre.getCoursSeance().getSelectedIndex());
                     Cours cours = coursdao.find(tempCours.getId());
@@ -132,11 +110,56 @@ public class Generateur {
                     Seance seance = new Seance(seances.size() + 1, 23, sqlDate, a, b, etat, cours.getId(), type_cours.getId());
                     seancedao.display(seance);
                     seancedao.create(seance);
-                    seancedao.createEnseignants(seance, enseignant);
-                    seancedao.createGroupes(seance, groupe);
-                    seancedao.createSalles(seance, salle);
-                    
-                    fenetre.ajoutSeance().dispose();*/
+
+                    for (int i = 0; i < fenetre.getEnseignantsSeance().size(); i++) {
+                        JCheckBox jcb = fenetre.getEnseignantsSeance().get(i);
+                        boolean state = jcb.isSelected();
+                        if (state) {
+                            System.out.println(jcb.getText() + " est coché");
+                            EnseignantDAO enseignantdao = new EnseignantDAO(conn);
+                            Enseignant tempE = enseignants.get(i);
+                            Enseignant enseignant = enseignantdao.find(tempE.getId());
+                            seancedao.createEnseignants(seance, enseignant);
+                        } else {
+                            System.out.println(jcb.getText() + " n'est pas coché");
+                        }
+
+                    }
+
+                    for (int i = 0; i < fenetre.getGroupesSeance().size(); i++) {
+                        JCheckBox jcb = fenetre.getGroupesSeance().get(i);
+                        boolean state = jcb.isSelected();
+                        if (state) {
+                            System.out.println(jcb.getText() + " est coché");
+                            GroupeDAO groupedao = new GroupeDAO(conn);
+                            Groupe tempG = groupes.get(i);
+                            Groupe groupe = groupedao.find(tempG.getId());
+                            seancedao.createGroupes(seance, groupe);
+                        } else {
+                            System.out.println(jcb.getText() + " n'est pas coché");
+                        }
+
+                    }
+
+                    for (int i = 0; i < fenetre.getSallesSeance().size(); i++) {
+                        JCheckBox jcb = fenetre.getSallesSeance().get(i);
+                        boolean state = jcb.isSelected();
+                        if (state) {
+                            System.out.println(jcb.getText() + " est coché");
+                            SalleDAO salledao = new SalleDAO(conn);
+                            Salle tempS = salles.get(i);
+                            Salle salle = salledao.find(tempS.getId());
+                            seancedao.createSalles(seance, salle);
+                        } else {
+                            System.out.println(jcb.getText() + " n'est pas coché");
+                        }
+                    }
+
+                    try {
+                        fenetre.ajoutSeance().dispose();
+                    } catch (Exception ex) {
+                        Logger.getLogger(Generateur.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     try {
                         new Fenetre(login, mdp, "jdbc2020");
                     } catch (SQLException | ClassNotFoundException ex) {
@@ -145,6 +168,7 @@ public class Generateur {
                 }
             }
 
-        });
+        }
+        );
     }
 }

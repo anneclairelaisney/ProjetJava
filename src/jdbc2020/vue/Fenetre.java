@@ -78,6 +78,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private PanneauListePromotion panelPromotion;
     private PanneauListeGroupe panelGroupe;
     private PanneauListeEtudiant panelEtudiant;
+    private JScrollPane scrollPane = new JScrollPane(panelEtudiant);
     private PanneauListeSalle panelSalle;
     private PanneauListeEnseignant panelEnseignant;
 
@@ -88,7 +89,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JTextField etatTexte;
     private JFormattedTextField heureDebutTexte, heureFinTexte;
     private JComboBox<String> cmbCoursSeance, cmbTypeCoursSeance;
-    private JTable groupeE, groupeG, groupeS;
+    private ArrayList<JCheckBox> groupeE, groupeG, groupeS;
     private JButton validerSeance;
     private JDateTextField dateChoix;
 
@@ -242,7 +243,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     }
 
     private PanneauListeEtudiant panelEtudiant() throws SQLException, ClassNotFoundException, Exception {
+        scrollPane.setPreferredSize(new Dimension(300, 400));
+        scrollPane.setAutoscrolls(true);
+        scrollPane.setVisible(true);
         this.panelEtudiant.remplirListe();
+        this.panelEtudiant.add(scrollPane);
         return this.panelEtudiant;
     }
 
@@ -294,17 +299,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         groupes = new ArrayList<>();
         groupes = groupeDao.getAllGroupes();
 
-        groupeG = new JTable();
-        groupeG.setRowSelectionAllowed(true);
-        groupeG.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        groupeG = new ArrayList<JCheckBox>();
         JPanel panelG = new JPanel();
-        groupeE = new JTable();
-        groupeE.setRowSelectionAllowed(true);
-        groupeE.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        groupeE = new ArrayList<JCheckBox>();
         JPanel panelE = new JPanel();
-        groupeS = new JTable();
-        groupeS.setRowSelectionAllowed(true);
-        groupeS.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        groupeS = new ArrayList<JCheckBox>();
         JPanel panelS = new JPanel();
 
         for (Groupe g : groupes) {
@@ -315,14 +314,16 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         panelG.setLayout(new GridLayout(groupes.size() / 4, 4));
 
         for (Enseignant e : enseignants) {
-            this.groupeE.add(new JCheckBox(e.getNom()));
-            panelE.add(new JCheckBox(e.getNom()));
+            JCheckBox a = new JCheckBox(e.getNom());
+            this.groupeE.add(a);
+            panelE.add(a);
         }
         panelE.setLayout(new GridBagLayout());
 
         for (Salle s : salles) {
-            this.groupeS.add(new JCheckBox(s.getNom()));
-            panelS.add(new JCheckBox(s.getNom()));
+            JCheckBox a = new JCheckBox(s.getNom());
+            this.groupeS.add(a);
+            panelS.add(a);
         }
         panelS.setLayout(new GridBagLayout());
 
@@ -383,15 +384,15 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return this.validerSeance;
     }
 
-    public JTable getEnseignantsSeance() {
+    public ArrayList<JCheckBox> getEnseignantsSeance() {
         return this.groupeE;
     }
 
-    public JTable getGroupesSeance() {
+    public ArrayList<JCheckBox> getGroupesSeance() {
         return this.groupeG;
     }
 
-    public JTable getSallesSeance() {
+    public ArrayList<JCheckBox> getSallesSeance() {
         return this.groupeS;
     }
 
