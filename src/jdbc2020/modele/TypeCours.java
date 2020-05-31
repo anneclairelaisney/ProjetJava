@@ -16,6 +16,7 @@ public class TypeCours {
     private String nom;
     
     // Constructeurs
+    public TypeCours() {}
     public TypeCours(int id, String nom) {
         this.id = id;
         this.nom = nom;

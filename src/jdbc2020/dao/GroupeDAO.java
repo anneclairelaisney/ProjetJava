@@ -10,6 +10,7 @@ import jdbc2020.modele.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 
@@ -25,7 +26,7 @@ public class GroupeDAO extends DAO<Groupe> {
 
     public boolean create(Groupe groupe) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Groupe(ID,NOM,ID_PROMOTION) VALUES (" + groupe.getId() + ",'" + groupe.getNom() + "',(SELECT id FROM Promotion WHERE id =" + groupe.getIdPromotion() + "));");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Groupe(ID,NOM,ID_PROMOTION) VALUES (" + groupe.getId() + ",'" + groupe.getNom() + "',(SELECT id FROM Promotion WHERE id =" + groupe.getIdPromotion() + ")));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,23 +67,57 @@ public class GroupeDAO extends DAO<Groupe> {
         }
         return groupe;
     }
+    
+    public ArrayList<Groupe> getAllGroupes() throws Exception {
+        ArrayList<Groupe> list = new ArrayList<Groupe>();
+        Statement myStatement = null;
+        ResultSet rset = null;
+        try {
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Groupe");
+            while (rset.next()) {
+                Groupe tempGroupe = convertRowToGroupe(rset);
+                list.add(tempGroupe);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            close(myStatement, rset);
+            return list;
+        }
+    }
+
+    private Groupe convertRowToGroupe(ResultSet myResult) throws SQLException {
+        int id = myResult.getInt("ID");
+        String nom = myResult.getString("Nom");
+        int id_promotion = myResult.getInt("ID_Promotion");
+        Groupe tempGroupe = new Groupe(id,nom,id_promotion);
+        return tempGroupe;
+    }
+
+    private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
+        if (myResult != null) {
+            myResult.close();
+        }
+        if (myStatement != null) {
+        }
+        if (myConnection != null) {
+        }
+    }
+
+    private void close(Statement myStmt, ResultSet myRs) throws SQLException {
+        close(null, myStmt, myRs);
+    }
 
     public void display(Groupe groupe) {
         try {
             if (groupe.getId() != 0) {
-                ResultSet rset = this.connect.getStatement().executeQuery("SELECT nom FROM Promotion WHERE id = " + groupe.getIdPromotion());
+                ResultSet rset = this.connect.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = " + groupe.getIdPromotion());
                 if (rset.first()) {
                     System.out.println("Nom : " + groupe.getNom() + " - Promotion : " + rset.getString("nom"));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void chargerComboBoxGroupe(ArrayList<Groupe> lesClasses, JComboBox<String> cmbClasseGroupe) {
-        for (Groupe c : lesClasses) {
-            cmbClasseGroupe.addItem(c.getNom());
         }
     }
 }

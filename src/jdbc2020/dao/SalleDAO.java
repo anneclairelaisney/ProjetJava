@@ -10,6 +10,8 @@ import jdbc2020.modele.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,7 +25,7 @@ public class SalleDAO extends DAO<Salle> {
 
     public boolean create(Salle salle) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Salle(ID,NOM,CAPACITE,ID_SITE) VALUES (" + salle.getId() + ",'" + salle.getNom() + "," + salle.getCapacite() + ",(SELECT id FROM Site WHERE id =" + salle.getIdSite() + "));");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Salle(ID,NOM,CAPACITE,ID_SITE) VALUES (" + salle.getId() + ",'" + salle.getNom() + "," + salle.getCapacite() + ",(SELECT id FROM Site WHERE id =" + salle.getIdSite() + ")));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,6 +65,47 @@ public class SalleDAO extends DAO<Salle> {
             e.printStackTrace();
         }
         return salle;
+    }
+    
+    public ArrayList<Salle> getAllSalles() throws Exception {
+        ArrayList<Salle> list = new ArrayList<Salle>();
+        Statement myStatement = null;
+        ResultSet rset = null;
+        try {
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Salle");
+            while (rset.next()) {
+                Salle tempSalle = convertRowToSalle(rset);
+                list.add(tempSalle);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            close(myStatement, rset);
+            return list;
+        }
+    }
+
+    private Salle convertRowToSalle(ResultSet myResult) throws SQLException {
+        int id = myResult.getInt("ID");
+        String nom = myResult.getString("Nom");
+        int capacite = myResult.getInt("Capacite");
+        int id_site = myResult.getInt("ID_Site");
+        Salle tempSalle = new Salle(id,nom,capacite,id_site);
+        return tempSalle;
+    }
+
+    private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
+        if (myResult != null) {
+            myResult.close();
+        }
+        if (myStatement != null) {
+        }
+        if (myConnection != null) {
+        }
+    }
+
+    private void close(Statement myStmt, ResultSet myRs) throws SQLException {
+        close(null, myStmt, myRs);
     }
     
     public void display(Salle salle) {

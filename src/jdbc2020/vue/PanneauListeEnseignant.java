@@ -13,8 +13,9 @@ import jdbc2020.modele.*;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 import jdbc2020.dao.DAO;
-import jdbc2020.dao.UtilisateurDAO;
+import jdbc2020.dao.EnseignantDAO;
 
 /**
  *
@@ -23,25 +24,29 @@ import jdbc2020.dao.UtilisateurDAO;
  *
  * @author segado
  */
-public class PanneauListeUtilisateur extends JPanel {
+public class PanneauListeEnseignant extends JPanel {
 
     //Attributs
     /* CONNEXION */
     private Connexion maconnexion;
 
     // Constructeur
-    public PanneauListeUtilisateur() throws SQLException, ClassNotFoundException {
+    public PanneauListeEnseignant() throws SQLException, ClassNotFoundException {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
-    public void remplirListe() {
+    public void remplirListe() throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+        
+        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+        ArrayList<Enseignant> listeEnseignants = new ArrayList<>();
+        listeEnseignants = enseignantdao.getAllTeachers();
 
         for (int i = 1; i < 7; i++) {
             int j = 0;
@@ -67,7 +72,7 @@ public class PanneauListeUtilisateur extends JPanel {
                     j = 4;
                     break;
                 case 6:
-                    titre = "Type Utilisateur";
+                    titre = "Cours";
                     j = 5;
                     break;
             }
@@ -83,48 +88,34 @@ public class PanneauListeUtilisateur extends JPanel {
 
         int j = 0;
         int n = 1;
-        for (int k = 1; k < 15; k++) {
+        for (int k = 0; k < listeEnseignants.size(); k++) {
             for (int i = 1; i < 7; i++) {
                 String titre = "";
-                DAO<Utilisateur> utilisateurDAO = new UtilisateurDAO(this.maconnexion);
-                Utilisateur utilisateur = utilisateurDAO.find(k);
-                if (utilisateur.getId() != 0) {
+                Enseignant enseignant = listeEnseignants.get(k);
+                if (enseignant.getId() != 0) {
                     switch (i) {
                         case 1:
-                            titre = " " + utilisateur.getId();
+                            titre = " " + enseignant.getId();
                             j = 0;
                             break;
                         case 2:
-                            titre = " " + utilisateur.getEmail();
+                            titre = " " + enseignant.getEmail();
                             j = 1;
                             break;
                         case 3:
-                            titre = " " + utilisateur.getPasswd();
+                            titre = " " + enseignant.getPasswd();
                             j = 2;
                             break;
                         case 4:
-                            titre = " " + utilisateur.getNom();
+                            titre = " " + enseignant.getNom();
                             j = 3;
                             break;
                         case 5:
-                            titre = " " + utilisateur.getPrenom();
+                            titre = " " + enseignant.getPrenom();
                             j = 4;
                             break;
                         case 6:
-                            switch (utilisateur.getDroit()) {
-                                case 1:
-                                    titre = "Administrateur";
-                                    break;
-                                case 2:
-                                    titre = "Référent";
-                                    break;
-                                case 3:
-                                    titre = "Enseignant";
-                                    break;
-                                case 4:
-                                    titre = "Etudiant";
-                                    break;
-                            }
+                            titre = " " + enseignant.getIdCours();
                             j = 5;
                             break;
                     }
@@ -141,13 +132,8 @@ public class PanneauListeUtilisateur extends JPanel {
             n += 1;
         }
     }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 5; i++) {
-            for (int j = 1; j <= 14; j++) {
-                g.setColor(Color.WHITE);
-                g.drawRect(160 * i, 50 * j, 160, 50);
-            }
-        }
     }
 }

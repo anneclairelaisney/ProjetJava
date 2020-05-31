@@ -10,6 +10,8 @@ import jdbc2020.modele.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,7 +25,7 @@ public class EnseignantDAO extends DAO<Enseignant> {
 
     public boolean create(Enseignant enseignant) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Enseignant(ID_UTILISATEUR,ID_COURS) VALUES ((SELECT id FROM Utilisateur WHERE id =" + enseignant.getId() + ")," + enseignant.getIdCours() + ");");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Enseignant(ID_UTILISATEUR,ID_COURS) VALUES ((SELECT id FROM Utilisateur WHERE id =" + enseignant.getId() + ")," + enseignant.getIdCours() + "));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,17 +49,74 @@ public class EnseignantDAO extends DAO<Enseignant> {
     }
 
     public Enseignant find(int id) {
-        Enseignant enseignant = new Enseignant();
+        Enseignant enseignant = null;
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE droit = 3 AND id = " + id);
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
             if (rset.first()) {
-                enseignant = new Enseignant(id, rset.getString("email"), rset.getString("passwd"), rset.getString("nom"), rset.getString("prenom"), 3);
+                String nom = rset.getString("Nom");
+                String prenom = rset.getString("Prenom");
+                String email = rset.getString("Email");
+                String passwd = rset.getString("Passwd");
+
+                ResultSet rset2 = null;
+                rset2 = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant where id_utilisateur=" + id);
+                if (rset2.first()) {
+                    enseignant = new Enseignant(id, nom, prenom, email, passwd, rset2.getInt("id_cours"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return enseignant;
+    }
+
+    public ArrayList<Enseignant> getAllTeachers() throws Exception {
+        ArrayList<Enseignant> listTemp = new ArrayList<>();
+        ArrayList<Enseignant> list = new ArrayList<>();
+        Statement myStatement = null;
+        ResultSet rset = null;
+        try {
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur where droit=3");
+            while (rset.next()) {
+                int id = rset.getInt("id");
+                String nom = rset.getString("Nom");
+                String prenom = rset.getString("Prenom");
+                String email = rset.getString("Email");
+                String passwd = rset.getString("Passwd");
+                Enseignant tempTeacher = new Enseignant(id, email, passwd, nom, prenom);
+                listTemp.add(tempTeacher);
+            }
+
+            for (Enseignant e : listTemp) {
+                ResultSet rset2 = null;
+                rset2 = this.connect.getStatement().executeQuery("SELECT id_cours FROM Enseignant where id_utilisateur=" + e.getId());
+                if (rset2.first()) {
+                    Enseignant tempTeacher = new Enseignant(e.getId(), e.getEmail(), e.getPasswd(), e.getNom(), e.getPrenom(), rset2.getInt("ID_COURS"));
+                    list.add(tempTeacher);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            close(myStatement, rset);
+            return list;
+        }
+    }
+
+    private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
+        if (myResult != null) {
+            myResult.close();
+        }
+        if (myStatement != null) {
+        }
+        if (myConnection != null) {
+        }
+    }
+
+    private void close(Statement myStmt, ResultSet myRs) throws SQLException {
+        close(null, myStmt, myRs);
     }
 
     public void display(Enseignant enseignant) {
