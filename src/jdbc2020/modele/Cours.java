@@ -16,6 +16,7 @@ public class Cours {
     private String nom;
     
     // Constructeurs
+    public Cours () {}
     public Cours (int id, String nom) {
         this.id = id;
         this.nom = nom;

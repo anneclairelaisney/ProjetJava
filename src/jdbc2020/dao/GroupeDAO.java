@@ -26,7 +26,7 @@ public class GroupeDAO extends DAO<Groupe> {
 
     public boolean create(Groupe groupe) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Groupe(ID,NOM,ID_PROMOTION) VALUES (" + groupe.getId() + ",'" + groupe.getNom() + "',(SELECT id FROM Promotion WHERE id =" + groupe.getIdPromotion() + "));");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Groupe(ID,NOM,ID_PROMOTION) VALUES (" + groupe.getId() + ",'" + groupe.getNom() + "',(SELECT id FROM Promotion WHERE id =" + groupe.getIdPromotion() + ")));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

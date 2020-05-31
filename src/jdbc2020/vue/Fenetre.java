@@ -13,8 +13,19 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jdbc2020.dao.EnseignantDAO;
+import jdbc2020.dao.EtudiantDAO;
+import jdbc2020.dao.GroupeDAO;
+import jdbc2020.dao.PromotionDAO;
+import jdbc2020.dao.SalleDAO;
+import jdbc2020.modele.Enseignant;
+import jdbc2020.modele.Etudiant;
+import jdbc2020.modele.Groupe;
+import jdbc2020.modele.Salle;
 
 /**
  *
@@ -69,7 +80,18 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private PanneauListeEtudiant panelEtudiant;
     private PanneauListeSalle panelSalle;
     private PanneauListeEnseignant panelEnseignant;
-    
+
+    /* Ajout */
+    private JFrame ajoutSeance;
+    private JPanel panelMajSeance, panelMajSeance2;
+    private JLabel dateSeance, heureDebutSeance, heureFinSeance, etatSeance, groupesSeance, enseignantsSeance, sallesSeance, coursSeance, typeCoursSeance;
+    private JTextField etatTexte;
+    private JFormattedTextField heureDebutTexte, heureFinTexte;
+    private JComboBox<String> cmbCoursSeance, cmbTypeCoursSeance;
+    private JTable groupeE, groupeG, groupeS;
+    private JButton validerSeance;
+    private JDateTextField dateChoix;
+
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
 
@@ -103,11 +125,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEtudiant = new PanneauListeEtudiant();
         this.panelEtudiant.setVisible(false);
         this.add(this.panelEtudiant, BorderLayout.CENTER);
-        
+
         this.panelSalle = new PanneauListeSalle();
         this.panelSalle.setVisible(false);
         this.add(this.panelSalle, BorderLayout.CENTER);
-        
+
         this.panelEnseignant = new PanneauListeEnseignant();
         this.panelEnseignant.setVisible(false);
         this.add(this.panelEnseignant, BorderLayout.CENTER);
@@ -121,7 +143,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeEtudiants.addActionListener(this);
         listeSalles.addActionListener(this);
         listeEnseignants.addActionListener(this);
-        
+
         recherche.addActionListener(this);
 
         // pour fermer la fenetre
@@ -223,7 +245,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEtudiant.remplirListe();
         return this.panelEtudiant;
     }
-    
+
     private PanneauListeSalle panelSalle() throws SQLException, ClassNotFoundException, Exception {
         this.panelSalle.remplirListe();
         return this.panelSalle;
@@ -243,6 +265,160 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEnseignant.setVisible(false);
     }
 
+    /* Ajouter une séance de cours en lui affectant, si possible, toutes les informations nécessaires : la date (sauf samedi et
+dimanche), l’heure de début et de fin (en respect des créneaux horaires d’ouverture de l’école), le(s) groupe(s) et le(s) enseignant(s) 
+    disponible(s) à ce créneau horaire, la (les) salle(s) disponible(s) dont la capacité est suffisante, l’état (« en cours de validation » ou 
+    « validé »), le cours et le type de cours. 
+    Remarque : pour la même séance, il ne peut pas y avoir de doublon de groupe, d’enseignant et de salle.*/
+    public JFrame ajoutSeance() throws Exception {
+        ajoutSeance = new JFrame();
+        ajoutSeance.setSize(400, 300);
+        ajoutSeance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ajoutSeance.setTitle("Ajout d'une séance");
+        ajoutSeance.setLayout(new BorderLayout());
+        ajoutSeance.setLocationRelativeTo(null);
+        ajoutSeance.setResizable(true);
+        ajoutSeance.setVisible(true);
+
+        panelMajSeance = new JPanel();
+        panelMajSeance.setLayout(new GridLayout(9, 2));
+
+        ArrayList<Salle> salles = new ArrayList<>();
+        ArrayList<Enseignant> enseignants = new ArrayList<>();
+        ArrayList<Groupe> groupes = new ArrayList<>();
+        SalleDAO salledao = new SalleDAO(this.maconnexion);
+        salles = salledao.getAllSalles();
+        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+        enseignants = enseignantdao.getAllTeachers();
+        GroupeDAO groupeDao = new GroupeDAO(this.maconnexion);
+        groupes = new ArrayList<>();
+        groupes = groupeDao.getAllGroupes();
+
+        groupeG = new JTable();
+        groupeG.setRowSelectionAllowed(true);
+        groupeG.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JPanel panelG = new JPanel();
+        groupeE = new JTable();
+        groupeE.setRowSelectionAllowed(true);
+        groupeE.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JPanel panelE = new JPanel();
+        groupeS = new JTable();
+        groupeS.setRowSelectionAllowed(true);
+        groupeS.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JPanel panelS = new JPanel();
+
+        for (Groupe g : groupes) {
+            JCheckBox a = new JCheckBox(g.getNom());
+            this.groupeG.add(a);
+            panelG.add(a);
+        }
+        panelG.setLayout(new GridLayout(groupes.size() / 4, 4));
+
+        for (Enseignant e : enseignants) {
+            this.groupeE.add(new JCheckBox(e.getNom()));
+            panelE.add(new JCheckBox(e.getNom()));
+        }
+        panelE.setLayout(new GridBagLayout());
+
+        for (Salle s : salles) {
+            this.groupeS.add(new JCheckBox(s.getNom()));
+            panelS.add(new JCheckBox(s.getNom()));
+        }
+        panelS.setLayout(new GridBagLayout());
+
+        dateSeance = new JLabel("Date : ", JLabel.CENTER);
+        dateChoix = new JDateTextField();
+        heureDebutSeance = new JLabel("Heure de début (int): ", JLabel.CENTER);
+        heureDebutTexte = new JFormattedTextField(NumberFormat.getIntegerInstance());
+        heureFinSeance = new JLabel("Heure de fin (int): ", JLabel.CENTER);
+        heureFinTexte = new JFormattedTextField(NumberFormat.getIntegerInstance());
+        groupesSeance = new JLabel("Groupes : ", JLabel.CENTER);
+        enseignantsSeance = new JLabel("Enseignants : ", JLabel.CENTER);
+        sallesSeance = new JLabel("Salles :", JLabel.CENTER);
+        etatSeance = new JLabel("Etat : ", JLabel.CENTER);
+        etatTexte = new JTextField(2);
+        coursSeance = new JLabel("Cours : ", JLabel.CENTER);
+        cmbCoursSeance = new JComboBox<String>();
+        typeCoursSeance = new JLabel("Type de cours : ", JLabel.CENTER);
+        cmbTypeCoursSeance = new JComboBox<String>();
+
+        panelMajSeance.add(dateSeance);
+        panelMajSeance.add(dateChoix);
+        panelMajSeance.add(heureDebutSeance);
+        panelMajSeance.add(heureDebutTexte);
+        panelMajSeance.add(heureFinSeance);
+        panelMajSeance.add(heureFinTexte);
+        panelMajSeance.add(groupesSeance);
+        panelMajSeance.add(panelG);
+        panelMajSeance.add(enseignantsSeance);
+        panelMajSeance.add(panelE);
+        panelMajSeance.add(sallesSeance);
+        panelMajSeance.add(panelS);
+        panelMajSeance.add(etatSeance);
+        panelMajSeance.add(etatTexte);
+        panelMajSeance.add(coursSeance);
+        panelMajSeance.add(cmbCoursSeance);
+        panelMajSeance.add(typeCoursSeance);
+        panelMajSeance.add(cmbTypeCoursSeance);
+
+        panelMajSeance2 = new JPanel();
+
+        panelMajSeance2.setLayout(
+                new FlowLayout());
+        validerSeance = new JButton("✓");
+
+        validerSeance.setPreferredSize(
+                new Dimension(50, 50));
+
+        panelMajSeance2.add(validerSeance);
+
+        ajoutSeance.add(panelMajSeance, BorderLayout.CENTER);
+
+        ajoutSeance.add(panelMajSeance2, BorderLayout.SOUTH);
+
+        return ajoutSeance;
+    }
+
+    public JButton getValiderSeance() {
+        return this.validerSeance;
+    }
+
+    public JTable getEnseignantsSeance() {
+        return this.groupeE;
+    }
+
+    public JTable getGroupesSeance() {
+        return this.groupeG;
+    }
+
+    public JTable getSallesSeance() {
+        return this.groupeS;
+    }
+
+    public JComboBox<String> getCoursSeance() {
+        return this.cmbCoursSeance;
+    }
+
+    public JComboBox<String> getTypeCoursSeance() {
+        return this.cmbTypeCoursSeance;
+    }
+
+    public JDateTextField getDateChoix() {
+        return this.dateChoix;
+    }
+
+    public JTextField getHeureDebutTexte() {
+        return this.heureDebutTexte;
+    }
+
+    public JTextField getHeureFinTexte() {
+        return this.heureFinTexte;
+    }
+
+    public JTextField getEtatTexte() {
+        return this.etatTexte;
+    }
+
     @Override
     @SuppressWarnings("CallToThreadDumpStack")
     public void actionPerformed(ActionEvent evt) {
@@ -253,8 +429,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.pan = this.pan();
                 this.add(this.pan);
                 System.out.println("Panneau EDT Etudiant");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == listePromotions) {
             try {
@@ -263,10 +441,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.panelPromotion = this.panelPromotion();
                 this.add(this.panelPromotion);
                 System.out.println("Panneau Liste Promotions");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == listeGroupes) {
             try {
@@ -275,10 +457,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.panelGroupe = this.panelGroupe();
                 this.add(this.panelGroupe);
                 System.out.println("Panneau Liste Groupes");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == listeEtudiants) {
             try {
@@ -287,36 +473,46 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 this.panelEtudiant = this.panelEtudiant();
                 this.add(this.panelEtudiant);
                 System.out.println("Panneau Liste Etudiants");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        else if (source == listeSalles) {
+        } else if (source == listeSalles) {
             try {
                 setInvisible();
 
                 this.panelSalle = this.panelSalle();
                 this.add(this.panelSalle);
                 System.out.println("Panneau Liste Salles");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        else if (source == listeEnseignants) {
+        } else if (source == listeEnseignants) {
             try {
                 setInvisible();
 
                 this.panelEnseignant = this.panelEnseignant();
                 this.add(this.panelEnseignant);
                 System.out.println("Panneau Liste Enseignants");
+
             } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Fenetre.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

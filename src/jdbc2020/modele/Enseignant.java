@@ -28,8 +28,12 @@ public class Enseignant extends Utilisateur {
         this.prenom = prenom;
         this.droit = 3;
     }
-    public Enseignant (int id, int idCours) {
+    public Enseignant (int id, String email, String passwd, String nom, String prenom, int idCours) {
         this.id = id;
+        this.email = email;
+        this.passwd = passwd;
+        this.nom = nom;
+        this.prenom = prenom;
         this.droit = 3;
         this.idCours = idCours;
     }

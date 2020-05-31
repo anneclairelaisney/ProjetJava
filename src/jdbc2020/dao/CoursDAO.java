@@ -17,65 +17,65 @@ import java.util.ArrayList;
  *
  * @author apple
  */
-public class PromotionDAO extends DAO<Promotion> {
+public class CoursDAO extends DAO<Cours> {
 
-    public PromotionDAO(Connexion conn) {
+    public CoursDAO(Connexion conn) {
         super(conn);
     }
 
-    public boolean create(Promotion promotion) {
+    public boolean create(Cours cours) {
         try {
-            this.connect.executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Promotion(id,nom) VALUES(" + promotion.getId() + "," + promotion.getNom() + "));");
+            this.connect.getStatement().executeUpdate("INSERT INTO Cours(ID,NOM) VALUES (" + cours.getId() + ",'" + cours.getNom() + ")");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public boolean delete(Promotion promotion) {
+    public boolean delete(Cours cours) {
         try {
-            this.connect.getStatement().executeUpdate("DELETE FROM Promotion WHERE id =" + promotion.getId() + ");");
+            this.connect.getStatement().executeUpdate("DELETE FROM Cours WHERE id =" + cours.getId() + ");");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public boolean update(Promotion promotion) {
+    public boolean update(Cours cours) {
         try {
-            this.connect.getStatement().executeUpdate("UPDATE Promotion SET nom ='" + promotion.getNom() + "' WHERE id =" + promotion.getId() + ");");
+            this.connect.getStatement().executeUpdate("UPDATE Cours SET nom ='" + cours.getNom() + ")");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public Promotion find(int id) {
-        Promotion promotion = new Promotion();
+    public Cours find(int id) {
+        Cours cours = new Cours();
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Promotion WHERE id = " + id);
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Cours WHERE id = " + id);
             if (rset.first()) {
-                promotion = new Promotion(id, rset.getString("nom"));
+                cours = new Cours(id, rset.getString("nom"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return promotion;
+        return cours;
     }
-
-    public ArrayList<Promotion> getAllPromotions() throws Exception {
-        ArrayList<Promotion> list = new ArrayList<Promotion>();
+    
+    public ArrayList<Cours> getAllCours() throws Exception {
+        ArrayList<Cours> list = new ArrayList<Cours>();
         Statement myStatement = null;
         ResultSet rset = null;
         try {
-            rset = this.connect.getStatement().executeQuery("SELECT * FROM Promotion");
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Cours");
             while (rset.next()) {
-                Promotion tempPromotion = convertRowToPromotion(rset);
-                list.add(tempPromotion);
+                Cours tempCours = convertRowToCours(rset);
+                list.add(tempCours);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -85,11 +85,11 @@ public class PromotionDAO extends DAO<Promotion> {
         }
     }
 
-    private Promotion convertRowToPromotion(ResultSet myResult) throws SQLException {
+    private Cours convertRowToCours(ResultSet myResult) throws SQLException {
         int id = myResult.getInt("ID");
         String nom = myResult.getString("Nom");
-        Promotion tempPromotion = new Promotion(id,nom);
-        return tempPromotion;
+        Cours tempCours = new Cours(id,nom);
+        return tempCours;
     }
 
     private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
@@ -105,10 +105,10 @@ public class PromotionDAO extends DAO<Promotion> {
     private void close(Statement myStmt, ResultSet myRs) throws SQLException {
         close(null, myStmt, myRs);
     }
-
-    public void display(Promotion promotion) {
-        if (promotion.getId() != 0) {
-            System.out.println("Nom : " + promotion.getNom());
+    
+    public void display(Cours cours) {
+        if (cours.getId() != 0) {
+            System.out.println("Nom : " + cours.getNom());
         }
     }
 }

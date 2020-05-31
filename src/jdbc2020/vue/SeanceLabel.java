@@ -6,11 +6,10 @@
 package jdbc2020.vue;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,7 +18,7 @@ import javax.swing.SwingConstants;
 import jdbc2020.controleur.Connexion;
 import jdbc2020.dao.DAO;
 import jdbc2020.dao.SeanceDAO;
-import jdbc2020.modele.Seance;
+import jdbc2020.modele.*;
 
 /**
  *
@@ -32,6 +31,10 @@ public class SeanceLabel extends JButton {
     private JPanel p0;
     private JLabel cours, groupe, salle, site;
     private Seance seance;
+    private ArrayList<Enseignant> enseignants;
+    private ArrayList<Salle> salles;
+    private ArrayList<Groupe> groupes;
+    
 
     public SeanceLabel() throws SQLException, ClassNotFoundException {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
@@ -90,8 +93,34 @@ public class SeanceLabel extends JButton {
             e.printStackTrace();
         }
     }
+    
+    public void recupInfos(int i) {
+        DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
+        Seance a = seanceDAO.find(i);
+        this.seance = a;
+        try {
+            ResultSet rset = this.maconnexion.getStatement().executeQuery("SELECT * FROM Enseignant WHERE id_utilisateur = " + a.getIdCours());
+            if (rset.first()) {
+                cours = new JLabel(rset.getString("nom"));
+                cours.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+            this.p0.add(cours);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Seance getSeance() {
         return this.seance;
+    }
+    private ArrayList<Enseignant> getEnseignants() {
+        return this.enseignants;
+    }
+    private ArrayList<Salle> getSalles() {
+        return this.salles;
+    }
+    private ArrayList<Groupe> getGroupes() {
+        return this.groupes;
     }
 }

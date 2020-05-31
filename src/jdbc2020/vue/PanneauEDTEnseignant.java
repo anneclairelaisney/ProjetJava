@@ -14,9 +14,9 @@ import java.util.Calendar;
  *
  * @author apple
  */
-public class Panneau extends JPanel {
+public class PanneauEDTEnseignant extends JPanel {
 
-    public Panneau() {
+    public PanneauEDTEnseignant() {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
@@ -177,7 +177,7 @@ public class Panneau extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j <= 13; j++) {
+            for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(160 * i, 50 * j, 160, 50);
             }

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jdbc2020.controleur.Generateur;
 
 /* Interface graphique */
 public class PageConnexion extends JFrame implements ActionListener, ItemListener {
@@ -166,7 +167,7 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
                             if (enseignant.getPasswd().equals(motDePasseTexte.getText())) {
                                 System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + enseignant.getPrenom() + " " + enseignant.getNom() + " !");
                                 this.dispose();
-                                new Fenetre(enseignant.getEmail(), enseignant.getPasswd(), "jdbc2020");
+                                new Generateur(enseignant.getEmail(), enseignant.getPasswd(), "jdbc2020");
                             }
                         }
                     }
