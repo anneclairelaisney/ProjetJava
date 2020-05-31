@@ -11,6 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import jdbc2020.controleur.Connexion;
+import jdbc2020.modele.Enseignant;
+import jdbc2020.modele.Groupe;
+import jdbc2020.modele.Salle;
 import jdbc2020.modele.Seance;
 
 /**
@@ -25,7 +28,38 @@ public class SeanceDAO extends DAO<Seance> {
 
     public boolean create(Seance seance) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES ('" + seance.getId() + "','" + seance.getSemaine() + "','" + seance.getDate() + "','" + seance.getHeureDebut() + "','" + seance.getHeureFin() + "','" + seance.getEtat() + "','" + seance.getIdCours() + "','" + seance.getIdType() + "');");
+            this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES ('" + seance.getId() + "','" + seance.getSemaine() 
+                    + "','" + seance.getDate() + "','" + seance.getHeureDebut() + "','" + seance.getHeureFin() + "','" + seance.getEtat() + "',(SELECT id FROM Cours WHERE id='" + seance.getIdCours() + "'),(SELECT id FROM Type_Cours WHERE id='" + seance.getIdType() + "'));");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean createEnseignants(Seance seance, Enseignant enseignant) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_ENSEIGNANTS` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES ('" + seance.getId() + "',(SELECT id_utilisateur FROM Enseignant WHERE id_utilisateur='" + enseignant.getId() + "'));");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean createGroupes(Seance seance, Groupe groupe) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_GROUPES` (`ID_SEANCE`, `ID_GROUPE`) VALUES ('" + seance.getId() + "',(SELECT id FROM Groupe WHERE id='" + groupe.getId() + "'));");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean createSalles(Seance seance, Salle salle) {
+        try {
+            this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_SALLES` (`ID_SEANCE`, `ID_SALLE`) VALUES ('" + seance.getId() + "',(SELECT id FROM Salle WHERE id='" + salle.getId() + "'));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ public class EnseignantDAO extends DAO<Enseignant> {
 
     public boolean create(Enseignant enseignant) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Enseignant(ID_UTILISATEUR,ID_COURS) VALUES ((SELECT id FROM Utilisateur WHERE id =" + enseignant.getId() + ")," + enseignant.getIdCours() + ");");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Enseignant(ID_UTILISATEUR,ID_COURS) VALUES ((SELECT id FROM Utilisateur WHERE id =" + enseignant.getId() + ")," + enseignant.getIdCours() + "));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,9 +52,18 @@ public class EnseignantDAO extends DAO<Enseignant> {
         Enseignant enseignant = null;
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant WHERE id_utilisateur = " + id);
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
             if (rset.first()) {
-                enseignant = new Enseignant(rset.getInt("id"), rset.getString("nom"), rset.getString("prenom"), rset.getString("email"), rset.getString("passwd"), rset.getInt("id_cours"));
+                String nom = rset.getString("Nom");
+                String prenom = rset.getString("Prenom");
+                String email = rset.getString("Email");
+                String passwd = rset.getString("Passwd");
+
+                ResultSet rset2 = null;
+                rset2 = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant where id_utilisateur=" + id);
+                if (rset2.first()) {
+                    enseignant = new Enseignant(id, nom, prenom, email, passwd, rset2.getInt("id_cours"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,7 +88,7 @@ public class EnseignantDAO extends DAO<Enseignant> {
                 listTemp.add(tempTeacher);
             }
 
-            for (Enseignant e : listTemp ) {
+            for (Enseignant e : listTemp) {
                 ResultSet rset2 = null;
                 rset2 = this.connect.getStatement().executeQuery("SELECT id_cours FROM Enseignant where id_utilisateur=" + e.getId());
                 if (rset2.first()) {

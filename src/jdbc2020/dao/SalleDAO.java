@@ -25,7 +25,7 @@ public class SalleDAO extends DAO<Salle> {
 
     public boolean create(Salle salle) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Salle(ID,NOM,CAPACITE,ID_SITE) VALUES (" + salle.getId() + ",'" + salle.getNom() + "," + salle.getCapacite() + ",(SELECT id FROM Site WHERE id =" + salle.getIdSite() + "));");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Salle(ID,NOM,CAPACITE,ID_SITE) VALUES (" + salle.getId() + ",'" + salle.getNom() + "," + salle.getCapacite() + ",(SELECT id FROM Site WHERE id =" + salle.getIdSite() + ")));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

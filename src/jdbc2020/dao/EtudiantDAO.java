@@ -29,7 +29,7 @@ public class EtudiantDAO extends DAO<Etudiant> {
     // Methodes
     public boolean create(Etudiant etudiant) {
         try {
-            this.connect.getStatement().executeUpdate("INSERT INTO Etudiant(ID_UTILISATEUR,NUMERO,ID_GROUPE) VALUES ((SELECT id FROM Utilisateur WHERE id =" + etudiant.getId() + "),'" + etudiant.getNumero() + "'," + etudiant.getIdGroupe() + ");");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Etudiant(ID_UTILISATEUR,NUMERO,ID_GROUPE) VALUES ((SELECT id FROM Utilisateur WHERE id =" + etudiant.getId() + "),'" + etudiant.getNumero() + "'," + etudiant.getIdGroupe() + "));");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

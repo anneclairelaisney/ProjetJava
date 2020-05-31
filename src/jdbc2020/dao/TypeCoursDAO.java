@@ -1,3 +1,7 @@
+/**
+ *
+ * @author apple
+ */
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,65 +21,65 @@ import java.util.ArrayList;
  *
  * @author apple
  */
-public class PromotionDAO extends DAO<Promotion> {
+public class TypeCoursDAO extends DAO<TypeCours> {
 
-    public PromotionDAO(Connexion conn) {
+    public TypeCoursDAO(Connexion conn) {
         super(conn);
     }
 
-    public boolean create(Promotion promotion) {
+    public boolean create(TypeCours typeCours) {
         try {
-            this.connect.executeUpdate("WHERE [NOT] EXISTS (INSERT INTO Promotion(id,nom) VALUES(" + promotion.getId() + "," + promotion.getNom() + "));");
+            this.connect.getStatement().executeUpdate("WHERE [NOT] EXISTS (INSERT INTO TypeCours(ID,NOM) VALUES (" + typeCours.getId() + ",'" + typeCours.getNom() + "))");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public boolean delete(Promotion promotion) {
+    public boolean delete(TypeCours typeCours) {
         try {
-            this.connect.getStatement().executeUpdate("DELETE FROM Promotion WHERE id =" + promotion.getId() + ");");
+            this.connect.getStatement().executeUpdate("DELETE FROM TYPE_COURS WHERE id =" + typeCours.getId() + ");");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public boolean update(Promotion promotion) {
+    public boolean update(TypeCours typeCours) {
         try {
-            this.connect.getStatement().executeUpdate("UPDATE Promotion SET nom ='" + promotion.getNom() + "' WHERE id =" + promotion.getId() + ");");
+            this.connect.getStatement().executeUpdate("UPDATE TYPE_COURS SET nom ='" + typeCours.getNom() + ")");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }  
         return false;
     }
 
-    public Promotion find(int id) {
-        Promotion promotion = new Promotion();
+    public TypeCours find(int id) {
+        TypeCours typeCours = new TypeCours();
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Promotion WHERE id = " + id);
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM TYPE_COURS WHERE id = " + id);
             if (rset.first()) {
-                promotion = new Promotion(id, rset.getString("nom"));
+                typeCours = new TypeCours(id, rset.getString("nom"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return promotion;
+        return typeCours;
     }
-
-    public ArrayList<Promotion> getAllPromotions() throws Exception {
-        ArrayList<Promotion> list = new ArrayList<Promotion>();
+    
+    public ArrayList<TypeCours> getAllTypeCours() throws Exception {
+        ArrayList<TypeCours> list = new ArrayList<TypeCours>();
         Statement myStatement = null;
         ResultSet rset = null;
         try {
-            rset = this.connect.getStatement().executeQuery("SELECT * FROM Promotion");
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM TYPE_COURS");
             while (rset.next()) {
-                Promotion tempPromotion = convertRowToPromotion(rset);
-                list.add(tempPromotion);
+                TypeCours tempTypeCours = convertRowToTypeCours(rset);
+                list.add(tempTypeCours);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -85,11 +89,11 @@ public class PromotionDAO extends DAO<Promotion> {
         }
     }
 
-    private Promotion convertRowToPromotion(ResultSet myResult) throws SQLException {
+    private TypeCours convertRowToTypeCours(ResultSet myResult) throws SQLException {
         int id = myResult.getInt("ID");
         String nom = myResult.getString("Nom");
-        Promotion tempPromotion = new Promotion(id,nom);
-        return tempPromotion;
+        TypeCours tempTypeCours = new TypeCours(id,nom);
+        return tempTypeCours;
     }
 
     private static void close(Connexion myConnection, Statement myStatement, ResultSet myResult) throws SQLException {
@@ -105,10 +109,10 @@ public class PromotionDAO extends DAO<Promotion> {
     private void close(Statement myStmt, ResultSet myRs) throws SQLException {
         close(null, myStmt, myRs);
     }
-
-    public void display(Promotion promotion) {
-        if (promotion.getId() != 0) {
-            System.out.println("Nom : " + promotion.getNom());
+    
+    public void display(TypeCours typeCours) {
+        if (typeCours.getId() != 0) {
+            System.out.println("Nom : " + typeCours.getNom());
         }
     }
 }

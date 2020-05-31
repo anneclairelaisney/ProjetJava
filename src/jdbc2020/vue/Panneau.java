@@ -177,7 +177,7 @@ public class Panneau extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j <= 15; j++) {
+            for (int j = 0; j <= 13; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(160 * i, 50 * j, 160, 50);
             }
