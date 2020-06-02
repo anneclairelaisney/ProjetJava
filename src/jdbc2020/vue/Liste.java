@@ -27,7 +27,7 @@ public class Liste {
     public ArrayList<Salle> salles;
 
     // Constructeurs
-    public Liste() throws SQLException, ClassNotFoundException {
+    public Liste() throws SQLException, ClassNotFoundException, Exception  {
         this.conn = new Connexion("jdbc2020", "root", "root");
         this.listePromotions();
         this.listeGroupes();
@@ -36,7 +36,7 @@ public class Liste {
         this.listeSalles();
     }
     
-    public void listePromotions () {
+    public void listePromotions () throws Exception {
         this.promotions = new ArrayList<Promotion>();
         DAO<Promotion> promotionDao = new PromotionDAO(conn);
         for (int i = 0; i < 5000; i++) {
@@ -47,7 +47,7 @@ public class Liste {
         }
     }
     
-    public void listeGroupes () {
+    public void listeGroupes ()  throws Exception {
         this.groupes = new ArrayList<Groupe>();
         DAO<Groupe> groupeDAO = new GroupeDAO(conn);
         for (int i = 0; i < 5000; i++) {
@@ -58,7 +58,7 @@ public class Liste {
         }
     }
     
-    public void listeEtudiants () {
+    public void listeEtudiants ()  throws Exception {
         this.etudiants = new ArrayList<Etudiant>();
         DAO<Etudiant> etudiantDAO = new EtudiantDAO(conn);
         for (int i = 0; i < 5000; i++) {
@@ -69,7 +69,7 @@ public class Liste {
         }
     }
     
-    public void listeEnseignants () {
+    public void listeEnseignants ()  throws Exception {
         this.enseignants = new ArrayList<Enseignant>();
         DAO<Enseignant> enseignantDAO = new EnseignantDAO(conn);
         for (int i = 0; i < 5000; i++) {
@@ -80,7 +80,7 @@ public class Liste {
         }
     }
     
-    public void listeSalles () {
+    public void listeSalles ()  throws Exception {
         this.salles = new ArrayList<Salle>();
         DAO<Salle> salleDAO = new SalleDAO(conn);
         for (int i = 0; i < 5000; i++) {

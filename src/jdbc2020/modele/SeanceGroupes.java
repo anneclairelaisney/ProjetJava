@@ -14,27 +14,23 @@ import javax.swing.JOptionPane;
  *
  * @author apple
  */
-public class SeanceGroupes extends Seance {
-    
-    // Attributs
-    private ArrayList<Groupe> groupes;
+public class SeanceGroupes {
+    //Attributs
+    private int seance;
+    private int groupe;
     
     // Constructeurs
     public SeanceGroupes() {}
-    public SeanceGroupes(int id, int semaine, Date date, int heureDebut, int heureFin, int etat, int id_cours, int id_type, ArrayList<Groupe> groupes) {
-        super(id, semaine, date, heureDebut, heureFin, etat, id_cours, id_type);
-        this.groupes = groupes;
-    }
-    
-    // Accesseurs
-    public ArrayList<Groupe> getGroupes() {
-        return this.groupes;
+    public SeanceGroupes(int id_seance, int id_groupe) {
+        this.seance = id_seance;
+        this.groupe = id_groupe;
     }
     
     // Methodes
-    public void ajoutGroupe(Groupe groupe) {
-        this.groupes.add(groupe);
-        JOptionPane.showMessageDialog(null, "Le groupe " + groupe.getNom() + " a été ajouté."); 
-        System.out.println("Nom du groupe : " + groupe.getNom() + " - Promotion : " + groupe.getIdPromotion());
+    public int getSeance() {
+        return this.seance;
     }
+    public int getGroupe() {
+        return this.groupe;
+    }   
 }

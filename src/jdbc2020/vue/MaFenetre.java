@@ -29,7 +29,7 @@ public class MaFenetre extends JFrame {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
 
-        pan = new Panneau();
+        //pan = new Panneau();
         this.add(pan);
     }
 

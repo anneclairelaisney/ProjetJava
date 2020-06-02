@@ -14,10 +14,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jdbc2020.dao.DAO;
-import jdbc2020.dao.EtudiantDAO;
+import jdbc2020.dao.SeanceDAO;
 
 /**
  *
@@ -26,121 +23,128 @@ import jdbc2020.dao.EtudiantDAO;
  *
  * @author segado
  */
-public class PanneauListeEtudiant extends JPanel {
+public class PanneauListeSeance extends JPanel {
 
-    //Attributs
-    /* CONNEXION */
     private Connexion maconnexion;
 
     // Constructeur
-    public PanneauListeEtudiant() throws SQLException, ClassNotFoundException {
+    public PanneauListeSeance() throws SQLException, ClassNotFoundException {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
-    public void remplirListe() throws Exception {
+    public void remplirListe() throws SQLException, ClassNotFoundException, Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
 
-        EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
-        ArrayList<Etudiant> listeEtudiants = new ArrayList<>();
-        listeEtudiants = etudiantdao.getAllStudents();
+        SeanceDAO seancedao = new SeanceDAO(this.maconnexion);
+        ArrayList<Seance> listeSeances = new ArrayList<>();
+        listeSeances = seancedao.getAllSeances();
 
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 9; i++) {
             int j = 0;
             String titre = "";
             switch (i) {
                 case 1:
-                    titre = "ID";
+                    titre = "Id";
                     break;
                 case 2:
-                    titre = "E-Mail";
+                    titre = "Semaine";
                     j = 1;
                     break;
                 case 3:
-                    titre = "Mot de passe";
+                    titre = "Date";
                     j = 2;
                     break;
                 case 4:
-                    titre = "Nom";
+                    titre = "Heure Debut";
                     j = 3;
                     break;
                 case 5:
-                    titre = "Prenom";
+                    titre = "Heure Fin";
                     j = 4;
                     break;
                 case 6:
-                    titre = "Numero";
+                    titre = "Etat";
                     j = 5;
                     break;
                 case 7:
-                    titre = "Groupe";
+                    titre = "Cours";
                     j = 6;
+                    break;
+                case 8:
+                    titre = "Type de cours";
+                    j = 7;
                     break;
             }
             JLabel weekDayPanel = new JLabel(titre);
             weekDayPanel.setHorizontalAlignment(SwingConstants.CENTER);
-            weekDayPanel.setPreferredSize(new Dimension(134, 50));
+            weekDayPanel.setPreferredSize(new Dimension(114, 50));
             Dimension size = weekDayPanel.getPreferredSize();
             weekDayPanel.setBorder(blackline);
             weekDayPanel.setForeground(Color.white);
-            weekDayPanel.setBounds(insets.left + j * 134, insets.top, size.width, size.height);
+            weekDayPanel.setBounds(insets.left + j * 114, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
 
         int j = 0;
         int n = 1;
-        for (int k = 0; k < listeEtudiants.size(); k++) {
-            for (int i = 1; i < 8; i++) {
+        for (int k = 0; k < listeSeances.size(); k++) {
+            for (int i = 1; i < 9; i++) {
                 String titre = "";
-                Etudiant etudiant = listeEtudiants.get(k);
-                if (etudiant.getId() != 0) {
+                Seance seance = listeSeances.get(k);
+                if (seance.getId() != 0) {
                     switch (i) {
                         case 1:
-                            titre = " " + etudiant.getId();
+                            titre = " " + seance.getId();
                             j = 0;
                             break;
                         case 2:
-                            titre = " " + etudiant.getEmail();
+                            titre = " " + seance.getSemaine();
                             j = 1;
                             break;
                         case 3:
-                            titre = " " + etudiant.getPasswd();
+                            titre = " " + seance.getDate();
                             j = 2;
                             break;
                         case 4:
-                            titre = " " + etudiant.getNom();
+                            titre = " " + seance.getHeureDebut();
                             j = 3;
                             break;
                         case 5:
-                            titre = " " + etudiant.getPrenom();
+                            titre = " " + seance.getHeureFin();
                             j = 4;
                             break;
                         case 6:
-                            titre = " " + etudiant.getNumero();
+                            titre = " " + seance.getEtat();
                             j = 5;
                             break;
                         case 7:
-                            titre = " " + etudiant.getIdGroupe();
+                            titre = " " + seance.getIdCours();
                             j = 6;
+                            break;
+                        case 8:
+                            titre = " " + seance.getIdType();
+                            j = 7;
                             break;
                     }
                     JLabel weekDayPanel = new JLabel(titre);
                     weekDayPanel.setHorizontalAlignment(SwingConstants.CENTER);
-                    weekDayPanel.setPreferredSize(new Dimension(134, 50));
+                    weekDayPanel.setPreferredSize(new Dimension(114, 50));
                     Dimension size = weekDayPanel.getPreferredSize();
                     weekDayPanel.setBorder(blackline);
                     weekDayPanel.setForeground(Color.white);
-                    weekDayPanel.setBounds(insets.left + j * 134, insets.top + n * 50, size.width, size.height);
+                    weekDayPanel.setBounds(insets.left + j * 114, insets.top + n * 50, size.width, size.height);
                     this.add(weekDayPanel);
                 }
             }
             n += 1;
         }
+
     }
 
     public void paintComponent(Graphics g) {

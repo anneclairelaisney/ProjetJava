@@ -7,22 +7,33 @@ package jdbc2020.vue;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import jdbc2020.controleur.Connexion;
+import jdbc2020.modele.Seance;
+import jdbc2020.modele.SeanceGroupes;
+import jdbc2020.modele.SeanceSalles;
+import jdbc2020.modele.Site;
 
 /**
  *
  * @author apple
  */
 public class Panneau extends JPanel {
+    private Connexion maconnexion;
+    private String login;
 
-    public Panneau() {
+    public Panneau(String login) {
+        this.login = "annelise.herve@edu.ece.fr";
         this.setLayout(null);
-        this.setSize(800, 750);
+        this.setSize(1000, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT() throws SQLException, ClassNotFoundException {
+    public void remplirEDT() throws SQLException, ClassNotFoundException, Exception {
+        this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
@@ -32,7 +43,7 @@ public class Panneau extends JPanel {
         day.setVerticalAlignment(SwingConstants.CENTER);
         day.setBorder(blackline);
         day.setBackground(new Color(4, 116, 124));
-        day.setPreferredSize(new Dimension(160, 50));
+        day.setPreferredSize(new Dimension(200, 50));
         Dimension s = day.getPreferredSize();
         day.setForeground(Color.white);
         day.setBounds(insets.left, insets.top, s.width, s.height);
@@ -51,7 +62,7 @@ public class Panneau extends JPanel {
             heure.setForeground(Color.WHITE);
             heure.setBackground(new Color(4, 116, 124));
             Dimension size = heure.getPreferredSize();
-            heure.setPreferredSize(new Dimension(160, 50));
+            heure.setPreferredSize(new Dimension(200, 50));
             heure.setBounds(insets.left + 35, insets.top + i * 50 + 17, size.width, size.height);
             this.add(heure);
         }
@@ -92,22 +103,68 @@ public class Panneau extends JPanel {
             weekDay = weekDay + " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1);
             JLabel weekDayPanel = new JLabel(weekDay);
             weekDayPanel.setHorizontalAlignment(SwingConstants.CENTER);
-            weekDayPanel.setPreferredSize(new Dimension(160, 50));
+            weekDayPanel.setPreferredSize(new Dimension(200, 50));
             Dimension size = weekDayPanel.getPreferredSize();
             weekDayPanel.setBorder(blackline);
             weekDayPanel.setForeground(Color.white);
-            weekDayPanel.setBounds(insets.left + j * 160, insets.top, size.width, size.height);
+            weekDayPanel.setBounds(insets.left + j * 200, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
-        for (int i = 1; i < 30; i++) {
+
+        JPanel jp1 = new JPanel();
+        //JPanel jp2 = new JPanel();
+        //JPanel jp3 = new JPanel();
+        for (int i = 1; i < 13; i++) {
             int n = 1;
             int m = 1;
             SeanceLabel seance = new SeanceLabel();
             seance.remplirSeance(i);
-            if (seance.getSeance().getId() != 0) {
-                seance.setPreferredSize(new Dimension(160, 50));
-                Dimension size = seance.getPreferredSize();
+            ArrayList<SeanceGroupes> sgs = seance.sg(seance.getSeance());
+            ArrayList<SeanceSalles> sss = seance.ss(seance.getSeance());
+            ArrayList<Site> ssites = seance.site(seance.getSeance());
 
+            if (seance.getSeance().getId() != 0) {
+
+                String strg = "";
+                for (SeanceGroupes sg : sgs) {
+                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = " + sg.getGroupe());
+                    while (rset1.next()) {
+                        String name = rset1.getString("nom");
+                        strg = strg + name + " ";
+                    }
+                }
+                System.out.println(strg);
+                JLabel groupe = new JLabel(strg);
+                groupe.setHorizontalAlignment(SwingConstants.CENTER);
+                jp1.add(groupe);
+                seance.remplirGroupe(strg);
+
+                String strs = "";
+                for (SeanceSalles ss : sss) {
+                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
+                    while (rset1.next()) {
+                        String name = rset1.getString("nom");
+                        strs = strs + name + " ";
+                    }
+                }
+                System.out.println(strs);
+                JLabel salle = new JLabel(strs);
+                salle.setHorizontalAlignment(SwingConstants.CENTER);
+                jp1.add(salle);
+                seance.remplirSalle(strs);
+
+                String site = "";
+                for (Site ssite : ssites) {
+                    site = site + ssite.getNom() + " ";
+                }
+                System.out.println(site);
+                JLabel jsite = new JLabel(site);
+                jsite.setHorizontalAlignment(SwingConstants.CENTER);
+                jp1.add(jsite);
+                seance.remplirSite(site);
+
+                seance.setPreferredSize(new Dimension(200, 50));
+                Dimension size = seance.getPreferredSize();
                 switch (seance.getSeance().getHeureDebut()) {
                     case 8:
                         n = 1;
@@ -168,8 +225,11 @@ public class Panneau extends JPanel {
                         break;
                 }
 
-                seance.setBounds(insets.left + m * 160, insets.top + n * 50, size.width, size.height);
+                seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
                 this.add(seance);
+                this.add(jp1);
+                //this.add(jp2);
+                //this.add(jp3);
             }
         }
     }
@@ -177,9 +237,9 @@ public class Panneau extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j <= 13; j++) {
+            for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
-                g.drawRect(160 * i, 50 * j, 160, 50);
+                g.drawRect(200 * i, 50 * j, 200, 50);
             }
         }
     }

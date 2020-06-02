@@ -34,7 +34,6 @@ public class SeanceLabel extends JButton {
     private ArrayList<Enseignant> enseignants;
     private ArrayList<Salle> salles;
     private ArrayList<Groupe> groupes;
-    
 
     public SeanceLabel() throws SQLException, ClassNotFoundException {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
@@ -46,15 +45,77 @@ public class SeanceLabel extends JButton {
 
         // creation des textes
         this.p0 = new JPanel();
-        this.p0.setLayout(new GridLayout(2,2));
-        this.p0.setPreferredSize(new Dimension(100,50));
+        this.p0.setLayout(new GridLayout(2, 2));
+        this.p0.setPreferredSize(new Dimension(100, 50));
         this.add(p0);
         this.seance = new Seance();
     }
+
+    public ArrayList<SeanceGroupes> sg(Seance s) throws SQLException {
+        ArrayList<SeanceGroupes> sg = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_seance = " + s.getId());
+        while (rset1.next()) {
+            sg.add(new SeanceGroupes(rset1.getInt("id_seance"), rset1.getInt("id_groupe")));
+        }
+        return sg;
+    }
     
-    public void remplirSeance(int i) {
+    public ArrayList<SeanceGroupes> sg(String login) throws SQLException {
+        ArrayList<SeanceGroupes> sg = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_groupe=(SELECT id_groupe FROM Etudiant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
+        while (rset1.next()) {
+            sg.add(new SeanceGroupes(rset1.getInt("id_seance"), rset1.getInt("id_groupe")));
+        }
+        return sg;
+    }
+    
+    public ArrayList<SeanceSalles> ss(Seance s) throws SQLException {
+        ArrayList<SeanceSalles> ss = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Salles WHERE id_seance = " + s.getId());
+        while (rset1.next()) {
+            ss.add(new SeanceSalles(rset1.getInt("id_seance"), rset1.getInt("id_salle")));
+        }
+        return ss;
+    }
+    
+    public ArrayList<SeanceSalles> sg(int id_seance) throws SQLException {
+        ArrayList<SeanceSalles> ss = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_salle FROM Seance_Salles WHERE id_seance = " + id_seance);
+        while (rset1.next()) {
+            ss.add(new SeanceSalles(id_seance, rset1.getInt("id_salle")));
+        }
+        return ss;
+    }
+    
+    public ArrayList<Site> site(Seance s) throws SQLException {
+        ArrayList<Site> site = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Site WHERE id = " + s.getId());
+        while (rset1.next()) {
+            site.add(new Site(rset1.getInt("id"), rset1.getString("nom")));
+        }
+        return site;
+    }
+
+    public void remplirGroupe(String s) throws SQLException {
+        this.groupe = new JLabel(s);
+        groupe.setHorizontalAlignment(SwingConstants.CENTER);
+        this.p0.add(groupe);
+    }
+    
+    public void remplirSalle(String s) throws SQLException {
+        this.salle = new JLabel(s);
+        salle.setHorizontalAlignment(SwingConstants.CENTER);
+        this.p0.add(salle);
+    }
+    
+    public void remplirSite(String s) throws SQLException {
+        this.site = new JLabel(s);
+        site.setHorizontalAlignment(SwingConstants.CENTER);
+        this.p0.add(site);
+    }
+
+    public void remplirSeance(int i) throws SQLException {
         this.cours = new JLabel();
-        this.groupe = new JLabel();
         this.salle = new JLabel();
         this.site = new JLabel();
         DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
@@ -68,33 +129,12 @@ public class SeanceLabel extends JButton {
             }
             this.p0.add(cours);
 
-            rset = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = (SELECT id_groupe FROM Seance_Groupes WHERE id_seance=" + a.getId() + ")");
-            if (rset.first()) {
-                groupe = new JLabel(rset.getString("nom"));
-                groupe.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            this.p0.add(groupe);
-
-            rset = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = (SELECT id_salle FROM Seance_Salles WHERE id_seance=" + a.getId() + ")");
-            if (rset.first()) {
-                salle = new JLabel(rset.getString("nom"));
-                salle.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            this.p0.add(salle);
-
-            rset = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Site WHERE id = (SELECT id_site FROM Salle WHERE id= (SELECT id_salle FROM Seance_salles WHERE id_seance=" + a.getId() + "))");
-            if (rset.first()) {
-                site = new JLabel(rset.getString("nom"));
-                site.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            this.p0.add(site);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-    public void recupInfos(int i) {
+
+    public void recupInfos(int i) throws SQLException {
         DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
         Seance a = seanceDAO.find(i);
         this.seance = a;
@@ -114,12 +154,15 @@ public class SeanceLabel extends JButton {
     public Seance getSeance() {
         return this.seance;
     }
+
     private ArrayList<Enseignant> getEnseignants() {
         return this.enseignants;
     }
+
     private ArrayList<Salle> getSalles() {
         return this.salles;
     }
+
     private ArrayList<Groupe> getGroupes() {
         return this.groupes;
     }
