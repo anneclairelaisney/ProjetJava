@@ -12,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -82,7 +80,6 @@ public class EtudiantDAO extends DAO<Etudiant> {
         ArrayList<Etudiant> listTemp = new ArrayList<>();
         ArrayList<Etudiant> list = new ArrayList<>();
         Statement myStatement = null;
-
         ResultSet rset = null;
         try {
             rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur where droit=4");

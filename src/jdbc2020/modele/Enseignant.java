@@ -39,29 +39,6 @@ public class Enseignant extends Utilisateur {
     }
     
     // Accesseurs
-    public int getId() {
-        return this.id;
-    }
-    
-    public String getEmail() {
-        return this.email;
-    }
-    
-    public String getPasswd() {
-        return this.passwd;
-    }
-    
-    public String getNom() {
-        return this.nom;
-    }
-    
-    public String getPrenom() {
-        return this.prenom;
-    }
-    
-    public int getDroit() {
-        return this.droit;
-    }
     public int getIdCours() {
         return this.idCours;
     }

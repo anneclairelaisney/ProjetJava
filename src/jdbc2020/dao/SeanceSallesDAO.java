@@ -43,7 +43,6 @@ public class SeanceSallesDAO extends DAO<SeanceSalles> {
 
     public SeanceSalles find(int id) {
         SeanceSalles x = null;
-
         try {
             ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance_Salles WHERE id_salle = " + id);
             if (rset.first()) {

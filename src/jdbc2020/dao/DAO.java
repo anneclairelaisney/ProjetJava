@@ -5,6 +5,7 @@
  */
 package jdbc2020.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import jdbc2020.controleur.*;
 /**
@@ -45,8 +46,9 @@ public abstract class DAO<T> {
   * Méthode de recherche des informations
   * @param id
   * @return T
+     * @throws java.sql.SQLException
   */
-  public abstract T find(int id);
+  public abstract T find(int id) throws SQLException ;
   
   /**
   * Méthode d'affichage
