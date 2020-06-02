@@ -13,11 +13,9 @@ import jdbc2020.dao.*;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import javax.swing.*;
 import java.awt.event.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,35 +137,18 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
                 this.maconnexion = new Connexion("jdbc2020", "root", "root");
                 System.out.println("Connexion dans BDD reussie");
 
-                EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
-                ArrayList<Etudiant> listeEtudiants = new ArrayList<>();
-                listeEtudiants = etudiantdao.getAllStudents();
+                UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
+                ArrayList<Utilisateur> listeUtilisateurs = new ArrayList<>();
+                listeUtilisateurs = utilisateurdao.getAllUsers();
 
-                for (int i = 0; i < listeEtudiants.size(); i++) {
-                    Etudiant etudiant = listeEtudiants.get(i);
-                    if (etudiant.getId() != 0) {
-                        if (etudiant.getEmail().equals(nomUtilisateurTexte.getText())) {
-                            if (etudiant.getPasswd().equals(motDePasseTexte.getText())) {
-                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + etudiant.getPrenom() + " " + etudiant.getNom() + " !");
+                for (int i = 0; i < listeUtilisateurs.size(); i++) {
+                    Utilisateur utilisateur = listeUtilisateurs.get(i);
+                    if (utilisateur.getId() != 0) {
+                        if (utilisateur.getEmail().equals(nomUtilisateurTexte.getText())) {
+                            if (utilisateur.getPasswd().equals(motDePasseTexte.getText())) {
+                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + utilisateur.getPrenom() + " " + utilisateur.getNom() + " !");
                                 this.dispose();
-                                new Fenetre(etudiant.getEmail(), etudiant.getPasswd(), "jdbc2020");
-                            }
-                        }
-                    }
-                }
-
-                EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
-                ArrayList<Enseignant> listeEnseignants = new ArrayList<>();
-                listeEnseignants = enseignantdao.getAllTeachers();
-
-                for (int i = 0; i < listeEnseignants.size(); i++) {
-                    Enseignant enseignant = listeEnseignants.get(i);
-                    if (enseignant.getId() != 0) {
-                        if (enseignant.getEmail().equals(nomUtilisateurTexte.getText())) {
-                            if (enseignant.getPasswd().equals(motDePasseTexte.getText())) {
-                                System.out.println("Bienvenue dans l'intranet ECE Paris-Lyon " + enseignant.getPrenom() + " " + enseignant.getNom() + " !");
-                                this.dispose();
-                                new Generateur(enseignant.getEmail(), enseignant.getPasswd(), "jdbc2020");
+                                new Fenetre(utilisateur.getEmail(), utilisateur.getPasswd(), "jdbc2020");
                             }
                         }
                     }

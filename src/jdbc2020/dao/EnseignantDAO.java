@@ -70,6 +70,29 @@ public class EnseignantDAO extends DAO<Enseignant> {
         }
         return enseignant;
     }
+    
+     public Enseignant find(String login) {
+        Enseignant enseignant = null;
+
+        try {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE email = " + login);
+            while (rset.next()) {
+                int id = rset.getInt("Id");
+                String nom = rset.getString("Nom");
+                String prenom = rset.getString("Prenom");
+                String passwd = rset.getString("Passwd");
+
+                ResultSet rset2 = null;
+                rset2 = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant where id_utilisateur=" + id);
+                if (rset2.first()) {
+                    enseignant = new Enseignant(id, nom, prenom, login, passwd, rset2.getInt("id_cours"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return enseignant;
+    }
 
     public ArrayList<Enseignant> getAllTeachers() throws Exception {
         ArrayList<Enseignant> listTemp = new ArrayList<>();
