@@ -5,6 +5,7 @@
  */
 package jdbc2020.dao;
 
+import java.sql.Date;
 import jdbc2020.controleur.*;
 import jdbc2020.modele.*;
 
@@ -57,6 +58,19 @@ public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
         return x;
     }
 
+    public Seance findSeance(int id) {
+        Seance x = null;
+        try {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance where ID = (SELECT ID_SEANCE FROM Seance_Groupes WHERE id_groupe = " + id + ")");
+            if (rset.first()) {
+                x = new Seance(rset.getInt("ID"), rset.getInt("Semaine"), rset.getDate("Date"),rset.getInt("Heure_Debut"),rset.getInt("Heure_Fin"), rset.getInt("Etat"), rset.getInt("ID_COURS"),rset.getInt("ID_TYPE"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return x;
+    }
+    
     public ArrayList<SeanceGroupes> getAllSeanceGroupes() throws Exception {
         ArrayList<SeanceGroupes> list = new ArrayList<>();
         Statement myStatement = null;

@@ -15,18 +15,20 @@ import java.util.Calendar;
  * @author apple
  */
 public class PanneauEDTEnseignant extends JPanel {
-
+/*
     public PanneauEDTEnseignant() {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT() throws SQLException, ClassNotFoundException {
+    public void remplirEDT(String login, String mdp) throws SQLException, ClassNotFoundException {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
         Insets insets = this.getInsets();
         javax.swing.border.Border blackline = BorderFactory.createLineBorder(Color.white, 1);
+        
+        
 
         JLabel day = new JLabel();
         day.setVerticalAlignment(SwingConstants.CENTER);
@@ -99,6 +101,7 @@ public class PanneauEDTEnseignant extends JPanel {
             weekDayPanel.setBounds(insets.left + j * 160, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
+        
         for (int i = 1; i < 30; i++) {
             int n = 1;
             int m = 1;
@@ -182,5 +185,5 @@ public class PanneauEDTEnseignant extends JPanel {
                 g.drawRect(160 * i, 50 * j, 160, 50);
             }
         }
-    }
+    } */
 }
