@@ -26,8 +26,10 @@ public class Panneau extends JPanel {
 
     private Connexion maconnexion;
     private String login;
+    private int semaine;
 
-    public Panneau(String login) {
+    public Panneau(String login, int semaine) {
+        this.semaine = semaine;
         this.login = login;
         this.setLayout(null);
         this.setSize(1000, 750);

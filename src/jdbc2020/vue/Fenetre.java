@@ -102,7 +102,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
     /* Ajout */
     private JPanel panelBoutonCardCreation, panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
-    private JButton ajouter, modifier, changer;
+    private JButton ajouter, modifier, changer, semaine;
     private JFrame ajoutSeance, modifSeance, changeSeance;
     private JLabel majSeance, dateSeance, heureDebutSeance, heureFinSeance, etatSeance, groupesSeance, enseignantsSeance, sallesSeance, coursSeance, typeCoursSeance;
     private JTextField etatTexte;
@@ -151,14 +151,16 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         JPanel north = new JPanel();
         north.add(this.menuBar());
+        menuBar.setLayout(new FlowLayout());
         north.add(this.p1());
+        p1.setLayout(new FlowLayout());
         p1.setBackground(new Color(4, 116, 124));
         JPanel semaines = new JPanel();
 
         for (int i = 1; i <= 52; i++) {
-            JButton semaine = new JButton();
             String a = "" + i;
-            semaine.add(new JLabel(a, JLabel.CENTER));
+            semaine = new JButton(a);
+            semaine.addActionListener(this);
             semaines.add(semaine);
         }
         semaines.setLayout(new GridLayout(2,26));
@@ -167,9 +169,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         
         north.setPreferredSize(new Dimension(300, 130));
         north.setBackground(new Color(4, 116, 124));
+        north.setLayout(new GridLayout(3,1));
         this.add(north, BorderLayout.NORTH);
         
-        this.pan = new Panneau(login);
+        this.pan = new Panneau(login, 22);
         this.pan.setVisible(false);
         this.add(this.pan, BorderLayout.CENTER);
 
@@ -218,8 +221,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeEnseignants.addActionListener(this);
         listeSeances.addActionListener(this);
         recherche.addActionListener(this);
-        
-        this.add(scrollPane);
+
         // pour fermer la fenetre
         addWindowListener(new WindowAdapter() {
             @Override
@@ -774,6 +776,18 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 this.pan = this.pan(user.getEmail());
                 this.add(this.pan);
                 this.pan.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == semaine) {
+            try {
+                setInvisible();
+                this.pan = this.pan(semaine.getText());
+                this.add(this.pan);
+                System.out.println("Panneau EDT Semaine : " + semaine.getText());
+
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
