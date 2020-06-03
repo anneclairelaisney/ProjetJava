@@ -56,6 +56,37 @@ public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants> {
         }
         return x;
     }
+    
+    public ArrayList<Seance> findSeance(String login) {
+        Seance x = null;
+        ArrayList<Seance> seancestemp = new ArrayList<>();
+        ArrayList<Seance> seances = new ArrayList<>();
+
+        try {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance");
+            while (rset.next()) {
+                x = new Seance(rset.getInt("ID"), rset.getInt("Semaine"), rset.getDate("Date"), rset.getInt("Heure_Debut"), rset.getInt("Heure_Fin"), rset.getInt("Etat"), rset.getInt("ID_COURS"), rset.getInt("ID_TYPE"));
+                seancestemp.add(x);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (Seance s : seancestemp) {
+            try {
+                ResultSet rset1 = this.connect.getStatement().executeQuery("SELECT ID_SEANCE FROM Seance_Enseignants WHERE id_enseignant =(SELECT id FROM Utilisateur WHERE email ='" + login + "')");
+                while (rset1.next()) {
+                    if(s.getId() == rset1.getInt("id_seance")) {
+                        seances.add(s);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return seances;
+    }
 
     public ArrayList<SeanceEnseignants> getAllSeanceTeachers() throws Exception {
         ArrayList<SeanceEnseignants> list = new ArrayList<>();

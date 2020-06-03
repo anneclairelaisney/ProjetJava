@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import jdbc2020.controleur.Connexion;
+import jdbc2020.dao.SeanceGroupesDAO;
 import jdbc2020.modele.Seance;
 import jdbc2020.modele.SeanceGroupes;
 import jdbc2020.modele.SeanceSalles;
@@ -22,17 +23,18 @@ import jdbc2020.modele.Site;
  * @author apple
  */
 public class Panneau extends JPanel {
+
     private Connexion maconnexion;
     private String login;
 
     public Panneau(String login) {
-        this.login = "annelise.herve@edu.ece.fr";
+        this.login = login;
         this.setLayout(null);
         this.setSize(1000, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT() throws SQLException, ClassNotFoundException, Exception {
+    public void remplirEDT(String login) throws SQLException, ClassNotFoundException, Exception {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
@@ -110,127 +112,124 @@ public class Panneau extends JPanel {
             weekDayPanel.setBounds(insets.left + j * 200, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
+        
+        for (int j = 0; j < 2; j++) {
 
-        JPanel jp1 = new JPanel();
-        //JPanel jp2 = new JPanel();
-        //JPanel jp3 = new JPanel();
-        for (int i = 1; i < 13; i++) {
+            JPanel jp1 = new JPanel();
+            SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
+            SeanceLabel seance = new SeanceLabel();
+            ArrayList<SeanceGroupes> sgs = seance.sg(login);
+            seance.remplirSeance(sgs.get(j).getSeance());
+            ArrayList<Site> ssites = seance.site(seance.getSeance());
+            ArrayList<SeanceSalles> sss = seance.ss(sgs.get(j).getSeance());
+            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(seance.getSeance().getId());
+
+            String strg = "";
+            for (Seance sg : nouvelle) {
+                ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id =" + sg.getId());
+                while (rset1.next()) {
+                    String name = rset1.getString("nom");
+                    strg += name + " ";
+                }
+            }
+            System.out.println(strg);
+            JLabel groupe = new JLabel(strg);
+            groupe.setHorizontalAlignment(SwingConstants.CENTER);
+            jp1.add(groupe);
+            seance.remplirGroupe(strg);
+
+            String strs = "";
+            for (SeanceSalles ss : sss) {
+                ResultSet rset2 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
+                while (rset2.next()) {
+                    String name = rset2.getString("nom");
+                    strs += name + " ";
+                }
+            }
+            System.out.println(strs);
+            JLabel salle = new JLabel(strs);
+            salle.setHorizontalAlignment(SwingConstants.CENTER);
+            jp1.add(salle);
+            seance.remplirSalle(strs);
+
+            String site = "";
+            for (Site ssite : ssites) {
+                site = site + ssite.getNom() + " ";
+            }
+            System.out.println(site);
+            JLabel jsite = new JLabel(site);
+            jsite.setHorizontalAlignment(SwingConstants.CENTER);
+            jp1.add(jsite);
+            seance.remplirSite(site);
+
+            seance.setPreferredSize(new Dimension(200, 50));
+            Dimension size = seance.getPreferredSize();
+
             int n = 1;
             int m = 1;
-            SeanceLabel seance = new SeanceLabel();
-            seance.remplirSeance(i);
-            ArrayList<SeanceGroupes> sgs = seance.sg(seance.getSeance());
-            ArrayList<SeanceSalles> sss = seance.ss(seance.getSeance());
-            ArrayList<Site> ssites = seance.site(seance.getSeance());
 
-            if (seance.getSeance().getId() != 0) {
-
-                String strg = "";
-                for (SeanceGroupes sg : sgs) {
-                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = " + sg.getGroupe());
-                    while (rset1.next()) {
-                        String name = rset1.getString("nom");
-                        strg = strg + name + " ";
-                    }
-                }
-                System.out.println(strg);
-                JLabel groupe = new JLabel(strg);
-                groupe.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(groupe);
-                seance.remplirGroupe(strg);
-
-                String strs = "";
-                for (SeanceSalles ss : sss) {
-                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
-                    while (rset1.next()) {
-                        String name = rset1.getString("nom");
-                        strs = strs + name + " ";
-                    }
-                }
-                System.out.println(strs);
-                JLabel salle = new JLabel(strs);
-                salle.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(salle);
-                seance.remplirSalle(strs);
-
-                String site = "";
-                for (Site ssite : ssites) {
-                    site = site + ssite.getNom() + " ";
-                }
-                System.out.println(site);
-                JLabel jsite = new JLabel(site);
-                jsite.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(jsite);
-                seance.remplirSite(site);
-
-                seance.setPreferredSize(new Dimension(200, 50));
-                Dimension size = seance.getPreferredSize();
-                switch (seance.getSeance().getHeureDebut()) {
-                    case 8:
-                        n = 1;
-                        break;
-                    case 9:
-                        n = 2;
-                        break;
-                    case 10:
-                        n = 3;
-                        break;
-                    case 11:
-                        n = 4;
-                        break;
-                    case 12:
-                        n = 5;
-                        break;
-                    case 13:
-                        n = 6;
-                        break;
-                    case 14:
-                        n = 7;
-                        break;
-                    case 15:
-                        n = 8;
-                        break;
-                    case 16:
-                        n = 9;
-                        break;
-                    case 17:
-                        n = 10;
-                        break;
-                    case 18:
-                        n = 11;
-                        break;
-                    case 19:
-                        n = 12;
-                        break;
-                    case 20:
-                        n = 13;
-                        break;
-                }
-
-                switch (seance.getSeance().dateToInt()) {
-                    case 2:
-                        m = 2;
-                        break;
-                    case 3:
-                        m = 3;
-                        break;
-                    case 4:
-                        m = 4;
-                        break;
-                    case 5:
-                        m = 5;
-                        break;
-                    case 6:
-                        m = 6;
-                        break;
-                }
-
-                seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-                this.add(seance);
-                this.add(jp1);
-                //this.add(jp2);
-                //this.add(jp3);
+            switch (nouvelle.get(j).getHeureDebut()) {
+                case 8:
+                    n = 1;
+                    break;
+                case 9:
+                    n = 2;
+                    break;
+                case 10:
+                    n = 3;
+                    break;
+                case 11:
+                    n = 4;
+                    break;
+                case 12:
+                    n = 5;
+                    break;
+                case 13:
+                    n = 6;
+                    break;
+                case 14:
+                    n = 7;
+                    break;
+                case 15:
+                    n = 8;
+                    break;
+                case 16:
+                    n = 9;
+                    break;
+                case 17:
+                    n = 10;
+                    break;
+                case 18:
+                    n = 11;
+                    break;
+                case 19:
+                    n = 12;
+                    break;
+                case 20:
+                    n = 13;
+                    break;
             }
+
+            switch (nouvelle.get(j).dateToInt()) {
+                case 2:
+                    m = 2;
+                    break;
+                case 3:
+                    m = 3;
+                    break;
+                case 4:
+                    m = 4;
+                    break;
+                case 5:
+                    m = 5;
+                    break;
+                case 6:
+                    m = 6;
+                    break;
+            }
+
+            seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+            this.add(seance);
         }
     }
 
