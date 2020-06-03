@@ -51,6 +51,7 @@ public class SeanceLabel extends JButton {
         this.seance = new Seance();
     }
 
+    /* EDT ETUDIANT */
     public ArrayList<SeanceGroupes> sg(Seance s) throws SQLException {
         ArrayList<SeanceGroupes> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_seance = " + s.getId());
@@ -59,7 +60,7 @@ public class SeanceLabel extends JButton {
         }
         return sg;
     }
-    
+
     public ArrayList<SeanceGroupes> sg(String login) throws SQLException {
         ArrayList<SeanceGroupes> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_groupe=(SELECT id_groupe FROM Etudiant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
@@ -68,7 +69,7 @@ public class SeanceLabel extends JButton {
         }
         return sg;
     }
-    
+
     public ArrayList<SeanceSalles> ss(Seance s) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Salles WHERE id_seance = " + s.getId());
@@ -77,8 +78,8 @@ public class SeanceLabel extends JButton {
         }
         return ss;
     }
-    
-    public ArrayList<SeanceSalles> sg(int id_seance) throws SQLException {
+
+    public ArrayList<SeanceSalles> ss(int id_seance) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_salle FROM Seance_Salles WHERE id_seance = " + id_seance);
         while (rset1.next()) {
@@ -86,10 +87,28 @@ public class SeanceLabel extends JButton {
         }
         return ss;
     }
-    
+
     public ArrayList<Site> site(Seance s) throws SQLException {
         ArrayList<Site> site = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Site WHERE id = " + s.getId());
+        while (rset1.next()) {
+            site.add(new Site(rset1.getInt("id"), rset1.getString("nom")));
+        }
+        return site;
+    }
+
+    public ArrayList<Cours> cours(int i) throws SQLException {
+        ArrayList<Cours> cours = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours FROM Enseignant WHERE id_utilisateur = " + i +")");
+        while (rset1.next()) {
+            cours.add(new Cours(rset1.getInt("id"), rset1.getString("nom")));
+        }
+        return cours;
+    }
+    
+    public ArrayList<Site> site(int id_salle) throws SQLException {
+        ArrayList<Site> site = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Site WHERE id = " + id_salle);
         while (rset1.next()) {
             site.add(new Site(rset1.getInt("id"), rset1.getString("nom")));
         }
@@ -101,13 +120,13 @@ public class SeanceLabel extends JButton {
         groupe.setHorizontalAlignment(SwingConstants.CENTER);
         this.p0.add(groupe);
     }
-    
+
     public void remplirSalle(String s) throws SQLException {
         this.salle = new JLabel(s);
         salle.setHorizontalAlignment(SwingConstants.CENTER);
         this.p0.add(salle);
     }
-    
+
     public void remplirSite(String s) throws SQLException {
         this.site = new JLabel(s);
         site.setHorizontalAlignment(SwingConstants.CENTER);
@@ -127,11 +146,46 @@ public class SeanceLabel extends JButton {
                 cours = new JLabel(rset.getString("nom"));
                 cours.setHorizontalAlignment(SwingConstants.CENTER);
             }
-            this.p0.add(cours);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        this.p0.add(cours);
+    }
+
+    /* EDT ENSEIGNANT */
+    
+    public ArrayList<SeanceGroupes> sgE(int id) throws SQLException {
+        ArrayList<SeanceGroupes> ss = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_groupe FROM Seance_Groupes WHERE id_seance = " + id);
+        while (rset1.next()) {
+            ss.add(new SeanceGroupes(id, rset1.getInt("id_groupe")));
+        }
+        return ss;
+    }
+    
+    public void remplirCours(String s) throws SQLException {
+        this.cours = new JLabel(s);
+        cours.setHorizontalAlignment(SwingConstants.CENTER);
+        this.p0.add(cours);
+    }
+    
+    public ArrayList<SeanceEnseignants> se(String login) throws SQLException {
+        ArrayList<SeanceEnseignants> se = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Enseignants WHERE id_enseignant=(SELECT id FROM Utilisateur WHERE email ='" + login + "')");
+        while (rset1.next()) {
+            se.add(new SeanceEnseignants(rset1.getInt("id_seance"), rset1.getInt("id_enseignant")));
+        }
+        return se;
+    }
+
+    public ArrayList<SeanceGroupes> seG(Seance s) throws SQLException {
+        ArrayList<SeanceGroupes> se = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_seance=" + s.getId());
+        while (rset1.next()) {
+            se.add(new SeanceGroupes(rset1.getInt("id_seance"), rset1.getInt("id_groupe")));
+        }
+        return se;
     }
 
     public void recupInfos(int i) throws SQLException {
@@ -151,6 +205,16 @@ public class SeanceLabel extends JButton {
         }
     }
 
+    public ArrayList<Cours> sgEnseignant(String login) throws SQLException {
+        ArrayList<Cours> sg = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours FROM Enseignant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
+        while (rset1.next()) {
+            sg.add(new Cours(rset1.getInt("id"), rset1.getString("nom")));
+        }
+        return sg;
+    }
+
+    // ACCESSEURS 
     public Seance getSeance() {
         return this.seance;
     }
