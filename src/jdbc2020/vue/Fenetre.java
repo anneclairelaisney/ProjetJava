@@ -114,7 +114,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         // creation par heritage de la fenetre
         super("Projet d'utilisation de JDBC dans MySQL");
-        this.maconnexion = new Connexion(database, "root", "root");
+        this.maconnexion = new Connexion(database, "root", "");
         System.out.println(login);
         utilisateur = getUtilisateur(login, mdp);
         switch (utilisateur.getDroit()) {

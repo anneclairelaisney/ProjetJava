@@ -134,7 +134,7 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
         if (source == local) {
             try {
                 // tentative de connexion si les 4 attributs sont remplis
-                this.maconnexion = new Connexion("jdbc2020", "root", "root");
+                this.maconnexion = new Connexion("jdbc2020", "root", "");
                 System.out.println("Connexion dans BDD reussie");
 
                 UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
