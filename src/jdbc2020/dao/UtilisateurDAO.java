@@ -57,7 +57,16 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
     @Override
     public Utilisateur find(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Utilisateur user = new Utilisateur();
+        try {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
+            if (rset.first()) {
+                user = new Utilisateur(id, rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"), rset.getInt("droit"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
     
     public ArrayList<Utilisateur> getAllUsers() throws Exception {
