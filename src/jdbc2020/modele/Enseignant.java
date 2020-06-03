@@ -10,24 +10,39 @@ import java.util.ArrayList;
  *
  * @author apple
  */
+
+
 public class Enseignant extends Utilisateur {
     
     // Attributs
     private ArrayList<Cours> cours;
+    private int idCours;
     
     // Constructeurs
-    public Enseignant (int id, String email, String passwd, String nom, String prenom, ArrayList<Cours> cours) {
+    public Enseignant() {}
+    public Enseignant (int id, String email, String passwd, String nom, String prenom) {
         this.id = id;
         this.email = email;
         this.passwd = passwd;
         this.nom = nom;
         this.prenom = prenom;
         this.droit = 3;
-        this.cours = cours;
+    }
+    public Enseignant (int id, String email, String passwd, String nom, String prenom, int idCours) {
+        this.id = id;
+        this.email = email;
+        this.passwd = passwd;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.droit = 3;
+        this.idCours = idCours;
     }
     
     // Accesseurs
-    public ArrayList<Cours> getCours() {
-        return this.cours;
+    public int getIdCours() {
+        return this.idCours;
+    }
+    public void ajouterCours(Cours cours) {
+        this.cours.add(cours);
     }
 }

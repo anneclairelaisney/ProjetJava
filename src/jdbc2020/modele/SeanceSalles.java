@@ -5,34 +5,27 @@
  */
 package jdbc2020.modele;
 
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author apple
  */
-public class SeanceSalles extends Seance {
-    
-    // Attributs
-    private ArrayList<Salle> salles;
+public class SeanceSalles {
+    //Attributs
+    private int seance;
+    private int salle;
     
     // Constructeurs
     public SeanceSalles() {}
-    public SeanceSalles(int id, int semaine, int date, int heureDebut, int heureFin, int etat, ArrayList<Salle> salles) {
-        super(id, semaine, date, heureDebut, heureFin, etat);
-        this.salles = salles;
-    }
-    
-    // Accesseurs
-    public ArrayList<Salle> getSalles() {
-        return this.salles;
+    public SeanceSalles(int id_seance, int id_salle) {
+        this.seance = id_seance;
+        this.salle = id_salle;
     }
     
     // Methodes
-    public void ajoutSalle(Salle salle) {
-        this.salles.add(salle);
-        JOptionPane.showMessageDialog(null, "La salle " + salle.getNom() + " a été ajoutée."); 
-        System.out.println("Numéro salle : " + salle.getNom() + " - Nombre places : " + salle.getCapacite() + " - Site : " + salle.getIdSite());
+    public int getSeance() {
+        return this.seance;
     }
+    public int getSalle() {
+        return this.salle;
+    }   
 }

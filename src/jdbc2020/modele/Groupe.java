@@ -17,6 +17,7 @@ public class Groupe {
     private int idPromotion;
     
     // Constructeurs
+    public Groupe () {}
     public Groupe(int id, String nom, int idPromotion) {
         this.id = id;
         this.nom = nom;

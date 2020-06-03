@@ -9,7 +9,7 @@ package jdbc2020.modele;
  *
  * @author apple
  */
-public abstract class Utilisateur {
+public class Utilisateur {
     
     //Attributs
     protected int id;
@@ -19,7 +19,18 @@ public abstract class Utilisateur {
     protected String prenom;
     protected int droit;
     
+    public Utilisateur() {}
+    public Utilisateur (int id, String email, String passwd, String nom, String prenom, int droit) {
+        this.id = id;
+        this.email = email;
+        this.passwd = passwd;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.droit = droit;
+    }
+    
     // Accesseurs
+    
     public int getId() {
         return this.id;
     }

@@ -5,28 +5,36 @@
  */
 package jdbc2020.controleur;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
+import jdbc2020.dao.*;
 import jdbc2020.modele.*;
 import jdbc2020.vue.*;
 
-import java.io.*;
-import java.util.ArrayList;
 /**
  *
  * @author apple
  */
 public class Generateur {
-    
-    // Attributs
+
+    private Connexion maConnexion;
+    private String login;
+    private String mdp;
     private Fenetre fenetre;
-    private SeanceEnseignants lesEnseignants;
-    private SeanceGroupes lesGroupes;
-    private SeanceSalles lesSalles;
-    
-    // Constructeurs
-    public Generateur() {
-        this.fenetre = new Fenetre();
-        this.lesEnseignants = new SeanceEnseignants();
-        this.lesGroupes = new SeanceGroupes();
-        this.lesSalles = new SeanceSalles();
+
+    public Generateur(String login, String mdp, String database) throws SQLException, ClassNotFoundException, Exception {
+        this.maConnexion = new Connexion("jdbc2020", "root", "root");
+        this.fenetre = new Fenetre(login, mdp, "jdbc2020");
+        this.login = login;
+        this.mdp = mdp;
+
+        generer(this.maConnexion);
     }
+
+    public void generer(Connexion conn) throws Exception {}
 }

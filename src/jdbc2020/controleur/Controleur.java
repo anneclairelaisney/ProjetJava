@@ -1,28 +1,19 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package jdbc2020.controleur;
 
-import jdbc2020.modele.*;
-import jdbc2020.vue.*;
+import java.sql.SQLException;
 
 /**
  *
- * Contrôle l'interrogation de la BDD dans la Fenetre
- *
- * @author segado
+ * @author apple
  */
-public class Controleur {
 
-    /**
-     *
-     * une methode principal (main) pour lancer l'application
-     *
-     * @param
-     */
-    public static void main(String[] s) {
-        new Generateur();
+public class Controleur {
+    public static void main(String[] s) throws SQLException, ClassNotFoundException, Exception {
+        new GenerateurConnexion();
     }
 }

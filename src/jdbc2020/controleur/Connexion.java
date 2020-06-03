@@ -54,7 +54,7 @@ public class Connexion {
         Class.forName("com.mysql.jdbc.Driver");
 
         // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
-        String urlDatabase = "jdbc:mysql://localhost:8889/" + nameDatabase;
+        String urlDatabase = "jdbc:mysql://localhost/" + nameDatabase + "?useSSL=false";
        // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
 
         //création d'une connexion JDBC à la base 
@@ -63,7 +63,6 @@ public class Connexion {
         // création d'un ordre SQL (statement)
         stmt = conn.createStatement();
     }
-
 
     /**
      * Méthode qui ajoute la table en parametre dans son ArrayList
@@ -178,5 +177,17 @@ public class Connexion {
      */
     public void executeUpdate(String requeteMaj) throws SQLException {
        stmt.executeUpdate(requeteMaj);
+    }
+
+    public Object createStatement(int TYPE_SCROLL_INSENSITIVE, int CONCUR_READ_ONLY) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public ResultSet getResultSet() {
+        return this.rset;
+    }
+    
+    public Statement getStatement() {
+        return this.stmt;
     }
 }
