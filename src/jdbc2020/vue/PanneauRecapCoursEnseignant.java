@@ -49,6 +49,8 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         //this.setBackground(new Color(4, 116, 124));
     }
 
+    public PanneauRecapCoursEnseignant() {}
+
     public void remplirListe() throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));

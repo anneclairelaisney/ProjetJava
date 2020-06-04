@@ -29,14 +29,14 @@ public class PanneauEDTSalle extends JPanel {
     private Connexion maconnexion;
     private int id_salle;
 
-    public PanneauEDTSalle(int id_salle) {
-        this.id_salle = id_salle;
+    public PanneauEDTSalle() {
         this.setLayout(null);
-        this.setSize(1000, 750);
+        this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT() throws SQLException, ClassNotFoundException, Exception {
+    public void remplirEDT(int id_salle, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        this.id_salle = id_salle;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
@@ -71,10 +71,9 @@ public class PanneauEDTSalle extends JPanel {
             this.add(heure);
         }
 
-        int numSemaine = 22;
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2020);
-        cal.set(Calendar.WEEK_OF_YEAR, numSemaine);
+        cal.set(Calendar.WEEK_OF_YEAR, semaine);
 
         for (int i = 2; i < 7; i++) {
             int j = 1;
@@ -221,7 +220,7 @@ public class PanneauEDTSalle extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(200 * i, 50 * j, 200, 50);

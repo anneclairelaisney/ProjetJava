@@ -32,7 +32,7 @@ public class PanneauEDTEnseignant extends JPanel {
 
     public PanneauEDTEnseignant() {
         this.setLayout(null);
-        this.setSize(1000, 750);
+        this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
@@ -232,7 +232,7 @@ public class PanneauEDTEnseignant extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(200 * i, 50 * j, 200, 50);
