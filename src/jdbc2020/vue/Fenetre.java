@@ -17,7 +17,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.border.TitledBorder;
 import jdbc2020.dao.CoursDAO;
 import jdbc2020.dao.EnseignantDAO;
 import jdbc2020.dao.EtudiantDAO;
@@ -42,7 +41,7 @@ import jdbc2020.modele.Utilisateur;
  * Affiche dans la fenetre graphique les champs de tables et les requetes de la
  * BDD
  *
- * @author segado
+ * @author apple
  */
 public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
@@ -103,7 +102,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private PanneauListePromotion panelPromotion;
     private PanneauListeGroupe panelGroupe;
     private PanneauListeEtudiant panelEtudiant;
-    private JScrollPane scrollPane = new JScrollPane();
+    private PanneauListeIntervenants panelIntervenants;
     private PanneauListeSalle panelSalle;
     private PanneauListeEnseignant panelEnseignant;
     private PanneauListeSeance panelSeance;
@@ -113,11 +112,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JPanel panelBoutonCardCreation, panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
     private JButton ajouter, modifier, changer, semaine;
     private JFrame ajoutSeance, modifSeance, changeSeance;
-    private JLabel majSeance, dateSeance, heureDebutSeance, heureFinSeance, etatSeance, groupesSeance, enseignantsSeance, sallesSeance, coursSeance, typeCoursSeance;
+    private JLabel seanceEtat, majSeance, dateSeance, heureDebutSeance, heureFinSeance, etatSeance, groupesSeance, enseignantsSeance, sallesSeance, coursSeance, typeCoursSeance;
     private JTextField etatTexte;
     private JFormattedTextField heureDebutTexte, heureFinTexte;
     private JComboBox<Integer> cmbSeance;
-    private JComboBox<String> cmbCoursSeance, cmbTypeCoursSeance, cmbEtat;
+    private JComboBox<String> cmbCoursSeance, cmbTypeCoursSeance, cmbEtat, cmbSeanceEtat;
     private ArrayList<JCheckBox> groupeE, groupeG, groupeS;
     private JButton validerSeance, modifierSeance, changerSeance;
     private JDateTextField dateChoix;
@@ -174,7 +173,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             semaine.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     try {
-                        setInvisible();
+                        pan.removeAll();
                         id_semaine = a;
                         pan = pan(user.getEmail(), id_semaine);
                         add(pan);
@@ -222,6 +221,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEtudiant = new PanneauListeEtudiant();
         this.panelEtudiant.setVisible(false);
         this.add(this.panelEtudiant, BorderLayout.CENTER);
+        
+        this.panelIntervenants = new PanneauListeIntervenants();
+        this.panelIntervenants.setVisible(false);
+        this.add(this.panelIntervenants, BorderLayout.CENTER);
 
         this.panelSalle = new PanneauListeSalle();
         this.panelSalle.setVisible(false);
@@ -246,13 +249,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         accueil.addActionListener(this);
         ajouter.addActionListener(this);
         modifier.addActionListener(this);
-        //changer.addActionListener(this);
+        changer.addActionListener(this);
         edtEtudiant.addActionListener(this);
         edtEnseignant.addActionListener(this);
         edtSalle.addActionListener(this);
         listePromotions.addActionListener(this);
         listeGroupes.addActionListener(this);
         listeEtudiants.addActionListener(this);
+        listeIntervenants.addActionListener(this);
         listeSalles.addActionListener(this);
         listeEnseignants.addActionListener(this);
         listeSeances.addActionListener(this);
@@ -424,6 +428,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         //this.panelEtudiant.add(scrollPane);
         return this.panelEtudiant;
     }
+    
+    private PanneauListeIntervenants panelIntervenants() throws SQLException, ClassNotFoundException, Exception {
+        this.panelIntervenants.remplirListe();
+        return this.panelIntervenants;
+    }
 
     private PanneauListeSalle panelSalle() throws SQLException, ClassNotFoundException, Exception {
         this.panelSalle.remplirListe();
@@ -451,6 +460,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelPromotion.setVisible(false);
         this.panelGroupe.setVisible(false);
         this.panelEtudiant.setVisible(false);
+        this.panelIntervenants.setVisible(false);
         this.panelSalle.setVisible(false);
         this.panelSeance.setVisible(false);
         this.panelRecap.setVisible(false);
@@ -601,63 +611,41 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         panelMajSeance2.add(modifierSeance);
 
         modifSeance.add(panelMajSeance, BorderLayout.CENTER);
-
         modifSeance.add(panelMajSeance2, BorderLayout.SOUTH);
 
         return modifSeance;
     }
 
-    private JPanel panelEtat() {
-        panelEtat = new JPanel();
-        panelEtat.setBackground(Color.blue);
-
-        String[] messageStrings = {"Valider", "Annuler"};
-        cmbEtat = new JComboBox<String>(messageStrings);
-        changer = new JButton("Changer Etat de Seance");
-
-        panelEtat.add(cmbEtat);
-        panelEtat.add(changer);
-
-        return panelEtat;
-    }
-
     public JFrame changeSeance() throws Exception {
         changeSeance = new JFrame();
-        changeSeance.setSize(400, 300);
+        changeSeance.setSize(250, 120);
         changeSeance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         changeSeance.setTitle("Changer l'Etat d'une séance");
         changeSeance.setLayout(new BorderLayout());
         changeSeance.setLocationRelativeTo(null);
         changeSeance.setResizable(true);
         changeSeance.setVisible(true);
+        changeSeance.setBackground(Color.YELLOW);
 
-        panelMajSeance = new JPanel();
+        panelEtat = new JPanel();
+        cmbSeanceEtat = new JComboBox<String>();
+        seanceEtat = new JLabel("Seance : ", JLabel.CENTER);
 
-        majSeance = new JLabel("Seance : ", JLabel.CENTER);
-        cmbSeance = new JComboBox<Integer>();
-        coursSeance = new JLabel("Cours : ", JLabel.CENTER);
-        cmbCoursSeance = new JComboBox<String>();
-        typeCoursSeance = new JLabel("Type de cours : ", JLabel.CENTER);
-        cmbTypeCoursSeance = new JComboBox<String>();
-
-        panelMajSeance.add(majSeance);
-        panelMajSeance.add(cmbSeance);
-        panelMajSeance.add(coursSeance);
-        panelMajSeance.add(cmbCoursSeance);
-        panelMajSeance.add(typeCoursSeance);
-        panelMajSeance.add(cmbTypeCoursSeance);
-
-        panelMajSeance2 = new JPanel();
-
-        panelMajSeance2.setLayout(new FlowLayout());
+        String[] messageStrings = {"Valider", "Annuler"};
+        cmbEtat = new JComboBox<String>(messageStrings);
         changerSeance = new JButton("✓");
 
-        changerSeance.setPreferredSize(new Dimension(50, 50));
+        JPanel panelEtat2 = new JPanel();
+        changerSeance.setPreferredSize(new Dimension(20, 20));
 
-        panelMajSeance2.add(changerSeance);
+        panelEtat.add(seanceEtat);
+        panelEtat.add(cmbSeanceEtat);
+        panelEtat.add(cmbEtat);
+        panelEtat2.add(changerSeance);
+        panelEtat.setLayout(new FlowLayout());
 
-        changeSeance.add(panelMajSeance, BorderLayout.CENTER);
-        changeSeance.add(panelMajSeance2, BorderLayout.SOUTH);
+        changeSeance.add(panelEtat, BorderLayout.CENTER);
+        changeSeance.add(panelEtat2, BorderLayout.SOUTH);
 
         return changeSeance;
     }
@@ -685,11 +673,12 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         panelBoutonCardCreation.setBackground(Color.cyan);
 
         panelEtat = new JPanel();
-        panelEtat = this.panelEtat;
+        changer = new JButton("Changer");
         ajouter = new JButton("Ajouter");
         modifier = new JButton("Modifier");
         panelBoutonCardCreation.add(ajouter);
         panelBoutonCardCreation.add(modifier);
+        panelBoutonCardCreation.add(changer);
         panelBoutonCardCreation.add(panelEtat);
 
         return panelBoutonCardCreation;
@@ -806,6 +795,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return this.cmbSeance;
     }
 
+    public JComboBox<String> getSeanceEtat() {
+        return this.cmbSeanceEtat;
+    }
+
     public JComboBox<String> getCoursSeance() {
         return this.cmbCoursSeance;
     }
@@ -843,9 +836,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 System.out.println("EDT de " + user.getPrenom() + " " + user.getNom());
                 setInvisible();
                 if (user.getDroit() == 3) {
+                    setInvisible();
                     panEnseignant = panEnseignant(user.getEmail(), id_semaine);
                     add(panEnseignant);
                 } else if (user.getDroit() == 4) {
+                    setInvisible();
                     pan = pan(user.getEmail(), id_semaine);
                     add(pan);
                 }
@@ -897,7 +892,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         } else if (source == listePromotions) {
             try {
                 setInvisible();
-
+                panelPromotion.removeAll();
                 this.panelPromotion = this.panelPromotion();
                 this.add(panelPromotion);
                 System.out.println("Panneau Liste Promotions");
@@ -911,7 +906,6 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         } else if (source == listeGroupes) {
             try {
                 setInvisible();
-
                 this.panelGroupe = this.panelGroupe();
                 this.add(panelGroupe);
                 System.out.println("Panneau Liste Groupes");
@@ -964,7 +958,19 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (source == listeSeances) {
+        } else if (source == listeIntervenants) {
+            try {
+                setInvisible();
+                this.panelIntervenants = this.panelIntervenants();
+                this.add(panelIntervenants);
+                System.out.println("Panneau Liste Intervenants");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else if (source == listeSeances) {
             try {
                 setInvisible();
                 this.panelSeance = this.panelSeance();
@@ -1065,12 +1071,22 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                                         System.out.println(jcb.getText() + " n'est pas coché");
                                     }
                                 }
-
-                                ajoutSeance().dispose();
                             } catch (Exception ex) {
                                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+                        // pour fermer la fenetre
+                        addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent evt) {
+                                try {
+                                    ajoutSeance().dispose();
+                                    System.exit(0); // tout fermer
+                                } catch (Exception ex) {
+                                    Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
                     }
 
                 });
@@ -1109,12 +1125,22 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                                 TypeCours type_cours = type_coursdao.find(tempTC.getId());
 
                                 seancedao.update(seance, cours.getId(), type_cours.getId());
-
-                                modifSeance().dispose();
                             } catch (Exception ex) {
                                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+                        // pour fermer la fenetre
+                        addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent evt) {
+                                try {
+                                    modifSeance().dispose();
+                                    System.exit(0); // tout fermer
+                                } catch (Exception ex) {
+                                    Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
                     }
 
                 });
@@ -1123,25 +1149,43 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == changer) {
             try {
-                SeanceDAO seancedao = new SeanceDAO(maconnexion);
-                Seance tempSeance = seancesDao().get(getChangerEtat().getSelectedIndex());
-                Seance seance = seancedao.find(tempSeance.getId());
-
+                this.changeSeance();
+                for (Seance s : this.seancesDao()) {
+                    this.getSeanceEtat().addItem("S" + s.getId() + " /Cours" + s.getIdCours());
+                }
                 getChangerSeance().addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Object source = e.getSource();
                         if (source == getModifierSeance()) {
-                            switch (getChangerEtat().getSelectedItem().toString()) {
-                                case "Valider":
-                                    seancedao.validate(seance);
-                                    break;
-                                case "Annuler":
-                                    seancedao.cancel(seance);
-                                    break;
+                            try {
+                                SeanceDAO seancedao = new SeanceDAO(maconnexion);
+                                Seance tempSeance = seancesDao().get(getSeance().getSelectedIndex());
+                                Seance seance = seancedao.find(tempSeance.getId());
+                                switch (getChangerEtat().getSelectedItem().toString()) {
+                                    case "Valider":
+                                        seancedao.validate(seance);
+                                        break;
+                                    case "Annuler":
+                                        seancedao.cancel(seance);
+                                        break;
+                                }
+                            } catch (Exception ex) {
+                                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-
+                        // pour fermer la fenetre
+                        addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent evt) {
+                                try {
+                                    changeSeance().dispose();
+                                    System.exit(0); // tout fermer
+                                } catch (Exception ex) {
+                                    Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
                     }
                 });
             } catch (Exception ex) {

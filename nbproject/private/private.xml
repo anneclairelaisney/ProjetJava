@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/SeanceLabel.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/Fenetre.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/PanneauEDTEnseignant.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/PanneauAjoutSeance.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/PanneauRecapCoursEnseignant.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/modele/Enseignant.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/dao/EnseignantDAO.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/Panneau.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/controleur/Controleur.java</file>
         </group>
     </open-files>
