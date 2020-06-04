@@ -6,6 +6,7 @@
 package jdbc2020.vue;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ public class SeanceLabel extends JButton {
     //Attributs
     private final Connexion maconnexion;
     private JPanel p0;
-    private JLabel cours, groupe, salle, site;
+    private JLabel cours, boite;
     private Seance seance;
     private ArrayList<Enseignant> enseignants;
     private ArrayList<Salle> salles;
@@ -45,7 +46,7 @@ public class SeanceLabel extends JButton {
 
         // creation des textes
         this.p0 = new JPanel();
-        this.p0.setLayout(new GridLayout(2, 2));
+        this.p0.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
         this.p0.setPreferredSize(new Dimension(100, 50));
         this.add(p0);
         this.seance = new Seance();
@@ -61,7 +62,7 @@ public class SeanceLabel extends JButton {
         return sg;
     }
 
-    public ArrayList<SeanceGroupes> sg(String login) throws SQLException {
+    public ArrayList<SeanceGroupes> sgLogin(String login) throws SQLException {
         ArrayList<SeanceGroupes> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_groupe=(SELECT id_groupe FROM Etudiant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
         while (rset1.next()) {
@@ -79,11 +80,11 @@ public class SeanceLabel extends JButton {
         return ss;
     }
 
-    public ArrayList<SeanceSalles> ss(int id_seance) throws SQLException {
+    public ArrayList<SeanceSalles> ss(int id_salle) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
-        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_salle FROM Seance_Salles WHERE id_seance = " + id_seance);
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_seance FROM Seance_Salles WHERE id_salle = " + id_salle);
         while (rset1.next()) {
-            ss.add(new SeanceSalles(id_seance, rset1.getInt("id_salle")));
+            ss.add(new SeanceSalles(rset1.getInt("id_seance"), id_salle));
         }
         return ss;
     }
@@ -115,28 +116,14 @@ public class SeanceLabel extends JButton {
         return site;
     }
 
-    public void remplirGroupe(String s) throws SQLException {
-        this.groupe = new JLabel(s);
-        groupe.setHorizontalAlignment(SwingConstants.CENTER);
-        this.p0.add(groupe);
-    }
-
-    public void remplirSalle(String s) throws SQLException {
-        this.salle = new JLabel(s);
-        salle.setHorizontalAlignment(SwingConstants.CENTER);
-        this.p0.add(salle);
-    }
-
-    public void remplirSite(String s) throws SQLException {
-        this.site = new JLabel(s);
-        site.setHorizontalAlignment(SwingConstants.CENTER);
-        this.p0.add(site);
+    public void remplir(String s) throws SQLException {
+        this.boite = new JLabel(s);
+        boite.setHorizontalAlignment(SwingConstants.CENTER);
+        this.p0.add(boite);
     }
 
     public void remplirSeance(int i) throws SQLException {
         this.cours = new JLabel();
-        this.salle = new JLabel();
-        this.site = new JLabel();
         DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
         Seance a = seanceDAO.find(i);
         this.seance = a;
@@ -164,12 +151,6 @@ public class SeanceLabel extends JButton {
         return ss;
     }
     
-    public void remplirCours(String s) throws SQLException {
-        this.cours = new JLabel(s);
-        cours.setHorizontalAlignment(SwingConstants.CENTER);
-        this.p0.add(cours);
-    }
-    
     public ArrayList<SeanceEnseignants> se(String login) throws SQLException {
         ArrayList<SeanceEnseignants> se = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Enseignants WHERE id_enseignant=(SELECT id FROM Utilisateur WHERE email ='" + login + "')");
@@ -188,26 +169,28 @@ public class SeanceLabel extends JButton {
         return se;
     }
 
-    public void recupInfos(int i) throws SQLException {
-        DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
-        Seance a = seanceDAO.find(i);
-        this.seance = a;
-        try {
-            ResultSet rset = this.maconnexion.getStatement().executeQuery("SELECT * FROM Enseignant WHERE id_utilisateur = " + a.getIdCours());
-            if (rset.first()) {
-                cours = new JLabel(rset.getString("nom"));
-                cours.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            this.p0.add(cours);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public ArrayList<Cours> sgEnseignant(String login) throws SQLException {
         ArrayList<Cours> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours FROM Enseignant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
+        while (rset1.next()) {
+            sg.add(new Cours(rset1.getInt("id"), rset1.getString("nom")));
+        }
+        return sg;
+    }
+    
+    /* EDT Salle */
+    public ArrayList<SeanceEnseignants> seSalle(int id) throws SQLException {
+        ArrayList<SeanceEnseignants> se = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Enseignants WHERE id_seance=" + id);
+        while (rset1.next()) {
+            se.add(new SeanceEnseignants(rset1.getInt("id_seance"), rset1.getInt("id_enseignant")));
+        }
+        return se;
+    }
+    
+    public ArrayList<Cours> scSalle(int id) throws SQLException {
+        ArrayList<Cours> sg = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours from Seance where id=" + id + ")");
         while (rset1.next()) {
             sg.add(new Cours(rset1.getInt("id"), rset1.getString("nom")));
         }

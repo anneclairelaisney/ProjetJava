@@ -75,8 +75,8 @@ public class EnseignantDAO extends DAO<Enseignant> {
         Enseignant enseignant = null;
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE email = " + login);
-            while (rset.next()) {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE email ='" + login + "'");
+            if (rset.first()) {
                 int id = rset.getInt("Id");
                 String nom = rset.getString("Nom");
                 String prenom = rset.getString("Prenom");
