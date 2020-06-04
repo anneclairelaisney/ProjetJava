@@ -28,15 +28,15 @@ public class Panneau extends JPanel {
     private String login;
     private int semaine;
 
-    public Panneau(String login, int semaine) {
-        this.semaine = semaine;
-        this.login = login;
+    public Panneau() {
         this.setLayout(null);
         this.setSize(1000, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT(String login) throws SQLException, ClassNotFoundException, Exception {
+    public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {        
+        this.login = login;
+        this.semaine = semaine;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
@@ -70,11 +70,10 @@ public class Panneau extends JPanel {
             heure.setBounds(insets.left + 35, insets.top + i * 50 + 17, size.width, size.height);
             this.add(heure);
         }
-
-        int numSemaine = 22;
+        
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2020);
-        cal.set(Calendar.WEEK_OF_YEAR, numSemaine);
+        cal.set(Calendar.WEEK_OF_YEAR, semaine);
 
         for (int i = 2; i < 7; i++) {
             int j = 1;
@@ -117,14 +116,14 @@ public class Panneau extends JPanel {
         
         for (int j = 0; j < 2; j++) {
 
-            JPanel jp1 = new JPanel();
             SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
-            SeanceLabel seance = new SeanceLabel();
-            ArrayList<SeanceGroupes> sgs = seance.sg(login);
-            seance.remplirSeance(sgs.get(j).getSeance());
-            ArrayList<Site> ssites = seance.site(seance.getSeance());
-            ArrayList<SeanceSalles> sss = seance.ss(sgs.get(j).getSeance());
-            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(seance.getSeance().getId());
+            SeanceLabel seancelabel = new SeanceLabel();
+            ArrayList<SeanceGroupes> sgs = seancelabel.sgLogin(login);
+            System.out.println(sgs.size());
+            seancelabel.remplirSeance(sgs.get(j).getSeance());
+            ArrayList<Site> ssites = seancelabel.site(seancelabel.getSeance());
+            ArrayList<SeanceSalles> sss = seancelabel.ss(sgs.get(j).getSeance());
+            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(seancelabel.getSeance().getId());
 
             String strg = "";
             for (Seance sg : nouvelle) {
@@ -134,11 +133,7 @@ public class Panneau extends JPanel {
                     strg += name + " ";
                 }
             }
-            System.out.println(strg);
-            JLabel groupe = new JLabel(strg);
-            groupe.setHorizontalAlignment(SwingConstants.CENTER);
-            jp1.add(groupe);
-            seance.remplirGroupe(strg);
+            seancelabel.remplir(strg);
 
             String strs = "";
             for (SeanceSalles ss : sss) {
@@ -148,24 +143,16 @@ public class Panneau extends JPanel {
                     strs += name + " ";
                 }
             }
-            System.out.println(strs);
-            JLabel salle = new JLabel(strs);
-            salle.setHorizontalAlignment(SwingConstants.CENTER);
-            jp1.add(salle);
-            seance.remplirSalle(strs);
+            seancelabel.remplir(strs);
 
             String site = "";
             for (Site ssite : ssites) {
                 site = site + ssite.getNom() + " ";
             }
-            System.out.println(site);
-            JLabel jsite = new JLabel(site);
-            jsite.setHorizontalAlignment(SwingConstants.CENTER);
-            jp1.add(jsite);
-            seance.remplirSite(site);
+            seancelabel.remplir(site);
 
-            seance.setPreferredSize(new Dimension(200, 50));
-            Dimension size = seance.getPreferredSize();
+            seancelabel.setPreferredSize(new Dimension(200, 50));
+            Dimension size = seancelabel.getPreferredSize();
 
             int n = 1;
             int m = 1;
@@ -230,8 +217,8 @@ public class Panneau extends JPanel {
                     break;
             }
 
-            seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-            this.add(seance);
+            seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+            this.add(seancelabel);
         }
     }
 

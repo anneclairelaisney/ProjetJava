@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.border.TitledBorder;
 import jdbc2020.dao.CoursDAO;
 import jdbc2020.dao.EnseignantDAO;
 import jdbc2020.dao.EtudiantDAO;
@@ -49,10 +50,13 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     /* CONNEXION */
     private Connexion maconnexion;
     private Utilisateur utilisateur;
+    private Utilisateur user;
     private int droit_acces;
+    private int id_salle = 1;
+    private int id_semaine;
 
-    public CardLayout cl = new CardLayout();
-    String[] listContent = {"menuBar", "p1"};
+    public CardLayout cardL = new CardLayout();
+    String[] listContent = {"liste", "edt"};
 
     /* MENU */
     private JLabel logo;
@@ -81,9 +85,12 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             recapEnseignants = new JMenuItem("Récapitulatif des cours"),
             listeEnseignants = new JMenuItem("Liste des enseignants");
 
-    private JMenuItem listeSalles = new JMenuItem("Listes des salles");
+    private JMenuItem edtSalle = new JMenuItem("Emploi du temps"),
+            listeSalles = new JMenuItem("Listes des salles");
 
     /* RECHERCHE */
+    private JScrollPane jsp;
+    private JViewport jvp;
     private JPanel p1, cardCreation;
     private JComboBox<String> cmbBarreDeRecherche;
     private JPanel barreDeRecherche;
@@ -92,13 +99,15 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     /* EDT */
     private Panneau pan;
     private PanneauEDTEnseignant panEnseignant;
+    private PanneauEDTSalle panSalle;
     private PanneauListePromotion panelPromotion;
     private PanneauListeGroupe panelGroupe;
     private PanneauListeEtudiant panelEtudiant;
-    private JScrollPane scrollPane = new JScrollPane(panelEtudiant);
+    private JScrollPane scrollPane = new JScrollPane();
     private PanneauListeSalle panelSalle;
     private PanneauListeEnseignant panelEnseignant;
     private PanneauListeSeance panelSeance;
+    private PanneauRecapCoursEnseignant panelRecap;
 
     /* Ajout */
     private JPanel panelBoutonCardCreation, panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
@@ -141,7 +150,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         }
 
         // mise en page (layout) de la fenetre visible
-        this.setSize(1000, 750);
+        this.setSize(1200, 750);
         this.setTitle("INTRANET ECE PARIS-LYON");
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,28 +166,50 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         p1.setBackground(new Color(4, 116, 124));
         JPanel semaines = new JPanel();
 
+        setSize(930, 610);
+
         for (int i = 1; i <= 52; i++) {
-            String a = "" + i;
-            semaine = new JButton(a);
-            semaine.addActionListener(this);
+            int a = i;
+            semaine = new JButton(a + "");
+            semaine.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    try {
+                        setInvisible();
+                        id_semaine = a;
+                        pan = pan(user.getEmail(), id_semaine);
+                        add(pan);
+                        System.out.println("Panneau EDT Semaine : " + a);
+
+                    } catch (SQLException | ClassNotFoundException ex) {
+                        Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
             semaines.add(semaine);
         }
-        semaines.setLayout(new GridLayout(2,26));
+
+        semaines.setLayout(new GridLayout(2, 26));
         semaines.setBackground(new Color(4, 116, 124));
         north.add(semaines);
-        
+
         north.setPreferredSize(new Dimension(300, 130));
         north.setBackground(new Color(4, 116, 124));
-        north.setLayout(new GridLayout(3,1));
+        north.setLayout(new GridLayout(3, 1));
         this.add(north, BorderLayout.NORTH);
-        
-        this.pan = new Panneau(login, 22);
+
+        this.pan = new Panneau();
         this.pan.setVisible(false);
         this.add(this.pan, BorderLayout.CENTER);
 
-        this.panEnseignant = new PanneauEDTEnseignant(login);
+        this.panEnseignant = new PanneauEDTEnseignant();
         this.panEnseignant.setVisible(false);
         this.add(this.panEnseignant, BorderLayout.CENTER);
+
+        this.panSalle = new PanneauEDTSalle(id_salle);
+        this.panSalle.setVisible(false);
+        this.add(this.panSalle, BorderLayout.CENTER);
 
         this.panelPromotion = new PanneauListePromotion();
         this.panelPromotion.setVisible(false);
@@ -204,6 +235,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelSeance.setVisible(false);
         this.add(this.panelSeance, BorderLayout.CENTER);
 
+        this.panelRecap = new PanneauRecapCoursEnseignant(login);
+        this.panelRecap.setVisible(false);
+        this.add(this.panelRecap, BorderLayout.CENTER);
+
         this.getContentPane().add(panelGlobal(), BorderLayout.WEST);
         this.panelGlobal.setVisible(true);
 
@@ -214,6 +249,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         //changer.addActionListener(this);
         edtEtudiant.addActionListener(this);
         edtEnseignant.addActionListener(this);
+        edtSalle.addActionListener(this);
         listePromotions.addActionListener(this);
         listeGroupes.addActionListener(this);
         listeEtudiants.addActionListener(this);
@@ -221,6 +257,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeEnseignants.addActionListener(this);
         listeSeances.addActionListener(this);
         recherche.addActionListener(this);
+        recapEnseignants.addActionListener(this);
 
         // pour fermer la fenetre
         addWindowListener(new WindowAdapter() {
@@ -270,6 +307,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             enseignants.setBackground(new Color(4, 116, 124));
 
             //Menu Salles
+            salles.add(edtSalle);
             salles.add(listeSalles);
             salles.setBackground(new Color(4, 116, 124));
 
@@ -285,6 +323,23 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         } else {
             return menuBar;
         }
+    }
+
+    public void scroll(JPanel panneau) {
+        this.jsp = new JScrollPane(panneau);
+        this.jvp = new JViewport();
+        this.jvp = this.jsp.getViewport();
+        JScrollBar vjsp = jsp.getVerticalScrollBar();
+        //vjsp.setBounds(1200, 750, 300, 100);
+        this.add(vjsp);
+        vjsp.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+            }
+        });
+        this.jvp.setViewPosition(new Point(30, 200));
+        this.add(this.jsp);
+        this.jsp.setVerticalScrollBarPolicy(jsp.VERTICAL_SCROLLBAR_ALWAYS);
+        //panneau.setVisible(false);
     }
 
     private JPanel p1() {
@@ -310,7 +365,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
             // creation des labels
             ImageIcon image = new ImageIcon(new ImageIcon("zoom.png").getImage().getScaledInstance(800, 800, Image.SCALE_DEFAULT));
-            
+
             JLabel label = new JLabel("En grille :", image, JLabel.CENTER);
             label.setForeground(Color.white);
             //label.setPreferredSize(new Dimension(50,100));
@@ -336,14 +391,19 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         }
     }
 
-    private Panneau pan(String login) throws SQLException, ClassNotFoundException, Exception {
-        this.pan.remplirEDT(login);
+    private Panneau pan(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        this.pan.remplirEDT(login, semaine);
         return this.pan;
     }
 
-    private PanneauEDTEnseignant panEnseignant() throws SQLException, ClassNotFoundException, Exception {
-        this.panEnseignant.remplirEDT();
+    private PanneauEDTEnseignant panEnseignant(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        this.panEnseignant.remplirEDT(login, semaine);
         return this.panEnseignant;
+    }
+
+    private PanneauEDTSalle panSalle() throws SQLException, ClassNotFoundException, Exception {
+        this.panSalle.remplirEDT();
+        return this.panSalle;
     }
 
     private PanneauListePromotion panelPromotion() throws SQLException, ClassNotFoundException, Exception {
@@ -357,11 +417,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     }
 
     private PanneauListeEtudiant panelEtudiant() throws SQLException, ClassNotFoundException, Exception {
-        scrollPane.setPreferredSize(new Dimension(300, 400));
+        /*scrollPane.setPreferredSize(new Dimension(300, 400));
         scrollPane.setAutoscrolls(true);
-        scrollPane.setVisible(true);
+        scrollPane.setVisible(true);*/
         this.panelEtudiant.remplirListe();
-        this.panelEtudiant.add(scrollPane);
+        //this.panelEtudiant.add(scrollPane);
         return this.panelEtudiant;
     }
 
@@ -380,6 +440,11 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return this.panelSeance;
     }
 
+    private PanneauRecapCoursEnseignant panelRecap() throws SQLException, ClassNotFoundException, Exception {
+        this.panelRecap.remplirListe();
+        return this.panelRecap;
+    }
+
     public void setInvisible() {
         this.pan.setVisible(false);
         this.panelEnseignant.setVisible(false);
@@ -388,6 +453,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEtudiant.setVisible(false);
         this.panelSalle.setVisible(false);
         this.panelSeance.setVisible(false);
+        this.panelRecap.setVisible(false);
         this.panelGlobal.setVisible(false);
     }
 
@@ -597,8 +663,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
     }
 
     private JPanel panelGlobal() {
+        cardL = new CardLayout();
         panelGlobal = new JPanel();
-        panelGlobal.add(cardCreation());
+        panelGlobal.setLayout(cardL);
+        panelGlobal.add(cardCreation(), listContent[0]);
 
         return panelGlobal;
     }
@@ -607,7 +675,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         cardCreation = new JPanel();
         cardCreation.setLayout(new BorderLayout());
         cardCreation.setBackground(Color.blue);
-        cardCreation.add(panelBoutonCardCreation(), BorderLayout.CENTER);
+        cardCreation.add(panelBoutonCardCreation(), BorderLayout.EAST);
 
         return cardCreation;
     }
@@ -771,35 +839,29 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 UtilisateurDAO utilisateurdao = new UtilisateurDAO(maconnexion);
                 Utilisateur tempUser = utilisateurDao().get(cmbBarreDeRecherche.getSelectedIndex());
                 Utilisateur user = utilisateurdao.find(tempUser.getId());
+                this.user = user;
                 System.out.println("EDT de " + user.getPrenom() + " " + user.getNom());
                 setInvisible();
-                this.pan = this.pan(user.getEmail());
-                this.add(this.pan);
-                this.pan.setVisible(false);
-            } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (source == semaine) {
-            try {
+                if (user.getDroit() == 3) {
+                    panEnseignant = panEnseignant(user.getEmail(), id_semaine);
+                    add(panEnseignant);
+                } else if (user.getDroit() == 4) {
+                    pan = pan(user.getEmail(), id_semaine);
+                    add(pan);
+                }
                 setInvisible();
-                this.pan = this.pan(semaine.getText());
-                this.add(this.pan);
-                System.out.println("Panneau EDT Semaine : " + semaine.getText());
-
-            } catch (SQLException | ClassNotFoundException ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == accueil) {
             setInvisible();
             this.panelGlobal = this.panelGlobal();
-            this.add(this.panelGlobal);
+            this.add(panelEtudiant);
             System.out.println("Home Page");
-        } /*else if (source == edtEtudiant) {
+        } else if (source == edtEtudiant) {
             try {
                 setInvisible();
-                this.pan = this.pan(utilisateur.log);
+                this.pan = this.pan(this.user.getEmail(), this.id_semaine);
                 this.add(this.pan);
                 System.out.println("Panneau EDT Etudiant");
 
@@ -808,12 +870,24 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }*/ else if (source == edtEnseignant) {
+        } else if (source == edtEnseignant) {
             try {
                 setInvisible();
-                this.panEnseignant = this.panEnseignant();
-                this.add(this.panEnseignant);
+                this.panEnseignant = this.panEnseignant(this.user.getEmail(), this.id_semaine);
+                this.add(panEnseignant);
                 System.out.println("Panneau EDT Enseignant");
+
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == edtSalle) {
+            try {
+                setInvisible();
+                this.panSalle = this.panSalle();
+                this.add(panSalle);
+                System.out.println("Panneau EDT Salle");
 
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
@@ -825,7 +899,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 setInvisible();
 
                 this.panelPromotion = this.panelPromotion();
-                this.add(this.panelPromotion);
+                this.add(panelPromotion);
                 System.out.println("Panneau Liste Promotions");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -839,7 +913,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 setInvisible();
 
                 this.panelGroupe = this.panelGroupe();
-                this.add(this.panelGroupe);
+                this.add(panelGroupe);
                 System.out.println("Panneau Liste Groupes");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -853,7 +927,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 setInvisible();
 
                 this.panelEtudiant = this.panelEtudiant();
-                this.add(this.panelEtudiant);
+                this.add(panelEtudiant);
                 System.out.println("Panneau Liste Etudiants");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -867,7 +941,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 setInvisible();
 
                 this.panelSalle = this.panelSalle();
-                this.add(this.panelSalle);
+                this.add(panelSalle);
                 System.out.println("Panneau Liste Salles");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -881,7 +955,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 setInvisible();
 
                 this.panelEnseignant = this.panelEnseignant();
-                this.add(this.panelEnseignant);
+                this.add(panelEnseignant);
                 System.out.println("Panneau Liste Enseignants");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -893,14 +967,24 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         } else if (source == listeSeances) {
             try {
                 setInvisible();
-
                 this.panelSeance = this.panelSeance();
-                this.add(this.panelSeance);
+                this.add(panelSeance);
                 System.out.println("Panneau Liste Seances");
 
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
 
+            } catch (Exception ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (source == recapEnseignants) {
+            try {
+                setInvisible();
+                this.panelRecap = this.panelRecap();
+                this.add(panelRecap);
+                System.out.println("Recap des cours de l'enseignant");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
