@@ -54,8 +54,12 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private int id_salle = 1;
     private int id_semaine;
 
-    public CardLayout cardL = new CardLayout();
-    String[] listContent = {"liste", "edt"};
+    private CardLayout cardLayout;
+    private JPanel panelTout, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons;
+    private JPanel choix, panelGeneral;
+    private JButton edt, maj;
+    private String[] listContent = {"EDT", "MAJ"};
+    ;
 
     /* MENU */
     private JLabel logo;
@@ -90,12 +94,13 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     /* RECHERCHE */
     private JScrollPane jsp;
     private JViewport jvp;
-    private JPanel p1, cardCreation;
-    private JComboBox<String> cmbBarreDeRecherche;
+    private JPanel p1;
+    private JComboBox<String> cmbListeGrille, cmbChoixType, cmbElement;
     private JPanel barreDeRecherche;
     private JButton recherche;
 
     /* EDT */
+    private JPanel north;
     private Panneau pan;
     private PanneauEDTEnseignant panEnseignant;
     private PanneauEDTSalle panSalle;
@@ -109,7 +114,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private PanneauRecapCoursEnseignant panelRecap;
 
     /* Ajout */
-    private JPanel panelBoutonCardCreation, panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
+    private JPanel panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
     private JButton ajouter, modifier, changer, semaine;
     private JFrame ajoutSeance, modifSeance, changeSeance;
     private JLabel seanceEtat, majSeance, dateSeance, heureDebutSeance, heureFinSeance, etatSeance, groupesSeance, enseignantsSeance, sallesSeance, coursSeance, typeCoursSeance;
@@ -123,10 +128,43 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
     // Constructeur
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
-
-        // creation par heritage de la fenetre
         super("Projet d'utilisation de JDBC dans MySQL");
         this.maconnexion = new Connexion(database, "root", "root");
+        this.utilisateur = this.init(login, mdp);
+
+        this.setSize(1200, 750);
+        this.setTitle("INTRANET ECE PARIS-LYON");
+        this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setResizable(true);
+        this.setVisible(true);
+        this.getContentPane().add(choix(), BorderLayout.NORTH);
+        this.getContentPane().add(panelTout(), BorderLayout.CENTER);
+
+        this.ajoutListeners();
+        this.pan = new Panneau();
+        this.panEnseignant = new PanneauEDTEnseignant();
+        this.panSalle = new PanneauEDTSalle();
+        this.panelPromotion = new PanneauListePromotion();
+        this.panelGroupe = new PanneauListeGroupe();
+        this.panelEtudiant = new PanneauListeEtudiant();
+        this.panelIntervenants = new PanneauListeIntervenants();
+        this.panelSalle = new PanneauListeSalle();
+        this.panelEnseignant = new PanneauListeEnseignant();
+        this.panelSeance = new PanneauListeSeance();
+        this.panelRecap = new PanneauRecapCoursEnseignant();
+
+        // pour fermer la fenetre
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent evt) {
+                System.exit(0);
+            }
+        });
+    }
+
+    public Utilisateur init(String login, String mdp) throws SQLException {
         System.out.println(login);
         utilisateur = getUtilisateur(login, mdp);
         switch (utilisateur.getDroit()) {
@@ -147,17 +185,78 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 droit_acces = 4;
                 break;
         }
+        return utilisateur;
+    }
 
-        // mise en page (layout) de la fenetre visible
-        this.setSize(1200, 750);
-        this.setTitle("INTRANET ECE PARIS-LYON");
-        this.setLayout(new BorderLayout());
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setResizable(true);
-        this.setVisible(true);
+    // ajout des listeners
+    public void ajoutListeners() {
+        accueil.addActionListener(this);
+        ajouter.addActionListener(this);
+        modifier.addActionListener(this);
+        changer.addActionListener(this);
+        edtEtudiant.addActionListener(this);
+        edtEnseignant.addActionListener(this);
+        edtSalle.addActionListener(this);
+        listePromotions.addActionListener(this);
+        listeGroupes.addActionListener(this);
+        listeEtudiants.addActionListener(this);
+        listeIntervenants.addActionListener(this);
+        listeSalles.addActionListener(this);
+        listeEnseignants.addActionListener(this);
+        listeSeances.addActionListener(this);
+        //recherche.addActionListener(this);
+        recapEnseignants.addActionListener(this);
+    }
 
-        JPanel north = new JPanel();
+    private Utilisateur getUtilisateur(String login, String mdp) throws SQLException {
+        UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
+        Utilisateur utilisateur = utilisateurdao.find(login);
+        return utilisateur;
+    }
+
+    private JPanel choix() {
+        choix = new JPanel();
+        choix.setBackground(new Color(4, 116, 124));
+        edt = new JButton("Emploi du Temps");
+        edt.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                cardLayout.show(panelTout, listContent[0]);
+            }
+        });
+        maj = new JButton("Mise à jour");
+        maj.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                cardLayout.show(panelTout, listContent[1]);
+            }
+        });
+        choix.add(edt);
+        choix.add(maj);
+        return choix;
+    }
+
+    private JPanel panelTout() throws SQLException, ClassNotFoundException {
+        cardLayout = new CardLayout();
+        panelTout = new JPanel();
+        panelTout.setLayout(cardLayout);
+        panelTout.setBackground(new Color(4, 116, 124));
+        panelTout.add(panelEmploiduTemps(), listContent[0]);
+        panelTout.add(panelMiseAJour(), listContent[1]);
+
+        panelTout.setVisible(true);
+        return panelTout;
+    }
+
+    // EMPLOI DU TEMPS
+    private JPanel panelEmploiduTemps() throws SQLException, ClassNotFoundException {
+        panelEmploiduTemps = new JPanel();
+        panelEmploiduTemps.setLayout(new BorderLayout());
+        panelEmploiduTemps.add(north(), BorderLayout.NORTH);
+        panelEmploiduTemps.add(panelGlobal(), BorderLayout.CENTER);
+        return panelEmploiduTemps;
+    }
+
+    private JPanel north() {
+        north = new JPanel();
         north.add(this.menuBar());
         menuBar.setLayout(new FlowLayout());
         north.add(this.p1());
@@ -176,7 +275,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                         pan.removeAll();
                         id_semaine = a;
                         pan = pan(user.getEmail(), id_semaine);
-                        add(pan);
+                        panelGlobal.removeAll();
+                        panelGlobal.add(pan);
                         System.out.println("Panneau EDT Semaine : " + a);
 
                     } catch (SQLException | ClassNotFoundException ex) {
@@ -196,90 +296,12 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         north.setPreferredSize(new Dimension(300, 130));
         north.setBackground(new Color(4, 116, 124));
         north.setLayout(new GridLayout(3, 1));
-        this.add(north, BorderLayout.NORTH);
-
-        this.pan = new Panneau();
-        this.pan.setVisible(false);
-        this.add(this.pan, BorderLayout.CENTER);
-
-        this.panEnseignant = new PanneauEDTEnseignant();
-        this.panEnseignant.setVisible(false);
-        this.add(this.panEnseignant, BorderLayout.CENTER);
-
-        this.panSalle = new PanneauEDTSalle(id_salle);
-        this.panSalle.setVisible(false);
-        this.add(this.panSalle, BorderLayout.CENTER);
-
-        this.panelPromotion = new PanneauListePromotion();
-        this.panelPromotion.setVisible(false);
-        this.add(this.panelPromotion, BorderLayout.CENTER);
-
-        this.panelGroupe = new PanneauListeGroupe();
-        this.panelGroupe.setVisible(false);
-        this.add(this.panelGroupe, BorderLayout.CENTER);
-
-        this.panelEtudiant = new PanneauListeEtudiant();
-        this.panelEtudiant.setVisible(false);
-        this.add(this.panelEtudiant, BorderLayout.CENTER);
-        
-        this.panelIntervenants = new PanneauListeIntervenants();
-        this.panelIntervenants.setVisible(false);
-        this.add(this.panelIntervenants, BorderLayout.CENTER);
-
-        this.panelSalle = new PanneauListeSalle();
-        this.panelSalle.setVisible(false);
-        this.add(this.panelSalle, BorderLayout.CENTER);
-
-        this.panelEnseignant = new PanneauListeEnseignant();
-        this.panelEnseignant.setVisible(false);
-        this.add(this.panelEnseignant, BorderLayout.CENTER);
-
-        this.panelSeance = new PanneauListeSeance();
-        this.panelSeance.setVisible(false);
-        this.add(this.panelSeance, BorderLayout.CENTER);
-
-        this.panelRecap = new PanneauRecapCoursEnseignant(login);
-        this.panelRecap.setVisible(false);
-        this.add(this.panelRecap, BorderLayout.CENTER);
-
-        this.getContentPane().add(panelGlobal(), BorderLayout.WEST);
-        this.panelGlobal.setVisible(true);
-
-        // ajout des listeners
-        accueil.addActionListener(this);
-        ajouter.addActionListener(this);
-        modifier.addActionListener(this);
-        changer.addActionListener(this);
-        edtEtudiant.addActionListener(this);
-        edtEnseignant.addActionListener(this);
-        edtSalle.addActionListener(this);
-        listePromotions.addActionListener(this);
-        listeGroupes.addActionListener(this);
-        listeEtudiants.addActionListener(this);
-        listeIntervenants.addActionListener(this);
-        listeSalles.addActionListener(this);
-        listeEnseignants.addActionListener(this);
-        listeSeances.addActionListener(this);
-        recherche.addActionListener(this);
-        recapEnseignants.addActionListener(this);
-
-        // pour fermer la fenetre
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                System.exit(0); // tout fermer												System.exit(0); // tout fermer
-            }
-        });
-    }
-
-    private Utilisateur getUtilisateur(String login, String mdp) throws SQLException {
-        UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
-        Utilisateur utilisateur = utilisateurdao.find(login);
-        return utilisateur;
+        return north;
     }
 
     private JMenuBar menuBar() {
         this.menuBar = new JMenuBar();
+        this.menuBar.setBackground(new Color(4, 116, 124));
         if (droit_acces == 1 || droit_acces == 2) {
             this.logo = new JLabel(new ImageIcon(Fenetre.class.getResource("logo.png")));
             this.logo.setPreferredSize(new Dimension(50, 100));
@@ -353,39 +375,49 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             recherche.setHorizontalAlignment(JTextField.CENTER);
             recherche.setBounds(10, 10, 10, 10);
 
-            // creation des Panneaux
             p1 = new JPanel();
 
-            // creation des textes
-            cmbBarreDeRecherche = new JComboBox<String>();
-            try {
-                for (Utilisateur u : this.utilisateurDao()) {
-                    this.getBarreRecherche().addItem(u.getNom() + " " + u.getPrenom());
+            String[] listegrille = {"En liste ", "En grille"};
+            cmbListeGrille = new JComboBox<String>(listegrille);
+
+            String[] choixType = {"Etudiant", "Enseignant", "Salle"};
+            cmbChoixType = new JComboBox<String>(choixType);
+            cmbElement = new JComboBox<String>();
+            cmbChoixType.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    try {
+                        cmbElement.removeAllItems();
+                        switch (cmbChoixType.getSelectedIndex()) {
+                            case 0:
+                                for (Etudiant e : etudiantsDao()) {
+                                    getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
+                                }
+                                break;
+                            case 1:
+                                for (Enseignant e : enseignantsDao()) {
+                                    getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
+                                }
+                                break;
+                            default:
+                                for (Salle s : sallesDao()) {
+                                    getBarreRecherche().addItem(s.getNom());
+                                }
+                                break;
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-
-            } catch (Exception ex) {
-                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            // creation des labels
-            ImageIcon image = new ImageIcon(new ImageIcon("zoom.png").getImage().getScaledInstance(800, 800, Image.SCALE_DEFAULT));
-
-            JLabel label = new JLabel("En grille :", image, JLabel.CENTER);
-            label.setForeground(Color.white);
-            //label.setPreferredSize(new Dimension(50,100));
-            label.setIcon(image);
-            barreDeRecherche = new JPanel();
-            barreDeRecherche.add(label);
-            //barreDeRecherche.add(b);
-            //barreDeRecherche.setLayout(new GridLayout(1, 2));
+            });
 
             // ajout des objets graphqiues dans les panneaux 
-            p1.add(label);
-            p1.add(cmbBarreDeRecherche);
-            p1.add(recherche);
+            p1.add(cmbListeGrille);
+            p1.add(cmbChoixType);
+            p1.add(cmbElement);
 
             // ajout des listeners
             recherche.addActionListener(this);
+            p1.add(recherche);
 
             p1.setLayout(new GridLayout(1, 3));
 
@@ -395,18 +427,29 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         }
     }
 
+    private JPanel panelGlobal() throws SQLException, ClassNotFoundException {
+        panelGlobal = new JPanel();
+        panelGlobal.setVisible(true);
+        panelGlobal.setBackground(new Color(4, 116, 124));
+        panelGlobal.setLayout(null);
+        return panelGlobal;
+    }
+
     private Panneau pan(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        pan.removeAll();
         this.pan.remplirEDT(login, semaine);
         return this.pan;
     }
 
     private PanneauEDTEnseignant panEnseignant(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        panEnseignant.removeAll();
         this.panEnseignant.remplirEDT(login, semaine);
         return this.panEnseignant;
     }
 
-    private PanneauEDTSalle panSalle() throws SQLException, ClassNotFoundException, Exception {
-        this.panSalle.remplirEDT();
+    private PanneauEDTSalle panSalle(int id_salle, int id_semaine) throws SQLException, ClassNotFoundException, Exception {
+        panEnseignant.removeAll();
+        this.panSalle.remplirEDT(id_salle, id_semaine);
         return this.panSalle;
     }
 
@@ -428,7 +471,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         //this.panelEtudiant.add(scrollPane);
         return this.panelEtudiant;
     }
-    
+
     private PanneauListeIntervenants panelIntervenants() throws SQLException, ClassNotFoundException, Exception {
         this.panelIntervenants.remplirListe();
         return this.panelIntervenants;
@@ -465,6 +508,31 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelSeance.setVisible(false);
         this.panelRecap.setVisible(false);
         this.panelGlobal.setVisible(false);
+    }
+
+    // MISE A JOUR
+    private JPanel panelMiseAJour() {
+        panelMiseAJour = new JPanel();
+        panelMiseAJour.setLayout(new BorderLayout());
+        panelMiseAJour.setBackground(new Color(4, 116, 124));
+        panelMiseAJour.add(panelMiseAJourBoutons(), BorderLayout.NORTH);
+        panelMiseAJour.add(new JLabel(new ImageIcon(Fenetre.class.getResource("accueil.png"))), BorderLayout.CENTER);
+        return panelMiseAJour;
+    }
+
+    private JPanel panelMiseAJourBoutons() {
+        panelMiseAJourBoutons = new JPanel();
+        panelMiseAJourBoutons.setBackground(new Color(4, 116, 124));
+
+        ajouter = new JButton("Ajouter");
+        modifier = new JButton("Modifier");
+        changer = new JButton("Changer Etat");
+
+        panelMiseAJourBoutons.add(ajouter);
+        panelMiseAJourBoutons.add(modifier);
+        panelMiseAJourBoutons.add(changer);
+
+        return panelMiseAJourBoutons;
     }
 
     /* Ajouter une séance de cours en lui affectant, si possible, toutes les informations nécessaires : la date (sauf samedi et
@@ -650,40 +718,6 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return changeSeance;
     }
 
-    private JPanel panelGlobal() {
-        cardL = new CardLayout();
-        panelGlobal = new JPanel();
-        panelGlobal.setLayout(cardL);
-        panelGlobal.add(cardCreation(), listContent[0]);
-
-        return panelGlobal;
-    }
-
-    private JPanel cardCreation() {
-        cardCreation = new JPanel();
-        cardCreation.setLayout(new BorderLayout());
-        cardCreation.setBackground(Color.blue);
-        cardCreation.add(panelBoutonCardCreation(), BorderLayout.EAST);
-
-        return cardCreation;
-    }
-
-    private JPanel panelBoutonCardCreation() {
-        panelBoutonCardCreation = new JPanel();
-        panelBoutonCardCreation.setBackground(Color.cyan);
-
-        panelEtat = new JPanel();
-        changer = new JButton("Changer");
-        ajouter = new JButton("Ajouter");
-        modifier = new JButton("Modifier");
-        panelBoutonCardCreation.add(ajouter);
-        panelBoutonCardCreation.add(modifier);
-        panelBoutonCardCreation.add(changer);
-        panelBoutonCardCreation.add(panelEtat);
-
-        return panelBoutonCardCreation;
-    }
-
     public ArrayList<Utilisateur> utilisateurDao() throws Exception {
         UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
         ArrayList<Utilisateur> utilisateurs = new ArrayList<>();
@@ -784,7 +818,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
     }
 
     public JComboBox<String> getBarreRecherche() {
-        return this.cmbBarreDeRecherche;
+        return this.cmbElement;
     }
 
     public JComboBox<String> getChangerEtat() {
@@ -829,37 +863,58 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         Object source = evt.getSource();
         if (source == recherche) {
             try {
-                UtilisateurDAO utilisateurdao = new UtilisateurDAO(maconnexion);
-                Utilisateur tempUser = utilisateurDao().get(cmbBarreDeRecherche.getSelectedIndex());
-                Utilisateur user = utilisateurdao.find(tempUser.getId());
-                this.user = user;
-                System.out.println("EDT de " + user.getPrenom() + " " + user.getNom());
-                setInvisible();
-                if (user.getDroit() == 3) {
-                    setInvisible();
-                    panEnseignant = panEnseignant(user.getEmail(), id_semaine);
-                    add(panEnseignant);
-                } else if (user.getDroit() == 4) {
-                    setInvisible();
-                    pan = pan(user.getEmail(), id_semaine);
-                    add(pan);
+                switch (cmbChoixType.getSelectedIndex()) {
+                    case 0:
+                        UtilisateurDAO etudiantdao = new UtilisateurDAO(maconnexion);
+                        Utilisateur tempStudent = utilisateurDao().get(cmbElement.getSelectedIndex());
+                        Utilisateur student = etudiantdao.find(tempStudent.getId());
+                        this.user = student;
+                        System.out.println("EDT de " + student.getPrenom() + " " + student.getNom());
+                        this.pan = this.pan(user.getEmail(), id_semaine);
+                        this.pan.setVisible(true);
+                        this.panelGlobal.removeAll();
+                        this.panelGlobal.add(this.pan, BorderLayout.CENTER);
+                        panelGlobal.setVisible(true);
+                        System.out.println("Panneau EDT Etudiant");
+                        break;
+                    case 1:
+                        UtilisateurDAO enseignantdao = new UtilisateurDAO(maconnexion);
+                        Utilisateur tempTeacher = utilisateurDao().get(cmbElement.getSelectedIndex());
+                        Utilisateur teacher = enseignantdao.find(tempTeacher.getId());
+                        this.user = teacher;
+                        System.out.println("EDT de " + teacher.getPrenom() + " " + teacher.getNom());
+                        this.panEnseignant = this.panEnseignant(user.getEmail(), id_semaine);
+                        this.panEnseignant.setVisible(true);
+                        this.panelGlobal.removeAll();
+                        this.panelGlobal.add(this.panEnseignant, BorderLayout.CENTER);
+                        panelGlobal.setVisible(true);
+                        System.out.println("Panneau EDT Etudiant");
+                        break;
+                    default:
+                        SalleDAO salledao = new SalleDAO(maconnexion);
+                        Salle tempSalle = sallesDao().get(cmbElement.getSelectedIndex());
+                        Salle salle = salledao.find(tempSalle.getId());
+                        System.out.println("EDT de " + salle.getNom());
+                        this.panSalle = this.panSalle(salle.getId(), id_semaine);
+                        this.panSalle.setVisible(true);
+                        this.panelGlobal.removeAll();
+                        this.panelGlobal.add(this.panSalle, BorderLayout.CENTER);
+                        panelGlobal.setVisible(true);
+                        System.out.println("Panneau EDT Salle");
+                        break;
                 }
-                setInvisible();
+
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (source == accueil) {
-            setInvisible();
-            this.panelGlobal = this.panelGlobal();
-            this.add(panelEtudiant);
-            System.out.println("Home Page");
         } else if (source == edtEtudiant) {
             try {
-                setInvisible();
-                this.pan = this.pan(this.user.getEmail(), this.id_semaine);
-                this.add(this.pan);
+                this.pan = this.pan(user.getEmail(), id_semaine);
+                this.pan.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.pan, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Etudiant");
-
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
@@ -867,9 +922,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == edtEnseignant) {
             try {
-                setInvisible();
-                this.panEnseignant = this.panEnseignant(this.user.getEmail(), this.id_semaine);
-                this.add(panEnseignant);
+                this.panelEnseignant = this.panelEnseignant();
+                this.panelEnseignant.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelEnseignant, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Enseignant");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -879,9 +936,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == edtSalle) {
             try {
-                setInvisible();
-                this.panSalle = this.panSalle();
-                this.add(panSalle);
+                this.panSalle = this.panSalle(id_salle, id_semaine);
+                this.panSalle.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panSalle, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Salle");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -891,10 +950,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listePromotions) {
             try {
-                setInvisible();
-                panelPromotion.removeAll();
                 this.panelPromotion = this.panelPromotion();
-                this.add(panelPromotion);
+                this.panelPromotion.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelPromotion, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Promotions");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -905,9 +965,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeGroupes) {
             try {
-                setInvisible();
                 this.panelGroupe = this.panelGroupe();
-                this.add(panelGroupe);
+                this.panelGroupe.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelGroupe, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Groupes");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -918,10 +980,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeEtudiants) {
             try {
-                setInvisible();
-
                 this.panelEtudiant = this.panelEtudiant();
-                this.add(panelEtudiant);
+                this.panelEtudiant.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelEtudiant, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Etudiants");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -932,10 +995,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeSalles) {
             try {
-                setInvisible();
-
                 this.panelSalle = this.panelSalle();
-                this.add(panelSalle);
+                this.panelSalle.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelSalle, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Salles");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -946,10 +1010,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeEnseignants) {
             try {
-                setInvisible();
-
                 this.panelEnseignant = this.panelEnseignant();
-                this.add(panelEnseignant);
+                this.panelEnseignant.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelEnseignant, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Enseignants");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -960,21 +1025,24 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeIntervenants) {
             try {
-                setInvisible();
                 this.panelIntervenants = this.panelIntervenants();
-                this.add(panelIntervenants);
+                this.panelIntervenants.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelIntervenants, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Intervenants");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        else if (source == listeSeances) {
+        } else if (source == listeSeances) {
             try {
-                setInvisible();
                 this.panelSeance = this.panelSeance();
-                this.add(panelSeance);
+                this.panelSeance.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelSeance, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Seances");
 
             } catch (SQLException | ClassNotFoundException ex) {
@@ -985,9 +1053,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == recapEnseignants) {
             try {
-                setInvisible();
                 this.panelRecap = this.panelRecap();
-                this.add(panelRecap);
+                this.panelRecap.setVisible(true);
+                this.panelGlobal.removeAll();
+                this.panelGlobal.add(this.panelRecap, BorderLayout.CENTER);
+                panelGlobal.setVisible(true);
                 System.out.println("Recap des cours de l'enseignant");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
