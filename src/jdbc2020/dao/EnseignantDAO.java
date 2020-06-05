@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class EnseignantDAO extends DAO<Enseignant> {
 
-    public EnseignantDAO(Connexion conn) {
+    public EnseignantDAO(Connexion conn) throws SQLException, ClassNotFoundException {
         super(conn);
     }
 
@@ -70,26 +70,47 @@ public class EnseignantDAO extends DAO<Enseignant> {
         }
         return enseignant;
     }
-    
-     public Enseignant find(String login) {
-        Enseignant enseignant = null;
+
+    public ArrayList<Enseignant> findEnseignant(String login) throws SQLException {
+        Enseignant x = null;
+        System.out.println("login : " + login);
+        ArrayList<Enseignant> enstemp = new ArrayList<>();
+        ArrayList<Enseignant> ens = new ArrayList<>();
+        ResultSet rset = null;
 
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE email ='" + login + "'");
-            if (rset.first()) {
-                int id = rset.getInt("Id");
-                String nom = rset.getString("Nom");
-                String prenom = rset.getString("Prenom");
-                String passwd = rset.getString("Passwd");
-
-                ResultSet rset2 = null;
-                rset2 = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant where id_utilisateur=" + id);
-                if (rset2.first()) {
-                    enseignant = new Enseignant(id, nom, prenom, login, passwd, rset2.getInt("id_cours"));
-                }
+            rset = this.connect.getStatement().executeQuery("SELECT * FROM Enseignant");
+            while (rset.next()) {
+                x = new Enseignant(rset.getInt("id_utilisateur"), rset.getInt("id_cours"));
+                enstemp.add(x);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        for (Enseignant e : enstemp) {
+            try {
+                ResultSet rset1 = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE droit = 3");
+                while (rset1.next()) {
+                    if (e.getId() == rset1.getInt("id")) {
+                        ens.add(e);
+                    }
+                }
+            } catch (SQLException err) {
+                err.printStackTrace();
+            }
+        }
+        return ens;
+    }
+
+    public Enseignant find(String login) throws SQLException {
+        Enseignant enseignant = null;
+        ArrayList<Enseignant> ens = findEnseignant(login);
+
+        for (Enseignant e : ens) {
+            if (e.getEmail() == login) {
+                return e;
+            }
         }
         return enseignant;
     }

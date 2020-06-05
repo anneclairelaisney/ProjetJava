@@ -19,6 +19,12 @@ public class Etudiant extends Utilisateur {
     
     // Constructeurs
     public Etudiant() {}
+    public Etudiant (int id, int numero, int id_groupe) {
+        this.id = id;
+        this.numero = numero;
+        this.idGroupe = id_groupe;
+        this.droit = 4;
+    }
     public Etudiant (int id, String email, String passwd, String nom, String prenom) {
         this.id = id;
         this.email = email;

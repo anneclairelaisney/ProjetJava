@@ -114,22 +114,26 @@ public class PanneauEDTSalle extends JPanel {
             this.add(weekDayPanel);
         }
 
-        for (int j = 0; j < 1; j++) {
-            SeanceSallesDAO seanceslsdao = new SeanceSallesDAO(maconnexion);
-            SeanceLabel seance = new SeanceLabel();
+        SeanceLabel tempSeancelabel = new SeanceLabel();
+        ArrayList<SeanceSalles> tempSls = tempSeancelabel.ssSalles(id_salle);
+        System.out.println("Id Salle: " + id_salle);
 
-            ArrayList<SeanceSalles> sls = seance.ss(id_salle);
-            System.out.println(sls.size());
-            ArrayList<Cours> cs = seance.scSalle(sls.get(j).getSeance());
-            ArrayList<SeanceGroupes> sgs = seance.sgE(sls.get(j).getSeance());
-            ArrayList<Site> sites = seance.site(sls.get(j).getSeance());;
+        for (int j = 0; j < tempSls.size(); j++) {
+            SeanceSallesDAO seanceslsdao = new SeanceSallesDAO(maconnexion);
+            SeanceLabel seancelabel = new SeanceLabel();
+
+            ArrayList<SeanceSalles> sls = seancelabel.ssSalles(id_salle);
+            ArrayList<Cours> cs = seancelabel.scSalle(sls.get(j).getSeance());
+            ArrayList<SeanceGroupes> sgs = seancelabel.sgE(sls.get(j).getSeance());
+            ArrayList<Site> sites = seancelabel.site(sls.get(j).getSalle());
             ArrayList<Seance> nouvelle = seanceslsdao.findSeance(id_salle);
+            System.out.println(nouvelle.size());
 
             String str = "";
             for (Cours c : cs) {
                 str += c.getNom() + " ";
             }
-            seance.remplir(str);
+            seancelabel.remplir(str);
 
             String strg = "";
             for (SeanceGroupes sg : sgs) {
@@ -137,7 +141,7 @@ public class PanneauEDTSalle extends JPanel {
                 while (rset1.next()) {
                     String name = rset1.getString("nom");
                     strg = name + " ";
-                    seance.remplir(strg);
+                    seancelabel.remplir(strg);
                 }
             }
 
@@ -145,10 +149,10 @@ public class PanneauEDTSalle extends JPanel {
             for (Site ssite : sites) {
                 site += ssite.getNom() + " ";
             }
-            seance.remplir(site);
+            seancelabel.remplir(site);
 
-            seance.setPreferredSize(new Dimension(200, 50));
-            Dimension size = seance.getPreferredSize();
+            seancelabel.setPreferredSize(new Dimension(200, 50));
+            Dimension size = seancelabel.getPreferredSize();
 
             int n = 1;
             int m = 1;
@@ -213,8 +217,8 @@ public class PanneauEDTSalle extends JPanel {
                     break;
             }
 
-            seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-            this.add(seance);
+            seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+            this.add(seancelabel);
         }
     }
 

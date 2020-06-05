@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import jdbc2020.controleur.Connexion;
+import jdbc2020.dao.GroupeDAO;
 import jdbc2020.dao.SeanceGroupesDAO;
+import jdbc2020.modele.Groupe;
 import jdbc2020.modele.Seance;
 import jdbc2020.modele.SeanceGroupes;
 import jdbc2020.modele.SeanceSalles;
@@ -34,7 +36,9 @@ public class Panneau extends JPanel {
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {        
+    public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        
+            System.out.println("Id login " + login);
         this.login = login;
         this.semaine = semaine;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
@@ -70,7 +74,7 @@ public class Panneau extends JPanel {
             heure.setBounds(insets.left + 35, insets.top + i * 50 + 17, size.width, size.height);
             this.add(heure);
         }
-        
+
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2020);
         cal.set(Calendar.WEEK_OF_YEAR, semaine);
@@ -113,29 +117,36 @@ public class Panneau extends JPanel {
             weekDayPanel.setBounds(insets.left + j * 200, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
-        
-        for (int j = 0; j < 2; j++) {
+        SeanceLabel tempSeancelabel = new SeanceLabel();
+        ArrayList<SeanceGroupes> tempSgs = tempSeancelabel.sgLogin(login);
+        for (int j = 0; j < tempSgs.size(); j++) {
 
             SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
             SeanceLabel seancelabel = new SeanceLabel();
             ArrayList<SeanceGroupes> sgs = seancelabel.sgLogin(login);
-            System.out.println(sgs.size());
+
             seancelabel.remplirSeance(sgs.get(j).getSeance());
             ArrayList<Site> ssites = seancelabel.site(seancelabel.getSeance());
             ArrayList<SeanceSalles> sss = seancelabel.ss(sgs.get(j).getSeance());
-            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(seancelabel.getSeance().getId());
+            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(sgs.get(j).getGroupe());
 
-            String strg = "";
-            for (Seance sg : nouvelle) {
-                ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id =" + sg.getId());
-                while (rset1.next()) {
-                    String name = rset1.getString("nom");
-                    strg += name + " ";
+            GroupeDAO grpesdao = new GroupeDAO(maconnexion);
+            ArrayList<Groupe> groupes = grpesdao.getAllGroupes();
+
+            String strg = " ";
+            for (Seance seance : nouvelle) {
+                for (Groupe groupe : groupes) {
+                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_groupe FROM Seance_Groupes WHERE id_seance=" + seance.getId());
+                    while (rset1.next()) {
+                        if(rset1.getInt("id_groupe") == groupe.getId()) {
+                            strg += groupe.getNom() + " ";
+                        }
+                    }
                 }
             }
             seancelabel.remplir(strg);
 
-            String strs = "";
+            String strs = " ";
             for (SeanceSalles ss : sss) {
                 ResultSet rset2 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
                 while (rset2.next()) {
@@ -145,7 +156,7 @@ public class Panneau extends JPanel {
             }
             seancelabel.remplir(strs);
 
-            String site = "";
+            String site = " ";
             for (Site ssite : ssites) {
                 site = site + ssite.getNom() + " ";
             }
@@ -156,7 +167,7 @@ public class Panneau extends JPanel {
 
             int n = 1;
             int m = 1;
-
+            System.out.println("Id seance " + nouvelle.get(j).getId());
             switch (nouvelle.get(j).getHeureDebut()) {
                 case 8:
                     n = 1;

@@ -88,7 +88,7 @@ public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
         }
         return seances;
     }
-
+    
     public ArrayList<SeanceGroupes> getAllSeanceGroupes() throws Exception {
         ArrayList<SeanceGroupes> list = new ArrayList<>();
         Statement myStatement = null;

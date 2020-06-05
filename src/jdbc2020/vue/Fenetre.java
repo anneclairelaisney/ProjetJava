@@ -51,14 +51,14 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private Utilisateur utilisateur;
     private Utilisateur user;
     private int droit_acces;
-    private int id_salle = 1;
+    private int id_salle;
     private int id_semaine;
 
-    private CardLayout cardLayout;
-    private JPanel panelTout, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons;
-    private JPanel choix, panelGeneral;
+    private CardLayout cardLayout, cardLayout34;
+    private JPanel panelTout, panelTout34, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons;
+    private JPanel choix, choix34, panelGeneral;
     private JButton edt, maj;
-    private String[] listContent = {"EDT", "MAJ"};
+    private String[] listContent = {"EDT", "MAJ"}, listContent34 = {"EDT", "RECAP"};
     ;
 
     /* MENU */
@@ -112,6 +112,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private PanneauListeEnseignant panelEnseignant;
     private PanneauListeSeance panelSeance;
     private PanneauRecapCoursEnseignant panelRecap;
+    private PanneauRecapCoursEtudiant panelRecap4;
 
     /* Ajout */
     private JPanel panelGlobal, panelEtat, panelMajSeance, panelMajSeance2;
@@ -127,11 +128,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JDateTextField dateChoix;
 
     // Constructeur
-    public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException {
+    public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException, Exception {
         super("Projet d'utilisation de JDBC dans MySQL");
-        this.maconnexion = new Connexion(database, "root", "root");
-        this.utilisateur = this.init(login, mdp);
-
         this.setSize(1200, 750);
         this.setTitle("INTRANET ECE PARIS-LYON");
         this.setLayout(new BorderLayout());
@@ -139,10 +137,24 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.setLocationRelativeTo(null);
         this.setResizable(true);
         this.setVisible(true);
-        this.getContentPane().add(choix(), BorderLayout.NORTH);
-        this.getContentPane().add(panelTout(), BorderLayout.CENTER);
+        this.maconnexion = new Connexion(database, "root", "root");
+        this.user = new Utilisateur();
+        this.id_salle = 1;
+        this.id_semaine = 22;
+        this.utilisateur = this.init(login, mdp);
 
-        this.ajoutListeners();
+        // pour fermer la fenetre
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent evt) {
+                System.exit(0);
+            }
+        });
+    }
+
+    public Utilisateur init(String login, String mdp) throws SQLException, ClassNotFoundException, Exception {
+        this.p1 = new JPanel();
+        this.panelGlobal = new JPanel();
         this.pan = new Panneau();
         this.panEnseignant = new PanneauEDTEnseignant();
         this.panSalle = new PanneauEDTSalle();
@@ -154,35 +166,51 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelEnseignant = new PanneauListeEnseignant();
         this.panelSeance = new PanneauListeSeance();
         this.panelRecap = new PanneauRecapCoursEnseignant();
+        this.panelRecap4 = new PanneauRecapCoursEtudiant();
 
-        // pour fermer la fenetre
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                System.exit(0);
-            }
-        });
-    }
-
-    public Utilisateur init(String login, String mdp) throws SQLException {
         System.out.println(login);
         utilisateur = getUtilisateur(login, mdp);
+        UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
+        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+        EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
         switch (utilisateur.getDroit()) {
             case 1:
                 System.out.println("Vous etes administrateur");
+                this.utilisateur = utilisateurdao.find(login);
+                this.getContentPane().add(choix(), BorderLayout.NORTH);
+                this.getContentPane().add(panelTout(), BorderLayout.CENTER);
+                this.ajoutListeners();
                 droit_acces = 1;
+                System.out.println("Email de l'utilisateur : (droit acces 1 et 2) " + utilisateur.getEmail());
+                System.out.println("Email du user : (droit acces 3 et 4) " + user.getEmail());
                 break;
             case 2:
                 System.out.println("Vous etes referent");
+                this.utilisateur = utilisateurdao.find(login);
+                this.getContentPane().add(choix(), BorderLayout.NORTH);
+                this.getContentPane().add(panelTout(), BorderLayout.CENTER);
+                this.ajoutListeners();
                 droit_acces = 2;
+                System.out.println("Email de l'utilisateur : (droit acces 1 et 2) " + utilisateur.getEmail());
+                System.out.println("Email du user : (droit acces 3 et 4) " + user.getEmail());
                 break;
             case 3:
                 System.out.println("Vous etes enseignant");
+                this.user = utilisateurdao.find(login);
                 droit_acces = 3;
+                System.out.println("Email du user : (droit acces 3 et 4) " + user.getEmail());
+                this.user = new Enseignant(this.user.getId(), this.user.getEmail(), this.user.getPasswd(), this.user.getNom(), this.user.getPrenom(), enseignantdao.find(user.getId()).getIdCours());
+                this.getContentPane().add(choix34(), BorderLayout.NORTH);
+                this.getContentPane().add(panelTout34(), BorderLayout.CENTER);
                 break;
             case 4:
                 System.out.println("Vous etes etudiant");
+                this.user = utilisateurdao.find(login);
                 droit_acces = 4;
+                this.user = new Etudiant(this.user.getId(), this.user.getEmail(), this.user.getPasswd(), this.user.getNom(), this.user.getPrenom(), etudiantdao.find(user.getId()).getNumero(), etudiantdao.find(user.getId()).getIdGroupe());
+                System.out.println("Email du user : (droit acces 3 et 4) " + user.getEmail());
+                this.getContentPane().add(choix34(), BorderLayout.NORTH);
+                this.getContentPane().add(panelTout34(), BorderLayout.CENTER);
                 break;
         }
         return utilisateur;
@@ -204,7 +232,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         listeSalles.addActionListener(this);
         listeEnseignants.addActionListener(this);
         listeSeances.addActionListener(this);
-        //recherche.addActionListener(this);
         recapEnseignants.addActionListener(this);
     }
 
@@ -216,7 +243,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
     private JPanel choix() {
         choix = new JPanel();
-        choix.setBackground(new Color(4, 116, 124));
+        choix.add(new JLabel(new ImageIcon(Fenetre.class.getResource("nord.png"))), BorderLayout.WEST);
+        //choix.setBackground(new Color(4, 116, 124));
         edt = new JButton("Emploi du Temps");
         edt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -229,8 +257,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 cardLayout.show(panelTout, listContent[1]);
             }
         });
-        choix.add(edt);
-        choix.add(maj);
+        choix.add(edt, BorderLayout.EAST);
+        choix.add(maj, BorderLayout.EAST);
         return choix;
     }
 
@@ -266,6 +294,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
 
         setSize(930, 610);
 
+        this.pan.removeAll();
+        this.panEnseignant.removeAll();
+        this.panSalle.removeAll();
+        this.panelGlobal.removeAll();
         for (int i = 1; i <= 52; i++) {
             int a = i;
             semaine = new JButton(a + "");
@@ -273,9 +305,9 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 public void actionPerformed(ActionEvent event) {
                     try {
                         pan.removeAll();
+                        panelGlobal.removeAll();
                         id_semaine = a;
                         pan = pan(user.getEmail(), id_semaine);
-                        panelGlobal.removeAll();
                         panelGlobal.add(pan);
                         System.out.println("Panneau EDT Semaine : " + a);
 
@@ -302,53 +334,49 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JMenuBar menuBar() {
         this.menuBar = new JMenuBar();
         this.menuBar.setBackground(new Color(4, 116, 124));
-        if (droit_acces == 1 || droit_acces == 2) {
-            this.logo = new JLabel(new ImageIcon(Fenetre.class.getResource("logo.png")));
-            this.logo.setPreferredSize(new Dimension(50, 100));
+        this.logo = new JLabel(new ImageIcon(Fenetre.class.getResource("logo.png")));
+        this.logo.setPreferredSize(new Dimension(50, 100));
 
-            //Menu Cours
-            cours.add(accueil);
-            cours.add(listeCours);
-            cours.add(listeSeances);
-            cours.add(recapCours);
-            cours.setBackground(new Color(4, 116, 124));
+        //Menu Cours
+        cours.add(accueil);
+        cours.add(listeCours);
+        cours.add(listeSeances);
+        cours.add(recapCours);
+        cours.setBackground(new Color(4, 116, 124));
 
-            //Menu Etudiants
-            etudiants.add(edtEtudiant);
-            etudiants.add(recapEtudiant);
-            etudiants.add(coursAnnules);
-            etudiants.add(listeEtudiants);
-            etudiants.setBackground(new Color(4, 116, 124));
+        //Menu Etudiants
+        etudiants.add(edtEtudiant);
+        etudiants.add(recapEtudiant);
+        etudiants.add(coursAnnules);
+        etudiants.add(listeEtudiants);
+        etudiants.setBackground(new Color(4, 116, 124));
 
-            //Menu Promotions
-            promotions.add(listePromotions);
-            promotions.add(listeGroupes);
-            promotions.add(listeIntervenants);
-            promotions.setBackground(new Color(4, 116, 124));
+        //Menu Promotions
+        promotions.add(listePromotions);
+        promotions.add(listeGroupes);
+        promotions.add(listeIntervenants);
+        promotions.setBackground(new Color(4, 116, 124));
 
-            //Menu Enseignants
-            enseignants.add(edtEnseignant);
-            enseignants.add(recapEnseignants);
-            enseignants.add(listeEnseignants);
-            enseignants.setBackground(new Color(4, 116, 124));
+        //Menu Enseignants
+        enseignants.add(edtEnseignant);
+        enseignants.add(recapEnseignants);
+        enseignants.add(listeEnseignants);
+        enseignants.setBackground(new Color(4, 116, 124));
 
-            //Menu Salles
-            salles.add(edtSalle);
-            salles.add(listeSalles);
-            salles.setBackground(new Color(4, 116, 124));
+        //Menu Salles
+        salles.add(edtSalle);
+        salles.add(listeSalles);
+        salles.setBackground(new Color(4, 116, 124));
 
-            //Ajout des menus dans la barre de menus
-            //menuBar.add(logo);
-            menuBar.add(cours);
-            menuBar.add(etudiants);
-            menuBar.add(promotions);
-            menuBar.add(enseignants);
-            menuBar.add(salles);
+        //Ajout des menus dans la barre de menus
+        //menuBar.add(logo);
+        menuBar.add(cours);
+        menuBar.add(etudiants);
+        menuBar.add(promotions);
+        menuBar.add(enseignants);
+        menuBar.add(salles);
 
-            return menuBar;
-        } else {
-            return menuBar;
-        }
+        return menuBar;
     }
 
     public void scroll(JPanel panneau) {
@@ -369,62 +397,68 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     }
 
     private JPanel p1() {
-        if (droit_acces == 1 || droit_acces == 2) {
-            // creation des boutons
-            recherche = new JButton("Search");
-            recherche.setHorizontalAlignment(JTextField.CENTER);
-            recherche.setBounds(10, 10, 10, 10);
+        // creation des boutons
+        recherche = new JButton("Search");
+        recherche.setHorizontalAlignment(JTextField.CENTER);
+        recherche.setBounds(10, 10, 10, 10);
 
-            p1 = new JPanel();
+        p1 = new JPanel();
 
-            String[] listegrille = {"En liste ", "En grille"};
-            cmbListeGrille = new JComboBox<String>(listegrille);
+        String[] listegrille = {"En liste ", "En grille"};
+        cmbListeGrille = new JComboBox<String>(listegrille);
 
-            String[] choixType = {"Etudiant", "Enseignant", "Salle"};
-            cmbChoixType = new JComboBox<String>(choixType);
-            cmbElement = new JComboBox<String>();
-            cmbChoixType.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    try {
-                        cmbElement.removeAllItems();
-                        switch (cmbChoixType.getSelectedIndex()) {
-                            case 0:
-                                for (Etudiant e : etudiantsDao()) {
-                                    getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
-                                }
-                                break;
-                            case 1:
-                                for (Enseignant e : enseignantsDao()) {
-                                    getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
-                                }
-                                break;
-                            default:
-                                for (Salle s : sallesDao()) {
-                                    getBarreRecherche().addItem(s.getNom());
-                                }
-                                break;
-                        }
-                    } catch (Exception ex) {
-                        Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+        String[] choixType = {"Etudiant", "Enseignant", "Salle"};
+        cmbChoixType = new JComboBox<String>(choixType);
+        cmbElement = new JComboBox<String>();
+        cmbChoixType.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    cmbElement.removeAllItems();
+                    switch (cmbChoixType.getSelectedIndex()) {
+                        case 0:
+                            for (Etudiant e : etudiantsDao()) {
+                                getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
+                            }
+                            break;
+                        case 1:
+                            for (Enseignant e : enseignantsDao()) {
+                                getBarreRecherche().addItem(e.getNom() + " " + e.getPrenom());
+                            }
+                            break;
+                        default:
+                            for (Salle s : sallesDao()) {
+                                getBarreRecherche().addItem(s.getNom());
+                            }
+                            break;
                     }
+                } catch (Exception ex) {
+                    Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
+            }
+        });
+        cmbElement.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                pan.removeAll();
+                panEnseignant.removeAll();
+                panSalle.removeAll();
+                panelGlobal.removeAll();
+                user = null;
+                id_salle = cmbElement.getSelectedIndex() + 1;
+            }
+        });
 
-            // ajout des objets graphqiues dans les panneaux 
-            p1.add(cmbListeGrille);
-            p1.add(cmbChoixType);
-            p1.add(cmbElement);
+        // ajout des objets graphqiues dans les panneaux 
+        p1.add(cmbListeGrille);
+        p1.add(cmbChoixType);
+        p1.add(cmbElement);
 
-            // ajout des listeners
-            recherche.addActionListener(this);
-            p1.add(recherche);
+        // ajout des listeners
+        recherche.addActionListener(this);
+        p1.add(recherche);
 
-            p1.setLayout(new GridLayout(1, 3));
+        p1.setLayout(new GridLayout(1, 3));
 
-            return p1;
-        } else {
-            return null;
-        }
+        return p1;
     }
 
     private JPanel panelGlobal() throws SQLException, ClassNotFoundException {
@@ -492,8 +526,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return this.panelSeance;
     }
 
-    private PanneauRecapCoursEnseignant panelRecap() throws SQLException, ClassNotFoundException, Exception {
-        this.panelRecap.remplirListe();
+    private PanneauRecapCoursEnseignant panelRecap(String login) throws SQLException, ClassNotFoundException, Exception {
+        this.panelRecap.remplirListe(login);
         return this.panelRecap;
     }
 
@@ -507,7 +541,61 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         this.panelSalle.setVisible(false);
         this.panelSeance.setVisible(false);
         this.panelRecap.setVisible(false);
+        this.panelRecap4.setVisible(false);
         this.panelGlobal.setVisible(false);
+    }
+
+    // ETUDIANT ET ENSEIGNANT
+    private JPanel choix34() {
+        choix34 = new JPanel();
+        choix34.add(new JLabel(new ImageIcon(Fenetre.class.getResource("nord.png"))), BorderLayout.WEST);
+        //choix.setBackground(new Color(4, 116, 124));
+        edt = new JButton("Emploi du Temps");
+        edt.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                cardLayout34.show(panelTout34, listContent34[0]);
+            }
+        });
+        maj = new JButton("Récapitulatif de mes cours");
+        maj.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                cardLayout34.show(panelTout34, listContent34[1]);
+            }
+        });
+        choix34.add(edt, BorderLayout.EAST);
+        choix34.add(maj, BorderLayout.EAST);
+        return choix34;
+    }
+
+    private JPanel panelTout34() throws SQLException, ClassNotFoundException, Exception {
+        cardLayout34 = new CardLayout();
+        panelTout34 = new JPanel();
+        panelTout34.setLayout(cardLayout34);
+        panelTout34.setBackground(new Color(4, 116, 124));
+        System.out.println(this.user.getEmail() + " " + this.id_semaine);
+
+        switch (droit_acces) {
+            case 3:
+                this.panEnseignant = this.panEnseignant(this.user.getEmail(), this.id_semaine);
+                this.panEnseignant.setVisible(true);
+                panelTout34.add(this.panEnseignant, listContent34[0]);
+                panelTout34.add(panelRecap(this.user.getEmail()), listContent34[1]);
+                break;
+            case 4:
+                this.pan = this.pan(this.user.getEmail(), this.id_semaine);
+                this.pan.setVisible(true);
+                panelTout34.add(this.pan, listContent34[0]);
+                panelTout34.add(panelRecap4(this.user.getEmail()), listContent34[1]);
+                break;
+        }
+
+        panelTout34.setVisible(true);
+        return panelTout34;
+    }
+
+    private PanneauRecapCoursEtudiant panelRecap4(String login) throws SQLException, ClassNotFoundException, Exception {
+        this.panelRecap4.remplirListe(login);
+        return this.panelRecap4;
     }
 
     // MISE A JOUR
@@ -863,32 +951,35 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         Object source = evt.getSource();
         if (source == recherche) {
             try {
+                this.panelGlobal.removeAll();
+                System.out.println(cmbChoixType.getSelectedIndex());
+                System.out.println(cmbElement.getSelectedIndex());
                 switch (cmbChoixType.getSelectedIndex()) {
                     case 0:
-                        UtilisateurDAO etudiantdao = new UtilisateurDAO(maconnexion);
-                        Utilisateur tempStudent = utilisateurDao().get(cmbElement.getSelectedIndex());
-                        Utilisateur student = etudiantdao.find(tempStudent.getId());
-                        this.user = student;
-                        System.out.println("EDT de " + student.getPrenom() + " " + student.getNom());
-                        this.pan = this.pan(user.getEmail(), id_semaine);
+                        UtilisateurDAO utilisateurdao = new UtilisateurDAO(maconnexion);
+                        EtudiantDAO etudiantdao = new EtudiantDAO(maconnexion);
+                        Etudiant tempStudent = etudiantsDao().get(cmbElement.getSelectedIndex());
+                        Etudiant student = etudiantdao.find(tempStudent.getId());
+                        this.user = utilisateurdao.find(student.getId());
+                        System.out.println("EDT de " + this.user.getPrenom() + " " + this.user.getNom());
+                        this.pan = this.pan(this.user.getEmail(), id_semaine);
                         this.pan.setVisible(true);
-                        this.panelGlobal.removeAll();
                         this.panelGlobal.add(this.pan, BorderLayout.CENTER);
                         panelGlobal.setVisible(true);
                         System.out.println("Panneau EDT Etudiant");
                         break;
                     case 1:
-                        UtilisateurDAO enseignantdao = new UtilisateurDAO(maconnexion);
-                        Utilisateur tempTeacher = utilisateurDao().get(cmbElement.getSelectedIndex());
-                        Utilisateur teacher = enseignantdao.find(tempTeacher.getId());
-                        this.user = teacher;
-                        System.out.println("EDT de " + teacher.getPrenom() + " " + teacher.getNom());
-                        this.panEnseignant = this.panEnseignant(user.getEmail(), id_semaine);
+                        UtilisateurDAO utilisateur1dao = new UtilisateurDAO(maconnexion);
+                        EnseignantDAO enseignantdao = new EnseignantDAO(maconnexion);
+                        Enseignant tempTeacher = enseignantsDao().get(cmbElement.getSelectedIndex());
+                        Enseignant teacher = enseignantdao.find(tempTeacher.getId());
+                        this.user = utilisateur1dao.find(teacher.getId());
+                        System.out.println("EDT de " + this.user.getPrenom() + " " + this.user.getNom());
+                        this.panEnseignant = this.panEnseignant(this.user.getEmail(), id_semaine);
                         this.panEnseignant.setVisible(true);
-                        this.panelGlobal.removeAll();
                         this.panelGlobal.add(this.panEnseignant, BorderLayout.CENTER);
                         panelGlobal.setVisible(true);
-                        System.out.println("Panneau EDT Etudiant");
+                        System.out.println("Panneau EDT Enseignant");
                         break;
                     default:
                         SalleDAO salledao = new SalleDAO(maconnexion);
@@ -897,7 +988,6 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                         System.out.println("EDT de " + salle.getNom());
                         this.panSalle = this.panSalle(salle.getId(), id_semaine);
                         this.panSalle.setVisible(true);
-                        this.panelGlobal.removeAll();
                         this.panelGlobal.add(this.panSalle, BorderLayout.CENTER);
                         panelGlobal.setVisible(true);
                         System.out.println("Panneau EDT Salle");
@@ -908,10 +998,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == edtEtudiant) {
+            this.panelGlobal.removeAll();
             try {
                 this.pan = this.pan(user.getEmail(), id_semaine);
                 this.pan.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.pan, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Etudiant");
@@ -921,10 +1011,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (source == edtEnseignant) {
+            this.panelGlobal.removeAll();
             try {
                 this.panelEnseignant = this.panelEnseignant();
                 this.panelEnseignant.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelEnseignant, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Enseignant");
@@ -936,9 +1026,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == edtSalle) {
             try {
-                this.panSalle = this.panSalle(id_salle, id_semaine);
-                this.panSalle.setVisible(true);
                 this.panelGlobal.removeAll();
+                this.panSalle = this.panSalle(this.id_salle, id_semaine);
+                this.panSalle.setVisible(true);
                 this.panelGlobal.add(this.panSalle, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau EDT Salle");
@@ -950,9 +1040,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listePromotions) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelPromotion = this.panelPromotion();
                 this.panelPromotion.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelPromotion, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Promotions");
@@ -965,9 +1055,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeGroupes) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelGroupe = this.panelGroupe();
                 this.panelGroupe.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelGroupe, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Groupes");
@@ -980,9 +1070,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeEtudiants) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelEtudiant = this.panelEtudiant();
                 this.panelEtudiant.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelEtudiant, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Etudiants");
@@ -995,9 +1085,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeSalles) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelSalle = this.panelSalle();
                 this.panelSalle.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelSalle, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Salles");
@@ -1010,9 +1100,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeEnseignants) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelEnseignant = this.panelEnseignant();
                 this.panelEnseignant.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelEnseignant, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Enseignants");
@@ -1025,9 +1115,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeIntervenants) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelIntervenants = this.panelIntervenants();
                 this.panelIntervenants.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelIntervenants, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Intervenants");
@@ -1038,9 +1128,9 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == listeSeances) {
             try {
+                this.panelGlobal.removeAll();
                 this.panelSeance = this.panelSeance();
                 this.panelSeance.setVisible(true);
-                this.panelGlobal.removeAll();
                 this.panelGlobal.add(this.panelSeance, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Panneau Liste Seances");
@@ -1053,9 +1143,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
             }
         } else if (source == recapEnseignants) {
             try {
-                this.panelRecap = this.panelRecap();
-                this.panelRecap.setVisible(true);
                 this.panelGlobal.removeAll();
+                this.panelRecap.removeAll();
+                this.panelRecap = this.panelRecap(this.user.getEmail());
+                this.panelRecap.setVisible(true);
                 this.panelGlobal.add(this.panelRecap, BorderLayout.CENTER);
                 panelGlobal.setVisible(true);
                 System.out.println("Recap des cours de l'enseignant");
