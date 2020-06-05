@@ -157,68 +157,70 @@ public class PanneauEDTSalle extends JPanel {
             int n = 1;
             int m = 1;
 
-            switch (nouvelle.get(j).getHeureDebut()) {
-                case 8:
-                    n = 1;
-                    break;
-                case 9:
-                    n = 2;
-                    break;
-                case 10:
-                    n = 3;
-                    break;
-                case 11:
-                    n = 4;
-                    break;
-                case 12:
-                    n = 5;
-                    break;
-                case 13:
-                    n = 6;
-                    break;
-                case 14:
-                    n = 7;
-                    break;
-                case 15:
-                    n = 8;
-                    break;
-                case 16:
-                    n = 9;
-                    break;
-                case 17:
-                    n = 10;
-                    break;
-                case 18:
-                    n = 11;
-                    break;
-                case 19:
-                    n = 12;
-                    break;
-                case 20:
-                    n = 13;
-                    break;
-            }
+            if (nouvelle.get(j).getSemaine() == semaine) {
+                switch (nouvelle.get(j).getHeureDebut()) {
+                    case 8:
+                        n = 1;
+                        break;
+                    case 9:
+                        n = 2;
+                        break;
+                    case 10:
+                        n = 3;
+                        break;
+                    case 11:
+                        n = 4;
+                        break;
+                    case 12:
+                        n = 5;
+                        break;
+                    case 13:
+                        n = 6;
+                        break;
+                    case 14:
+                        n = 7;
+                        break;
+                    case 15:
+                        n = 8;
+                        break;
+                    case 16:
+                        n = 9;
+                        break;
+                    case 17:
+                        n = 10;
+                        break;
+                    case 18:
+                        n = 11;
+                        break;
+                    case 19:
+                        n = 12;
+                        break;
+                    case 20:
+                        n = 13;
+                        break;
+                }
 
-            switch (nouvelle.get(j).dateToInt()) {
-                case 2:
-                    m = 2;
-                    break;
-                case 3:
-                    m = 3;
-                    break;
-                case 4:
-                    m = 4;
-                    break;
-                case 5:
-                    m = 5;
-                    break;
-                case 6:
-                    m = 6;
-                    break;
-            }
+                switch (nouvelle.get(j).dateToInt()) {
+                    case 2:
+                        m = 2;
+                        break;
+                    case 3:
+                        m = 3;
+                        break;
+                    case 4:
+                        m = 4;
+                        break;
+                    case 5:
+                        m = 5;
+                        break;
+                    case 6:
+                        m = 6;
+                        break;
+                }
 
-            seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-            this.add(seancelabel);
+                seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+                this.add(seancelabel);
+            }
         }
     }
 

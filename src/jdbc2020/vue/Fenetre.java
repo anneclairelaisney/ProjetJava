@@ -55,7 +55,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private int id_semaine;
 
     private CardLayout cardLayout, cardLayout34;
-    private JPanel panelTout, panelTout34, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons;
+    private JPanel panelTout, panelTout34, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons, recap34, edt34;
     private JPanel choix, choix34, panelGeneral;
     private JButton edt, maj;
     private String[] listContent = {"EDT", "MAJ"}, listContent34 = {"EDT", "RECAP"};
@@ -100,7 +100,7 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JButton recherche;
 
     /* EDT */
-    private JPanel north;
+    private JPanel north, north34;
     private Panneau pan;
     private PanneauEDTEnseignant panEnseignant;
     private PanneauEDTSalle panSalle;
@@ -549,7 +549,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JPanel choix34() {
         choix34 = new JPanel();
         choix34.add(new JLabel(new ImageIcon(Fenetre.class.getResource("nord.png"))), BorderLayout.WEST);
-        //choix.setBackground(new Color(4, 116, 124));
         edt = new JButton("Emploi du Temps");
         edt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -572,25 +571,106 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         panelTout34 = new JPanel();
         panelTout34.setLayout(cardLayout34);
         panelTout34.setBackground(new Color(4, 116, 124));
-        System.out.println(this.user.getEmail() + " " + this.id_semaine);
 
-        switch (droit_acces) {
-            case 3:
-                this.panEnseignant = this.panEnseignant(this.user.getEmail(), this.id_semaine);
-                this.panEnseignant.setVisible(true);
-                panelTout34.add(this.panEnseignant, listContent34[0]);
-                panelTout34.add(panelRecap(this.user.getEmail()), listContent34[1]);
-                break;
-            case 4:
-                this.pan = this.pan(this.user.getEmail(), this.id_semaine);
-                this.pan.setVisible(true);
-                panelTout34.add(this.pan, listContent34[0]);
-                panelTout34.add(panelRecap4(this.user.getEmail()), listContent34[1]);
-                break;
-        }
+        panelTout34.add(edt34(this.user.getEmail()), listContent34[0]);
+        panelTout34.add(recap34(this.user.getEmail()), listContent34[1]);
 
         panelTout34.setVisible(true);
         return panelTout34;
+    }
+
+    private JPanel north34() {
+        north34 = new JPanel();
+        switch (droit_acces) {
+            case 3:
+                for (int i = 1; i <= 52; i++) {
+                    int a = i;
+                    semaine = new JButton(a + "");
+                    semaine.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent event) {
+                            try {
+                                pan.removeAll();
+                                id_semaine = a;
+                                panEnseignant = panEnseignant(user.getEmail(), id_semaine);
+                                System.out.println(user.getEmail() + " " + id_semaine);
+                                edt34.add(panEnseignant, BorderLayout.CENTER);
+                                System.out.println("Panneau EDT Semaine : " + a);
+
+                            } catch (SQLException | ClassNotFoundException ex) {
+                                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+                    north34.add(semaine);
+                }
+                break;
+            case 4:
+                for (int i = 1; i <= 52; i++) {
+                    int a = i;
+                    semaine = new JButton(a + "");
+                    semaine.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent event) {
+                            try {
+                                pan.removeAll();
+                                id_semaine = a;
+                                pan = pan(user.getEmail(), id_semaine);
+                                System.out.println(user.getEmail() + " " + id_semaine);
+                                edt34.add(pan, BorderLayout.CENTER);
+                                System.out.println("Panneau EDT Semaine : " + a);
+
+                            } catch (SQLException | ClassNotFoundException ex) {
+                                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+                    north34.add(semaine);
+                }
+                break;
+        }
+
+        north34.setLayout(new GridLayout(2, 26));
+        north34.setBackground(new Color(4, 116, 124));
+        return north34;
+    }
+
+    private JPanel edt34(String login) throws ClassNotFoundException, Exception {
+        edt34 = new JPanel();
+        edt34.setLayout(new BorderLayout());
+        edt34.add(north34(), BorderLayout.NORTH);
+
+        switch (droit_acces) {
+            case 3:
+                this.panEnseignant = this.panEnseignant(login, this.id_semaine);
+                this.panEnseignant.setVisible(true);
+                this.edt34.add(this.panEnseignant, BorderLayout.CENTER);
+                break;
+            case 4:
+                this.pan = this.pan(login, this.id_semaine);
+                this.pan.setVisible(true);
+                this.edt34.add(this.pan, BorderLayout.CENTER);
+                break;
+        }
+        return edt34;
+    }
+
+    private JPanel recap34(String login) throws ClassNotFoundException, Exception {
+        recap34 = new JPanel();
+        recap34.setLayout(new BorderLayout());
+        recap34.add(north34(), BorderLayout.NORTH);
+
+        switch (droit_acces) {
+            case 3:
+                this.recap34.add(this.panelRecap(login), BorderLayout.CENTER);
+                break;
+            case 4:
+                this.recap34.add(this.panelRecap4(login), BorderLayout.CENTER);
+                break;
+        }
+        return recap34;
     }
 
     private PanneauRecapCoursEtudiant panelRecap4(String login) throws SQLException, ClassNotFoundException, Exception {
@@ -949,7 +1029,10 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
     @SuppressWarnings("CallToThreadDumpStack")
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
-        if (source == recherche) {
+        if (source == accueil) {
+            this.panelGlobal.removeAll();
+            
+        } else if (source == recherche) {
             try {
                 this.panelGlobal.removeAll();
                 System.out.println(cmbChoixType.getSelectedIndex());

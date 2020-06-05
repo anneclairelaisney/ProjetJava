@@ -85,11 +85,11 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
 
         TableColumn col1 = table.getColumnModel().getColumn(0);
-        col1.setPreferredWidth(150);
+        col1.setPreferredWidth(200);
         TableColumn col2 = table.getColumnModel().getColumn(1);
-        col2.setPreferredWidth(150);
+        col2.setPreferredWidth(200);
         TableColumn col3 = table.getColumnModel().getColumn(2);
-        col3.setPreferredWidth(150);
+        col3.setPreferredWidth(200);
         TableColumn col4 = table.getColumnModel().getColumn(3);
         col4.setPreferredWidth(50);
         TableColumn col5 = table.getColumnModel().getColumn(4);
@@ -159,6 +159,12 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         table.setBorder(blackline);
         table.getTableHeader().setSize(20, 20);
         UIManager.put("Table.alternateRowColor", new Color(255, 255, 204));
+        DefaultTableCellRenderer custom = new DefaultTableCellRenderer();
+        custom.setHorizontalAlignment(JLabel.CENTER); // centre les données de ton tableau
+        for (int i = 0; i < table.getColumnCount(); i++) // centre chaque cellule de ton tableau
+        {
+            table.getColumnModel().getColumn(i).setCellRenderer(custom);
+        }
         table.setRowHeight(30);
         table.setRowMargin(13);
         a.add(table.getTableHeader(), BorderLayout.NORTH);
