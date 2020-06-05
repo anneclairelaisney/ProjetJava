@@ -62,7 +62,7 @@ public class EtudiantDAO extends DAO<Etudiant> {
         try {
             ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Etudiant WHERE id_utilisateur = " + id);
             if (rset.first()) {
-                etudiant = new Etudiant(rset.getInt("id_utilisateur"), rset.getString("nom"), rset.getString("prenom"), rset.getString("email"), rset.getString("passwd"), rset.getInt("numero"), rset.getInt("id_groupe"));
+                etudiant = new Etudiant(id, rset.getInt("numero"), rset.getInt("id_groupe"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

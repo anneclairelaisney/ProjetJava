@@ -20,6 +20,12 @@ public class Enseignant extends Utilisateur {
     
     // Constructeurs
     public Enseignant() {}
+    public Enseignant (int id, int id_cours) {
+        this.id = id;
+        this.idCours = id_cours;
+        this.droit = 3;
+    }
+    
     public Enseignant (int id, String email, String passwd, String nom, String prenom) {
         this.id = id;
         this.email = email;

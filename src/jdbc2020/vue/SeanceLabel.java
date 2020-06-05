@@ -80,11 +80,20 @@ public class SeanceLabel extends JButton {
         return ss;
     }
 
-    public ArrayList<SeanceSalles> ss(int id_salle) throws SQLException {
+    public ArrayList<SeanceSalles> ss(int id_seance) throws SQLException {
+        ArrayList<SeanceSalles> ss = new ArrayList();
+        ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_salle FROM Seance_Salles WHERE id_seance = " + id_seance);
+        while (rset1.next()) {
+            ss.add(new SeanceSalles(id_seance,rset1.getInt("id_salle")));
+        }
+        return ss;
+    }
+    
+    public ArrayList<SeanceSalles> ssSalles(int id_salle) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_seance FROM Seance_Salles WHERE id_salle = " + id_salle);
         while (rset1.next()) {
-            ss.add(new SeanceSalles(rset1.getInt("id_seance"), id_salle));
+            ss.add(new SeanceSalles(rset1.getInt("id_seance"),id_salle));
         }
         return ss;
     }

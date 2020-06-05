@@ -5,9 +5,12 @@
         <group>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/SeanceLabel.java</file>
             <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/Fenetre.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/PanneauEDTEnseignant.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/Panneau.java</file>
-            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/controleur/Controleur.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/vue/PanneauRecapCoursEnseignant.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/dao/CoursDAO.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/modele/Etudiant.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/dao/UtilisateurDAO.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/dao/EnseignantDAO.java</file>
+            <file>file:/Applications/MAMP/htdocs/ProjetJava/ProjetJava/src/jdbc2020/dao/DAO.java</file>
         </group>
     </open-files>
 </project-private>

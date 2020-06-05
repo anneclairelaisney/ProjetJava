@@ -32,7 +32,7 @@ import jdbc2020.dao.*;
  *
  * @author segado
  */
-public class PanneauRecapCoursEnseignant extends JPanel {
+public class PanneauRecapCoursEtudiant extends JPanel {
 
     //Attributs
     /* CONNEXION */
@@ -41,8 +41,7 @@ public class PanneauRecapCoursEnseignant extends JPanel {
     private String login;
 
     // Constructeur
-
-    public PanneauRecapCoursEnseignant() throws SQLException, ClassNotFoundException {
+    public PanneauRecapCoursEtudiant() throws SQLException, ClassNotFoundException {
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
@@ -54,30 +53,23 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         Border blackline, raisedetched, loweredetched,
                 raisedbevel, loweredbevel, empty;
 
-        blackline = BorderFactory.createLineBorder(Color.white);
+        /*blackline = BorderFactory.createLineBorder(Color.white);
         raisedetched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         raisedbevel = BorderFactory.createRaisedBevelBorder();
         loweredbevel = BorderFactory.createLoweredBevelBorder();
 
+        SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
         SeanceLabel seancelabel = new SeanceLabel();
-        SeanceEnseignantsDAO seancesesdao = new SeanceEnseignantsDAO(this.maconnexion);
-        GroupeDAO groupedao = new GroupeDAO(this.maconnexion);
-        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
+        ArrayList<SeanceGroupes> sgs = seancelabel.sgLogin(login);
         UtilisateurDAO userdao = new UtilisateurDAO(this.maconnexion);
-
-        Enseignant e = enseignantdao.find(login);
-        Utilisateur u = userdao.find(login);
-        System.out.println(u.getEmail());
-        ArrayList < Cours > scs = seancelabel.cours(u.getId());
-        ArrayList<Seance> nouvelle = seancesesdao.findSeance(login);
 
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Matière - Public");
-        model.addColumn("Première Séance");
-        model.addColumn("Dernière Séance");
-        model.addColumn("Durée");
-        model.addColumn("Nb");
+        model.addColumn("Date");
+        model.addColumn("Enseignants");
+        model.addColumn("Groupes");
+        model.addColumn("Type de Cours");
         JTable table = new JTable(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -91,9 +83,9 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         TableColumn col3 = table.getColumnModel().getColumn(2);
         col3.setPreferredWidth(150);
         TableColumn col4 = table.getColumnModel().getColumn(3);
-        col4.setPreferredWidth(50);
+        col4.setPreferredWidth(150);
         TableColumn col5 = table.getColumnModel().getColumn(4);
-        col5.setPreferredWidth(50);
+        col5.setPreferredWidth(150);
 
         JPanel a = new JPanel();
         a.setLayout(new BorderLayout());
@@ -145,7 +137,7 @@ public class PanneauRecapCoursEnseignant extends JPanel {
                     }
                     weekDay += " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1);
 
-                    model.addRow(new Object[]{cours.getNom() + " " + groupe.getNom(), weekDay + " " + seance.getHeureDebut() + "h à " + seance.getHeureFin() + "h", weekDay + " " + seance.getHeureDebut() + "h à " + seance.getHeureFin() + "h", compteur + "h", compteur});
+                    model.addRow(new Object[]{cours.getNom(), weekDay + " " + seance.getHeureDebut() + "h à " + seance.getHeureFin() + "h", 1, 1, 1});
                 }
             }
         }
@@ -166,7 +158,7 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         a.setVisible(true);
         table.getTableHeader().setVisible(true);
         table.setVisible(true);
-        this.add(a);
+        this.add(a);*/
     }
 
     public void paintComponent(Graphics g) {

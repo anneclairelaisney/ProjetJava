@@ -15,7 +15,7 @@ import jdbc2020.controleur.*;
 
 public abstract class DAO<T> {
     
-  protected Connexion connect = null;
+  protected Connexion connect;
    
   public DAO(Connexion conn){
     this.connect = conn;
