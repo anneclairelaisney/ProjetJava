@@ -18,13 +18,33 @@ public class Etudiant extends Utilisateur {
     private int idGroupe;
     
     // Constructeurs
+
+    /**
+     *Constructeur Etudiant sans paramètres
+     */
     public Etudiant() {}
+
+    /**
+     *
+     * @param id
+     * @param numero
+     * @param id_groupe
+     */
     public Etudiant (int id, int numero, int id_groupe) {
         this.id = id;
         this.numero = numero;
         this.idGroupe = id_groupe;
         this.droit = 4;
     }
+
+    /**
+     *
+     * @param id
+     * @param email
+     * @param passwd
+     * @param nom
+     * @param prenom
+     */
     public Etudiant (int id, String email, String passwd, String nom, String prenom) {
         this.id = id;
         this.email = email;
@@ -33,6 +53,17 @@ public class Etudiant extends Utilisateur {
         this.prenom = prenom;
         this.droit = 4;
     }
+
+    /**
+     *
+     * @param id
+     * @param email
+     * @param passwd
+     * @param nom
+     * @param prenom
+     * @param numero
+     * @param id_groupe
+     */
     public Etudiant (int id, String email, String passwd, String nom, String prenom, int numero, int id_groupe) {
         this.id = id;
         this.email = email;
@@ -45,38 +76,29 @@ public class Etudiant extends Utilisateur {
     }
     
     // Accesseurs
-    public int getId() {
-        return this.id;
-    }
-    
-    public String getEmail() {
-        return this.email;
-    }
-    
-    public String getPasswd() {
-        return this.passwd;
-    }
-    
-    public String getNom() {
-        return this.nom;
-    }
-    
-    public String getPrenom() {
-        return this.prenom;
-    }
-    
-    public int getDroit() {
-        return this.droit;
-    }
+
+    /**
+     *
+     * @return
+     */
     public int getNumero() {
         return this.numero;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getIdGroupe() {
         return this.idGroupe;
     }
     
     // Manipulateurs
+
+    /**
+     *
+     * @param num
+     */
     public void setNumero(int num) {
         this.numero = num;
     }

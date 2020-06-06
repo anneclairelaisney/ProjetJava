@@ -36,6 +36,11 @@ public class SeanceLabel extends JButton {
     private ArrayList<Salle> salles;
     private ArrayList<Groupe> groupes;
 
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public SeanceLabel() throws SQLException, ClassNotFoundException {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
@@ -53,6 +58,14 @@ public class SeanceLabel extends JButton {
     }
 
     /* EDT ETUDIANT */
+
+    /**
+     *
+     * @param s
+     * @return
+     * @throws SQLException
+     */
+
     public ArrayList<SeanceGroupes> sg(Seance s) throws SQLException {
         ArrayList<SeanceGroupes> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_seance = " + s.getId());
@@ -62,6 +75,12 @@ public class SeanceLabel extends JButton {
         return sg;
     }
 
+    /**
+     *
+     * @param login
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceGroupes> sgLogin(String login) throws SQLException {
         ArrayList<SeanceGroupes> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_groupe=(SELECT id_groupe FROM Etudiant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
@@ -71,6 +90,12 @@ public class SeanceLabel extends JButton {
         return sg;
     }
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceSalles> ss(Seance s) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Salles WHERE id_seance = " + s.getId());
@@ -80,6 +105,12 @@ public class SeanceLabel extends JButton {
         return ss;
     }
 
+    /**
+     *
+     * @param id_seance
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceSalles> ss(int id_seance) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_salle FROM Seance_Salles WHERE id_seance = " + id_seance);
@@ -89,6 +120,12 @@ public class SeanceLabel extends JButton {
         return ss;
     }
     
+    /**
+     *
+     * @param id_salle
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceSalles> ssSalles(int id_salle) throws SQLException {
         ArrayList<SeanceSalles> ss = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_seance FROM Seance_Salles WHERE id_salle = " + id_salle);
@@ -98,6 +135,12 @@ public class SeanceLabel extends JButton {
         return ss;
     }
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Site> site(Seance s) throws SQLException {
         ArrayList<Site> site = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Site WHERE id = " + s.getId());
@@ -107,6 +150,12 @@ public class SeanceLabel extends JButton {
         return site;
     }
 
+    /**
+     *
+     * @param i
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Cours> cours(int i) throws SQLException {
         ArrayList<Cours> cours = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours FROM Enseignant WHERE id_utilisateur = " + i +")");
@@ -116,6 +165,12 @@ public class SeanceLabel extends JButton {
         return cours;
     }
     
+    /**
+     *
+     * @param id_salle
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Site> site(int id_salle) throws SQLException {
         ArrayList<Site> site = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Site WHERE id = " + id_salle);
@@ -125,12 +180,22 @@ public class SeanceLabel extends JButton {
         return site;
     }
 
+    /**
+     *
+     * @param s
+     * @throws SQLException
+     */
     public void remplir(String s) throws SQLException {
         this.boite = new JLabel(s);
         boite.setHorizontalAlignment(SwingConstants.CENTER);
         this.p0.add(boite);
     }
 
+    /**
+     *
+     * @param i
+     * @throws SQLException
+     */
     public void remplirSeance(int i) throws SQLException {
         this.cours = new JLabel();
         DAO<Seance> seanceDAO = new SeanceDAO(this.maconnexion);
@@ -150,6 +215,14 @@ public class SeanceLabel extends JButton {
     }
 
     /* EDT ENSEIGNANT */
+
+    /**
+     *
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+
     
     public ArrayList<SeanceGroupes> sgE(int id) throws SQLException {
         ArrayList<SeanceGroupes> ss = new ArrayList();
@@ -160,6 +233,12 @@ public class SeanceLabel extends JButton {
         return ss;
     }
     
+    /**
+     *
+     * @param login
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceEnseignants> se(String login) throws SQLException {
         ArrayList<SeanceEnseignants> se = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Enseignants WHERE id_enseignant=(SELECT id FROM Utilisateur WHERE email ='" + login + "')");
@@ -169,6 +248,12 @@ public class SeanceLabel extends JButton {
         return se;
     }
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<SeanceGroupes> seG(Seance s) throws SQLException {
         ArrayList<SeanceGroupes> se = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Groupes WHERE id_seance=" + s.getId());
@@ -178,6 +263,12 @@ public class SeanceLabel extends JButton {
         return se;
     }
 
+    /**
+     *
+     * @param login
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Cours> sgEnseignant(String login) throws SQLException {
         ArrayList<Cours> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours FROM Enseignant WHERE id_utilisateur =(SELECT id FROM Utilisateur WHERE email ='" + login + "'))");
@@ -188,6 +279,14 @@ public class SeanceLabel extends JButton {
     }
     
     /* EDT Salle */
+
+    /**
+     *
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+
     public ArrayList<SeanceEnseignants> seSalle(int id) throws SQLException {
         ArrayList<SeanceEnseignants> se = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Seance_Enseignants WHERE id_seance=" + id);
@@ -197,6 +296,12 @@ public class SeanceLabel extends JButton {
         return se;
     }
     
+    /**
+     *
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Cours> scSalle(int id) throws SQLException {
         ArrayList<Cours> sg = new ArrayList();
         ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id=(SELECT id_cours from Seance where id=" + id + ")");
@@ -207,6 +312,11 @@ public class SeanceLabel extends JButton {
     }
 
     // ACCESSEURS 
+
+    /**
+     *
+     * @return
+     */
     public Seance getSeance() {
         return this.seance;
     }

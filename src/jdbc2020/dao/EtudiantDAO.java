@@ -20,6 +20,11 @@ import java.util.ArrayList;
 public class EtudiantDAO extends DAO<Etudiant> {
 
     // Constructeur
+
+    /**
+     *
+     * @param conn
+     */
     public EtudiantDAO(Connexion conn) {
         super(conn);
     }
@@ -76,6 +81,11 @@ public class EtudiantDAO extends DAO<Etudiant> {
         }
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Etudiant> getAllStudents() throws Exception {
         ArrayList<Etudiant> listTemp = new ArrayList<>();
         ArrayList<Etudiant> list = new ArrayList<>();

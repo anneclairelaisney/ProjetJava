@@ -19,6 +19,12 @@ import java.util.ArrayList;
  */
 public class EnseignantDAO extends DAO<Enseignant> {
 
+    /**
+     *
+     * @param conn
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public EnseignantDAO(Connexion conn) throws SQLException, ClassNotFoundException {
         super(conn);
     }
@@ -71,6 +77,12 @@ public class EnseignantDAO extends DAO<Enseignant> {
         return enseignant;
     }
 
+    /**
+      *Récupérer l'intégralité des enseignants de la BDD
+     * @param login
+     * @return ArrayList
+     * @throws SQLException
+     */
     public ArrayList<Enseignant> findEnseignant(String login) throws SQLException {
         Enseignant x = null;
         System.out.println("login : " + login);
@@ -103,18 +115,29 @@ public class EnseignantDAO extends DAO<Enseignant> {
         return ens;
     }
 
+    /**
+     *
+     * @param login
+     * @return Enseignant
+     * @throws SQLException
+     */
     public Enseignant find(String login) throws SQLException {
         Enseignant enseignant = null;
         ArrayList<Enseignant> ens = findEnseignant(login);
 
         for (Enseignant e : ens) {
-            if (e.getEmail() == login) {
+            if (e.getEmail().equals(login)) {
                 return e;
             }
         }
         return enseignant;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Enseignant> getAllTeachers() throws Exception {
         ArrayList<Enseignant> listTemp = new ArrayList<>();
         ArrayList<Enseignant> list = new ArrayList<>();

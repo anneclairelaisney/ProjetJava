@@ -29,12 +29,23 @@ public class PanneauEDTSalle extends JPanel {
     private Connexion maconnexion;
     private int id_salle;
 
+    /**
+     *
+     */
     public PanneauEDTSalle() {
         this.setLayout(null);
         this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
+    /**
+     *
+     * @param id_salle
+     * @param semaine
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public void remplirEDT(int id_salle, int semaine) throws SQLException, ClassNotFoundException, Exception {
         this.id_salle = id_salle;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
