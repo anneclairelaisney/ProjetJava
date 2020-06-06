@@ -43,9 +43,9 @@ public class Connexion {
     /**
      * Constructeur avec 3 paramètres : nom, login et password de la BDD locale
      *
-     * @param jdbc2020
-     * @param root
-     * @param root
+     * @param loginDatabase
+     * @param nameDatabase
+     * @param passwordDatabase
      * @throws java.sql.SQLException
      * @throws java.lang.ClassNotFoundException
      */
@@ -179,14 +179,28 @@ public class Connexion {
        stmt.executeUpdate(requeteMaj);
     }
 
+    /**
+     *
+     * @param TYPE_SCROLL_INSENSITIVE
+     * @param CONCUR_READ_ONLY
+     * @return
+     */
     public Object createStatement(int TYPE_SCROLL_INSENSITIVE, int CONCUR_READ_ONLY) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    /**
+     *
+     * @return
+     */
     public ResultSet getResultSet() {
         return this.rset;
     }
     
+    /**
+     *
+     * @return
+     */
     public Statement getStatement() {
         return this.stmt;
     }

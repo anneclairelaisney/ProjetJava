@@ -57,8 +57,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private CardLayout cardLayout, cardLayout34;
     private JPanel panelTout, panelTout34, panelEmploiduTemps, panelMiseAJour, panelMiseAJourBoutons, recap34, edt34;
     private JPanel choix, choix34, panelGeneral;
-    private JButton edt, maj;
-    private String[] listContent = {"EDT", "MAJ"}, listContent34 = {"EDT", "RECAP"};
+    private JButton edt, maj, deco;
+    private String[] listContent = {"EDT", "MAJ", "DECO"}, listContent34 = {"EDT", "RECAP", "DECO"};
     ;
 
     /* MENU */
@@ -128,6 +128,16 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
     private JDateTextField dateChoix;
 
     // Constructeur
+
+    /**
+     *
+     * @param login
+     * @param mdp
+     * @param database
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public Fenetre(String login, String mdp, String database) throws SQLException, ClassNotFoundException, Exception {
         super("Projet d'utilisation de JDBC dans MySQL");
         this.setSize(1200, 750);
@@ -152,6 +162,15 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         });
     }
 
+    /**
+     *
+     * @param login
+     * @param mdp
+     * @return Utilisateur
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public Utilisateur init(String login, String mdp) throws SQLException, ClassNotFoundException, Exception {
         this.p1 = new JPanel();
         this.panelGlobal = new JPanel();
@@ -216,7 +235,9 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return utilisateur;
     }
 
-    // ajout des listeners
+    /**
+     *Ajout de tous les listeners de l'objet Fenetre (JButtons, JMenuBar, JMenu, JMenuItem)
+     */
     public void ajoutListeners() {
         accueil.addActionListener(this);
         ajouter.addActionListener(this);
@@ -257,8 +278,17 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
                 cardLayout.show(panelTout, listContent[1]);
             }
         });
+        deco = new JButton("Se déconnecter");
+        deco.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                cardLayout.show(panelTout, listContent[2]);
+                new PageConnexion();
+                dispose();
+            }
+        });
         choix.add(edt, BorderLayout.EAST);
         choix.add(maj, BorderLayout.EAST);
+        choix.add(deco, BorderLayout.EAST);
         return choix;
     }
 
@@ -269,7 +299,6 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         panelTout.setBackground(new Color(4, 116, 124));
         panelTout.add(panelEmploiduTemps(), listContent[0]);
         panelTout.add(panelMiseAJour(), listContent[1]);
-
         panelTout.setVisible(true);
         return panelTout;
     }
@@ -304,11 +333,27 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
             semaine.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     try {
-                        pan.removeAll();
-                        panelGlobal.removeAll();
                         id_semaine = a;
-                        pan = pan(user.getEmail(), id_semaine);
-                        panelGlobal.add(pan);
+                        switch (user.getDroit()) {
+                            case 3:
+                                panEnseignant.removeAll();
+                                panelGlobal.removeAll();
+                                panEnseignant = panEnseignant(user.getEmail(), id_semaine);
+                                panelGlobal.add(panEnseignant);
+                                break;
+                            case 4:
+                                pan.removeAll();
+                                panelGlobal.removeAll();
+                                pan = pan(user.getEmail(), id_semaine);
+                                panelGlobal.add(pan);
+                                break;
+                            default:
+                                panSalle.removeAll();
+                                panelGlobal.removeAll();
+                                panSalle = panSalle(id_salle, id_semaine);
+                                panelGlobal.add(panSalle);
+                                break;
+                        }
                         System.out.println("Panneau EDT Semaine : " + a);
 
                     } catch (SQLException | ClassNotFoundException ex) {
@@ -379,6 +424,10 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return menuBar;
     }
 
+    /**
+     *
+     * @param panneau
+     */
     public void scroll(JPanel panneau) {
         this.jsp = new JScrollPane(panneau);
         this.jvp = new JViewport();
@@ -531,6 +580,8 @@ public class Fenetre extends JFrame implements ActionListener, ItemListener {
         return this.panelRecap;
     }
 
+    /**Instancie "false" à la méthode setVisible de chacun des JPanel contenu dans panelGlobal
+     */
     public void setInvisible() {
         this.pan.setVisible(false);
         this.panelEnseignant.setVisible(false);
@@ -708,6 +759,13 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
     disponible(s) à ce créneau horaire, la (les) salle(s) disponible(s) dont la capacité est suffisante, l’état (« en cours de validation » ou 
     « validé »), le cours et le type de cours. 
     Remarque : pour la même séance, il ne peut pas y avoir de doublon de groupe, d’enseignant et de salle.*/
+
+    /**
+     *Ajout d'une Seance via une Fenetre
+     * @return JFrame
+     * @throws Exception
+     */
+
     public JFrame ajoutSeance() throws Exception {
         ajoutSeance = new JFrame();
         ajoutSeance.setSize(400, 300);
@@ -720,23 +778,24 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
 
         panelMajSeance = new JPanel();
         panelMajSeance.setLayout(new GridLayout(9, 2));
+        
+        
+        SalleDAO salledao = new SalleDAO(this.maconnexion);
 
         ArrayList<Salle> salles = new ArrayList<>();
         ArrayList<Enseignant> enseignants = new ArrayList<>();
         ArrayList<Groupe> groupes = new ArrayList<>();
-        SalleDAO salledao = new SalleDAO(this.maconnexion);
         salles = salledao.getAllSalles();
         EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
         enseignants = enseignantdao.getAllTeachers();
         GroupeDAO groupeDao = new GroupeDAO(this.maconnexion);
-        groupes = new ArrayList<>();
         groupes = groupeDao.getAllGroupes();
 
-        groupeG = new ArrayList<JCheckBox>();
+        groupeG = new ArrayList<>();
         JPanel panelG = new JPanel();
-        groupeE = new ArrayList<JCheckBox>();
+        groupeE = new ArrayList<>();
         JPanel panelE = new JPanel();
-        groupeS = new ArrayList<JCheckBox>();
+        groupeS = new ArrayList<>();
         JPanel panelS = new JPanel();
 
         for (Groupe g : groupes) {
@@ -808,6 +867,13 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
     }
 
     /* Modifier le cours (son nom ou son type) dans une séance de cours */
+
+    /**
+     *
+     * @return JFrame
+     * @throws Exception
+     */
+
     public JFrame modifSeance() throws Exception {
         modifSeance = new JFrame();
         modifSeance.setSize(400, 300);
@@ -852,6 +918,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return modifSeance;
     }
 
+    /**
+     *
+     * @return JFrame
+     * @throws Exception
+     */
     public JFrame changeSeance() throws Exception {
         changeSeance = new JFrame();
         changeSeance.setSize(250, 120);
@@ -886,6 +957,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return changeSeance;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Utilisateur> utilisateurDao() throws Exception {
         UtilisateurDAO utilisateurdao = new UtilisateurDAO(this.maconnexion);
         ArrayList<Utilisateur> utilisateurs = new ArrayList<>();
@@ -893,27 +969,47 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return utilisateurs;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Salle> sallesDao() throws Exception {
         SalleDAO salledao = new SalleDAO(this.maconnexion);
-        ArrayList<Salle> salles = new ArrayList<Salle>();
+        ArrayList<Salle> salles = new ArrayList<>();
         salles = salledao.getAllSalles();
         return salles;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Enseignant> enseignantsDao() throws Exception {
         EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
-        ArrayList<Enseignant> enseignants = new ArrayList<Enseignant>();
+        ArrayList<Enseignant> enseignants = new ArrayList<>();
         enseignants = enseignantdao.getAllTeachers();
         return enseignants;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Etudiant> etudiantsDao() throws Exception {
         EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
-        ArrayList<Etudiant> etudiants = new ArrayList<Etudiant>();
+        ArrayList<Etudiant> etudiants = new ArrayList<>();
         etudiants = etudiantdao.getAllStudents();
         return etudiants;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Promotion> promotionsDao() throws Exception {
         PromotionDAO promotionDao = new PromotionDAO(this.maconnexion);
         ArrayList<Promotion> promotions = new ArrayList<>();
@@ -921,6 +1017,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return promotions;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Groupe> groupesDao() throws Exception {
         GroupeDAO groupeDao = new GroupeDAO(this.maconnexion);
         ArrayList<Groupe> groupes = new ArrayList<>();
@@ -928,6 +1029,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return groupes;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Seance> seancesDao() throws Exception {
         SeanceDAO seancedao = new SeanceDAO(this.maconnexion);
         ArrayList<Seance> seances = new ArrayList<>();
@@ -935,6 +1041,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return seances;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Cours> coursDao() throws Exception {
         CoursDAO coursdao = new CoursDAO(this.maconnexion);
         ArrayList<Cours> cours = new ArrayList<>();
@@ -942,6 +1053,11 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return cours;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<TypeCours> typeCoursDao() throws Exception {
         TypeCoursDAO typeCoursdao = new TypeCoursDAO(this.maconnexion);
         ArrayList<TypeCours> typeCours = new ArrayList<>();
@@ -949,78 +1065,154 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         return typeCours;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getBoutonAjouter() {
         return this.ajouter;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getBoutonModifier() {
         return this.modifier;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getBoutonChanger() {
         return this.changer;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getValiderSeance() {
         return this.validerSeance;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getModifierSeance() {
         return this.modifierSeance;
     }
 
+    /**
+     *
+     * @return JButton
+     */
     public JButton getChangerSeance() {
         return this.changerSeance;
     }
 
+    /**
+     *
+     * @return ArrayList
+     */
     public ArrayList<JCheckBox> getEnseignantsSeance() {
         return this.groupeE;
     }
 
+    /**
+     *
+     * @return ArrayList
+     */
     public ArrayList<JCheckBox> getGroupesSeance() {
         return this.groupeG;
     }
 
+    /**
+     *
+     * @return ArrayList
+     */
     public ArrayList<JCheckBox> getSallesSeance() {
         return this.groupeS;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<String> getBarreRecherche() {
         return this.cmbElement;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<String> getChangerEtat() {
         return this.cmbEtat;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<Integer> getSeance() {
         return this.cmbSeance;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<String> getSeanceEtat() {
         return this.cmbSeanceEtat;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<String> getCoursSeance() {
         return this.cmbCoursSeance;
     }
 
+    /**
+     *
+     * @return JComboBox
+     */
     public JComboBox<String> getTypeCoursSeance() {
         return this.cmbTypeCoursSeance;
     }
 
+    /**
+     *
+     * @return JDateTextField
+     */
     public JDateTextField getDateChoix() {
         return this.dateChoix;
     }
 
+    /**
+     *
+     * @return JTextField
+     */
     public JTextField getHeureDebutTexte() {
         return this.heureDebutTexte;
     }
 
+    /**
+     *
+     * @return JTextField
+     */
     public JTextField getHeureFinTexte() {
         return this.heureFinTexte;
     }
 
+    /**
+     *
+     * @return JTextField
+     */
     public JTextField getEtatTexte() {
         return this.etatTexte;
     }
@@ -1031,7 +1223,7 @@ dimanche), l’heure de début et de fin (en respect des créneaux horaires d’
         Object source = evt.getSource();
         if (source == accueil) {
             this.panelGlobal.removeAll();
-            
+
         } else if (source == recherche) {
             try {
                 this.panelGlobal.removeAll();

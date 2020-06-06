@@ -31,6 +31,12 @@ public class PanneauListeIntervenants extends JPanel {
     private Connexion maconnexion;
 
     // Constructeur
+
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public PanneauListeIntervenants() throws SQLException, ClassNotFoundException {
         this.setLayout(null);
         this.setSize(800, 750);
@@ -38,6 +44,10 @@ public class PanneauListeIntervenants extends JPanel {
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     public void remplirListe() throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));

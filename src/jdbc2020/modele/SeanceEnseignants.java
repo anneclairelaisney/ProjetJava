@@ -20,16 +20,36 @@ public class SeanceEnseignants {
     private int enseignant;
     
     // Constructeurs
+
+    /**
+     *Constructeur SeanceEnseignants sans paramètres
+     */
     public SeanceEnseignants() {}
+
+    /**
+     *
+     * @param id_seance
+     * @param id_enseignant
+     */
     public SeanceEnseignants(int id_seance, int id_enseignant) {
         this.seance = id_seance;
         this.enseignant = id_enseignant;
     }
     
     // Methodes
+
+    /**
+     *
+     * @return
+     */
     public int getSeance() {
         return this.seance;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getEnseignant() {
         return this.enseignant;
     }   

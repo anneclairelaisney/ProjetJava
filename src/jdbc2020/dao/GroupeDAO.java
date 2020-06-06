@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class GroupeDAO extends DAO<Groupe> {
 
+    /**
+     *
+     * @param conn
+     */
     public GroupeDAO(Connexion conn) {
         super(conn);
     }
@@ -67,6 +71,11 @@ public class GroupeDAO extends DAO<Groupe> {
         return groupe;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Groupe> getAllGroupes() throws Exception {
         ArrayList<Groupe> list = new ArrayList<Groupe>();
         Statement myStatement = null;

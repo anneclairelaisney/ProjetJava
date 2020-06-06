@@ -16,17 +16,36 @@ public class TypeCours {
     private String nom;
     
     // Constructeurs
+
+    /**
+     *Constructeur TypeCours sans paramètres
+     */
     public TypeCours() {}
+
+    /**
+     *
+     * @param id
+     * @param nom
+     */
     public TypeCours(int id, String nom) {
         this.id = id;
         this.nom = nom;
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getNom() {
         return this.nom;
     }

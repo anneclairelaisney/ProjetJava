@@ -12,14 +12,51 @@ package jdbc2020.modele;
 public class Utilisateur {
     
     //Attributs
+
+    /**
+     *
+     */
     protected int id;
+
+    /**
+     *
+     */
     protected String email;
+
+    /**
+     *
+     */
     protected String passwd;
+
+    /**
+     *
+     */
     protected String nom;
+
+    /**
+     *
+     */
     protected String prenom;
+
+    /**
+     *
+     */
     protected int droit;
     
+    /**
+     *Constructeur Utilisateur sans paramètres
+     */
     public Utilisateur() {}
+
+    /**
+     *
+     * @param id
+     * @param email
+     * @param passwd
+     * @param nom
+     * @param prenom
+     * @param droit
+     */
     public Utilisateur (int id, String email, String passwd, String nom, String prenom, int droit) {
         this.id = id;
         this.email = email;
@@ -30,27 +67,52 @@ public class Utilisateur {
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return int
+     */
     
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return String
+     */
     public String getEmail() {
         return this.email;
     }
     
+    /**
+     *
+     * @return String
+     */
     public String getPasswd() {
         return this.passwd;
     }
     
+    /**
+     *
+     * @return String
+     */
     public String getNom() {
         return this.nom;
     }
     
+    /**
+     *
+     * @return String
+     */
     public String getPrenom() {
         return this.prenom;
     }
     
+    /**
+     *
+     * @return int
+     */
     public int getDroit() {
         return this.droit;
     }

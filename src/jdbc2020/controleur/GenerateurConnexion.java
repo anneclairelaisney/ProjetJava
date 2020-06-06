@@ -15,24 +15,15 @@ import jdbc2020.vue.*;
 public class GenerateurConnexion {
 
     // Attributs
-    private PageConnexion pageConnexion;
-    private SeanceEnseignants lesEnseignants;
-    private SeanceGroupes lesGroupes;
-    private SeanceSalles lesSalles;
+    private final PageConnexion pageConnexion;
 
     // Constructeurs
+
+    /**
+     * Generateur de la Page de Connexion
+     */
     public GenerateurConnexion() {
         this.pageConnexion = new PageConnexion();
         this.pageConnexion.setVisible(true);
-        this.lesEnseignants = new SeanceEnseignants();
-        this.lesGroupes = new SeanceGroupes();
-        this.lesSalles = new SeanceSalles();
-        
-        setupActionButton();
-    }
-    
-    // Methodes
-    public void setupActionButton() {
-        
     }
 }

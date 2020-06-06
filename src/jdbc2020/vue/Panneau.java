@@ -30,12 +30,23 @@ public class Panneau extends JPanel {
     private String login;
     private int semaine;
 
+    /**
+     *
+     */
     public Panneau() {
         this.setLayout(null);
         this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
+    /**
+     *
+     * @param login
+     * @param semaine
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
 
         System.out.println("Id login " + login);

@@ -17,24 +17,42 @@ public class ModeleFenetre {
     private int dimY;
     private String winTitle = "Fenetre";
 
+    /**
+     *Constructeur ModeleFenetre sans paramètres qui initialise à l'instance des valeurs par défaut
+     */
     public ModeleFenetre() {
         dimX = 300;
         dimY = 150; // donne une taille en hauteur et largeur à la fenêtre
         winTitle = "Fenetre";
     }
 
+    /**
+     *
+     * @return int
+     */
     public int getDimX() {
         return dimX;
     }
 
+    /**
+     *
+     * @return int
+     */
     public int getDimY() {
         return dimY;
     }
 
+    /**
+     *
+     * @return String
+     */
     public String getWinTitle() {
         return winTitle;
     }
 
+    /**
+     *Blindage pour qu'utilisateur rentre des valeurs de son choix à la console
+     */
     public void SaisirFen() {
         Scanner sc = new Scanner(System.in);
         do {

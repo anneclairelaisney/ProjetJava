@@ -27,6 +27,15 @@ public class Generateur {
     private String mdp;
     private Fenetre fenetre;
 
+    /**
+     *
+     * @param login
+     * @param mdp
+     * @param database
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public Generateur(String login, String mdp, String database) throws SQLException, ClassNotFoundException, Exception {
         this.maConnexion = new Connexion("jdbc2020", "root", "root");
         this.fenetre = new Fenetre(login, mdp, "jdbc2020");
@@ -36,5 +45,10 @@ public class Generateur {
         generer(this.maConnexion);
     }
 
+    /**
+     *
+     * @param conn
+     * @throws Exception
+     */
     public void generer(Connexion conn) throws Exception {}
 }

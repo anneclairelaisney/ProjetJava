@@ -41,12 +41,23 @@ public class PanneauRecapCoursEtudiant extends JPanel {
     private String login;
 
     // Constructeur
+
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public PanneauRecapCoursEtudiant() throws SQLException, ClassNotFoundException {
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
     }
 
+    /**
+     *
+     * @param login
+     * @throws Exception
+     */
     public void remplirListe(String login) throws Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
