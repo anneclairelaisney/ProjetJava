@@ -18,7 +18,19 @@ public class Salle {
     private int idSite;
     
     // Constructeurs
+
+    /**
+     *Constructeur Salle sans paramètres
+     */
     public Salle () {}
+
+    /**
+     *
+     * @param id
+     * @param nom
+     * @param capacite
+     * @param idSite
+     */
     public Salle(int id, String nom, int capacite, int idSite) {
         this.id = id;
         this.nom = nom;
@@ -27,18 +39,35 @@ public class Salle {
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getNom() {
         return this.nom;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getCapacite() {
         return this.capacite;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getIdSite() {
         return this.idSite;
     }

@@ -7,16 +7,12 @@ package jdbc2020.vue;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jdbc2020.controleur.Connexion;
-import jdbc2020.dao.SeanceEnseignantsDAO;
+import jdbc2020.dao.SeanceSallesDAO;
 import jdbc2020.modele.Cours;
 import jdbc2020.modele.Seance;
 import jdbc2020.modele.SeanceEnseignants;
@@ -28,16 +24,15 @@ import jdbc2020.modele.Site;
  *
  * @author apple
  */
-public class PanneauEDTEnseignant extends JPanel {
+public class PanneauEDTSalle extends JPanel {
 
     private Connexion maconnexion;
-    private String login;
-    private int semaine;
+    private int id_salle;
 
     /**
      *
      */
-    public PanneauEDTEnseignant() {
+    public PanneauEDTSalle() {
         this.setLayout(null);
         this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
@@ -45,15 +40,14 @@ public class PanneauEDTEnseignant extends JPanel {
 
     /**
      *
-     * @param login
+     * @param id_salle
      * @param semaine
      * @throws SQLException
      * @throws ClassNotFoundException
      * @throws Exception
      */
-    public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
-        this.login = login;
-        this.semaine = semaine;
+    public void remplirEDT(int id_salle, int semaine) throws SQLException, ClassNotFoundException, Exception {
+        this.id_salle = id_salle;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
@@ -132,47 +126,38 @@ public class PanneauEDTEnseignant extends JPanel {
         }
 
         SeanceLabel tempSeancelabel = new SeanceLabel();
-        ArrayList<SeanceEnseignants> tempSes = tempSeancelabel.se(login);
+        ArrayList<SeanceSalles> tempSls = tempSeancelabel.ssSalles(id_salle);
+        System.out.println("Id Salle: " + id_salle);
 
-        for (int j = 0; j < tempSes.size(); j++) {
-
-            SeanceEnseignantsDAO seanceensdao = new SeanceEnseignantsDAO(maconnexion);
+        for (int j = 0; j < tempSls.size(); j++) {
+            SeanceSallesDAO seanceslsdao = new SeanceSallesDAO(maconnexion);
             SeanceLabel seancelabel = new SeanceLabel();
-            ArrayList<SeanceEnseignants> ses = seancelabel.se(login);
-            ArrayList<Cours> cs = seancelabel.cours(ses.get(j).getEnseignant());
-            ArrayList<SeanceGroupes> sgs = seancelabel.sgE(ses.get(j).getSeance());
-            ArrayList<SeanceSalles> sss = seancelabel.ss(ses.get(j).getSeance());
-            ArrayList<Site> ssites = seancelabel.site(sss.get(j).getSalle());
-            ArrayList<Seance> nouvelle = seanceensdao.findSeance(login);
 
-            String strc = "";
+            ArrayList<SeanceSalles> sls = seancelabel.ssSalles(id_salle);
+            ArrayList<Cours> cs = seancelabel.scSalle(sls.get(j).getSeance());
+            ArrayList<SeanceGroupes> sgs = seancelabel.sgE(sls.get(j).getSeance());
+            ArrayList<Site> sites = seancelabel.site(sls.get(j).getSalle());
+            ArrayList<Seance> nouvelle = seanceslsdao.findSeance(id_salle);
+            System.out.println(nouvelle.size());
+
+            String str = "";
             for (Cours c : cs) {
-                strc += c.getNom() + " ";
+                str += c.getNom() + " ";
             }
-            seancelabel.remplir(strc);
+            seancelabel.remplir(str);
 
             String strg = "";
             for (SeanceGroupes sg : sgs) {
                 ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id =" + sg.getGroupe());
                 while (rset1.next()) {
                     String name = rset1.getString("nom");
-                    strg += name + " ";
+                    strg = name + " ";
+                    seancelabel.remplir(strg);
                 }
             }
-            seancelabel.remplir(strg);
-
-            String strs = "";
-            for (SeanceSalles ss : sss) {
-                ResultSet rset2 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
-                while (rset2.next()) {
-                    String name = rset2.getString("nom");
-                    strs += name + " ";
-                }
-            }
-            seancelabel.remplir(strs);
 
             String site = "";
-            for (Site ssite : ssites) {
+            for (Site ssite : sites) {
                 site += ssite.getNom() + " ";
             }
             seancelabel.remplir(site);

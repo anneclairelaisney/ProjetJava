@@ -20,6 +20,10 @@ import java.util.ArrayList;
  */
 public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
 
+    /**
+     *
+     * @param conn
+     */
     public SeanceGroupesDAO(Connexion conn) {
         super(conn);
     }
@@ -58,19 +62,47 @@ public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
         return x;
     }
 
-    public Seance findSeance(int id) {
+    /**
+     *
+     * @param id
+     * @return ArrayList
+     */
+    public ArrayList<Seance> findSeance(int id) {
         Seance x = null;
+        ArrayList<Seance> seancestemp = new ArrayList<>();
+        ArrayList<Seance> seances = new ArrayList<>();
+
         try {
-            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance where ID = (SELECT ID_SEANCE FROM Seance_Groupes WHERE id_groupe = " + id + ")");
-            if (rset.first()) {
-                x = new Seance(rset.getInt("ID"), rset.getInt("Semaine"), rset.getDate("Date"),rset.getInt("Heure_Debut"),rset.getInt("Heure_Fin"), rset.getInt("Etat"), rset.getInt("ID_COURS"),rset.getInt("ID_TYPE"));
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance");
+            while (rset.next()) {
+                x = new Seance(rset.getInt("ID"), rset.getInt("Semaine"), rset.getDate("Date"), rset.getInt("Heure_Debut"), rset.getInt("Heure_Fin"), rset.getInt("Etat"), rset.getInt("ID_COURS"), rset.getInt("ID_TYPE"));
+                seancestemp.add(x);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return x;
+
+        for (Seance s : seancestemp) {
+            try {
+                ResultSet rset1 = this.connect.getStatement().executeQuery("SELECT ID_SEANCE FROM Seance_Groupes WHERE id_groupe =" + id);
+                while (rset1.next()) {
+                    if(s.getId() == rset1.getInt("id_seance")) {
+                        seances.add(s);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return seances;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<SeanceGroupes> getAllSeanceGroupes() throws Exception {
         ArrayList<SeanceGroupes> list = new ArrayList<>();
         Statement myStatement = null;

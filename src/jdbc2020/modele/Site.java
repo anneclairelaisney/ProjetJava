@@ -16,16 +16,31 @@ public class Site {
     private String nom;
     
     // Constructeurs
+
+    /**
+     *
+     * @param id
+     * @param nom
+     */
     public Site(int id, String nom) {
         this.id = id;
         this.nom = nom;
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getNom() {
         return this.nom;
     }

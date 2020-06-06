@@ -20,16 +20,36 @@ public class SeanceGroupes {
     private int groupe;
     
     // Constructeurs
+
+    /**
+     *Constructeur SeanceGroupes sans paramètres
+     */
     public SeanceGroupes() {}
+
+    /**
+     *
+     * @param id_seance
+     * @param id_groupe
+     */
     public SeanceGroupes(int id_seance, int id_groupe) {
         this.seance = id_seance;
         this.groupe = id_groupe;
     }
     
     // Methodes
+
+    /**
+     *
+     * @return
+     */
     public int getSeance() {
         return this.seance;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getGroupe() {
         return this.groupe;
     }   

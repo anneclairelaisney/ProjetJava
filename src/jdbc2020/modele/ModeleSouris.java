@@ -15,16 +15,29 @@ public class ModeleSouris {
     private double xpos;
     private double ypos;
     
+    /**
+     *
+     * @return
+     */
     public double getXpos()
     {
         return xpos;
     }
     
+    /**
+     *
+     * @return
+     */
     public double getYpos()
     {
         return ypos;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public ModeleSouris(double x, double y)
     {
         xpos = x;
