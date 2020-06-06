@@ -41,7 +41,7 @@ public class PanneauListeEnseignant extends JPanel {
         this.setLayout(null);
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
-        this.maconnexion = new Connexion("jdbc2020", "root", "root");
+        this.maconnexion = new Connexion("jdbc2020", "root", "");
     }
 
     /**
