@@ -23,6 +23,10 @@ import jdbc2020.modele.SeanceGroupes;
  */
 public class SeanceDAO extends DAO<Seance> {
 
+    /**
+     *
+     * @param conn
+     */
     public SeanceDAO(Connexion conn) {
         super(conn);
     }
@@ -38,6 +42,12 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    /**
+     *
+     * @param seance
+     * @param enseignant
+     * @return boolean
+     */
     public boolean createEnseignants(Seance seance, Enseignant enseignant) {
         try {
             this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_ENSEIGNANTS` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES ('" + seance.getId() + "',(SELECT id_utilisateur FROM Enseignant WHERE id_utilisateur='" + enseignant.getId() + "'));");
@@ -48,6 +58,12 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    /**
+     *
+     * @param seance
+     * @param groupe
+     * @return boolean
+     */
     public boolean createGroupes(Seance seance, Groupe groupe) {
         try {
             this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_GROUPES` (`ID_SEANCE`, `ID_GROUPE`) VALUES ('" + seance.getId() + "',(SELECT id FROM Groupe WHERE id='" + groupe.getId() + "'));");
@@ -58,6 +74,12 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    /**
+     *
+     * @param seance
+     * @param salle
+     * @return boolean
+     */
     public boolean createSalles(Seance seance, Salle salle) {
         try {
             this.connect.getStatement().executeUpdate("INSERT INTO `SEANCE_SALLES` (`ID_SEANCE`, `ID_SALLE`) VALUES ('" + seance.getId() + "',(SELECT id FROM Salle WHERE id='" + salle.getId() + "'));");
@@ -72,6 +94,13 @@ public class SeanceDAO extends DAO<Seance> {
         return true;
     }
 
+    /**
+     *
+     * @param seance
+     * @param cours
+     * @param type_cours
+     * @return boolean
+     */
     public boolean update(Seance seance, int cours, int type_cours) {
         try {
             this.connect.getStatement().executeUpdate("UPDATE Seance SET id_cours ='" + cours + "', id_type ='" + type_cours + "' WHERE id =" + seance.getId() + ";");
@@ -82,6 +111,11 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    /**
+     *
+     * @param seance
+     * @return boolean
+     */
     public boolean validate(Seance seance) {
         try {
             this.connect.getStatement().executeUpdate("UPDATE Seance SET etat ='2' WHERE id =" + seance.getId() + ";");
@@ -92,6 +126,11 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    /**
+     *
+     * @param seance
+     * @return boolean
+     */
     public boolean cancel(Seance seance) {
         try {
             this.connect.getStatement().executeUpdate("UPDATE Seance SET etat ='3' WHERE id =" + seance.getId() + ";");
@@ -102,6 +141,7 @@ public class SeanceDAO extends DAO<Seance> {
         return false;
     }
 
+    @Override
     public Seance find(int id) {
         Seance seance = new Seance();
         try {
@@ -115,6 +155,12 @@ public class SeanceDAO extends DAO<Seance> {
         return seance;
     }
 
+    /**
+     *
+     * @param login
+     * @return ArrayList
+     * @throws SQLException
+     */
     public ArrayList<Seance> find(String login) throws SQLException {
         ArrayList<SeanceGroupes> listTemp = new ArrayList<>();
         ArrayList<Seance> seance = new ArrayList<Seance>();
@@ -151,9 +197,13 @@ public class SeanceDAO extends DAO<Seance> {
         }
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Seance> getAllSeances() throws Exception {
-        ArrayList<Seance> list = new ArrayList<Seance>();
-        Statement myStatement = null;
+        ArrayList<Seance> list = new ArrayList<>();
         ResultSet rset = null;
         try {
             rset = this.connect.getStatement().executeQuery("SELECT * FROM Seance");
@@ -181,6 +231,7 @@ public class SeanceDAO extends DAO<Seance> {
         return tempSeance;
     }
 
+    @Override
     public void display(Seance seance) {
         if (seance.getId() != 0) {
             System.out.println("Semaine - " + seance.getSemaine());

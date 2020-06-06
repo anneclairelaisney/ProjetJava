@@ -22,10 +22,20 @@ import java.util.logging.Logger;
 import jdbc2020.controleur.Generateur;
 
 /* Interface graphique */
+
+/**
+ *
+ * @author anne-clairelaisney
+ */
+
 public class PageConnexion extends JFrame implements ActionListener, ItemListener {
 
     // Attributs
     private Connexion maconnexion;
+
+    /**
+     *
+     */
     public ModeleSouris modeleSouris;
     private final JButton local;
     private final JPanel p0, p1, p2, p3, center;
@@ -35,6 +45,10 @@ public class PageConnexion extends JFrame implements ActionListener, ItemListene
     private final JPasswordField motDePasseTexte;
 
     // Constructeur
+
+    /**
+     *
+     */
     public PageConnexion() {
 
         // mise en page (layout) de la fenetre visible

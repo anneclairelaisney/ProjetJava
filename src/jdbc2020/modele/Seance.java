@@ -6,9 +6,6 @@
 package jdbc2020.modele;
 
 import java.sql.Date;
-import java.sql.Time;
-import java.util.Calendar;
-import javax.swing.JPanel;
 
 /**
  *
@@ -27,9 +24,24 @@ public class Seance {
     private int idType;
 
     // Constructeurs
+
+    /**
+     *Constructeur Seance sans paramètres
+     */
     public Seance() {
     }
 
+    /**
+     *
+     * @param id
+     * @param semaine
+     * @param date
+     * @param heureDebut
+     * @param heureFin
+     * @param etat
+     * @param id_cours
+     * @param id_type
+     */
     public Seance(int id, int semaine, Date date, int heureDebut, int heureFin, int etat, int id_cours, int id_type) {
         this.id = id;
         this.semaine = semaine;
@@ -42,39 +54,77 @@ public class Seance {
     }
 
     // Accesseurs
+
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return this.id;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getSemaine() {
         return this.semaine;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDate() {
         return this.date;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getHeureDebut() {
         return this.heureDebut;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getHeureFin() {
         return this.heureFin;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getEtat() {
         return this.etat;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIdCours() {
         return this.idCours;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIdType() {
         return this.idType;
     }
 
     // Methodes
+
+    /**
+     *
+     * @return
+     */
     public int dateToInt() {
         return this.date.getDay();
     }

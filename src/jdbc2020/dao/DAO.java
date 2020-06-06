@@ -11,13 +11,21 @@ import jdbc2020.controleur.*;
 /**
  *
  * @author apple
+ * @param <T>
  */
 
 public abstract class DAO<T> {
     
-  protected Connexion connect = null;
+    /**
+     *
+     */
+    protected Connexion connect;
    
-  public DAO(Connexion conn){
+    /**
+     *
+     * @param conn
+     */
+    public DAO(Connexion conn){
     this.connect = conn;
   }
    
@@ -46,14 +54,13 @@ public abstract class DAO<T> {
   * Méthode de recherche des informations
   * @param id
   * @return T
-     * @throws java.sql.SQLException
+  * @throws java.sql.SQLException
   */
   public abstract T find(int id) throws SQLException ;
   
   /**
   * Méthode d'affichage
   * @param obj
-  * @return boolean
   */
   public abstract void display(T obj);
 }

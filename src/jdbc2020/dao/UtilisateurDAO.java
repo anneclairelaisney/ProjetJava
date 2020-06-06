@@ -21,7 +21,11 @@ import java.util.ArrayList;
 
 public class UtilisateurDAO extends DAO<Utilisateur> {
     
-  public UtilisateurDAO(Connexion conn) {
+    /**
+     *
+     * @param conn
+     */
+    public UtilisateurDAO(Connexion conn) {
     super(conn);
   }
 
@@ -37,7 +41,12 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
     return false;
   }
    
-  public Utilisateur find(String login) {
+    /**
+     *
+     * @param login
+     * @return Utilisateur
+     */
+    public Utilisateur find(String login) {
     Utilisateur utilisateur = null;    
       
     try {
@@ -57,9 +66,23 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
     @Override
     public Utilisateur find(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Utilisateur user = new Utilisateur();
+        try {
+            ResultSet rset = this.connect.getStatement().executeQuery("SELECT * FROM Utilisateur WHERE id = " + id);
+            if (rset.first()) {
+                user = new Utilisateur(id, rset.getString("email"),rset.getString("passwd"),rset.getString("nom"), rset.getString("prenom"), rset.getInt("droit"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Utilisateur> getAllUsers() throws Exception {
         ArrayList<Utilisateur> list = new ArrayList<>();
         Statement myStatement = null;

@@ -15,16 +15,36 @@ public class SeanceSalles {
     private int salle;
     
     // Constructeurs
+
+    /**
+     *Constructeur SeanceSalles sans paramètres
+     */
     public SeanceSalles() {}
+
+    /**
+     *
+     * @param id_seance
+     * @param id_salle
+     */
     public SeanceSalles(int id_seance, int id_salle) {
         this.seance = id_seance;
         this.salle = id_salle;
     }
     
     // Methodes
+
+    /**
+     *
+     * @return
+     */
     public int getSeance() {
         return this.seance;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getSalle() {
         return this.salle;
     }   

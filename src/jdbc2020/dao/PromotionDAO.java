@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class PromotionDAO extends DAO<Promotion> {
 
+    /**
+     *
+     * @param conn
+     */
     public PromotionDAO(Connexion conn) {
         super(conn);
     }
@@ -67,6 +71,11 @@ public class PromotionDAO extends DAO<Promotion> {
         return promotion;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Promotion> getAllPromotions() throws Exception {
         ArrayList<Promotion> list = new ArrayList<Promotion>();
         Statement myStatement = null;

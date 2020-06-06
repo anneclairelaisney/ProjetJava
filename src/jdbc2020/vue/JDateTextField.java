@@ -52,15 +52,27 @@ public class JDateTextField extends JTextField {
     private DatePanel datePanel = null;
     private JDialog dateDialog = null;
 
+    /**
+     *
+     */
     public JDateTextField() {
         this(new Date());
     }
 
+    /**
+     *
+     * @param dateFormatPattern
+     * @param date
+     */
     public JDateTextField(String dateFormatPattern, Date date) {
         this(date);
         DEFAULT_DATE_FORMAT = dateFormatPattern;
     }
 
+    /**
+     *
+     * @param date
+     */
     public JDateTextField(Date date) {
         setDate(date);
         setEditable(false);
@@ -123,14 +135,26 @@ public class JDateTextField extends JTextField {
         return dateFormat;
     }
 
+    /**
+     *
+     * @param date
+     */
     public void setText(Date date) {
         setDate(date);
     }
 
+    /**
+     *
+     * @param date
+     */
     public void setDate(Date date) {
         super.setText(getDefaultDateFormat().format(date));
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDate() {
         try {
             return getDefaultDateFormat().parse(getText());
