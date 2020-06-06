@@ -19,14 +19,45 @@ public class Liste {
 
     // Attributs
     private Connexion conn;
+
+    /**
+     *
+     */
     public ArrayList<Utilisateur> utilisateurs;
+
+    /**
+     *
+     */
     public ArrayList<Promotion> promotions;
+
+    /**
+     *
+     */
     public ArrayList<Groupe> groupes;
+
+    /**
+     *
+     */
     public ArrayList<Etudiant> etudiants;
+
+    /**
+     *
+     */
     public ArrayList<Enseignant> enseignants;
+
+    /**
+     *
+     */
     public ArrayList<Salle> salles;
 
     // Constructeurs
+
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public Liste() throws SQLException, ClassNotFoundException, Exception  {
         this.conn = new Connexion("jdbc2020", "root", "root");
         this.listePromotions();
@@ -36,6 +67,10 @@ public class Liste {
         this.listeSalles();
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void listePromotions () throws Exception {
         this.promotions = new ArrayList<Promotion>();
         DAO<Promotion> promotionDao = new PromotionDAO(conn);
@@ -47,6 +82,10 @@ public class Liste {
         }
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void listeGroupes ()  throws Exception {
         this.groupes = new ArrayList<Groupe>();
         DAO<Groupe> groupeDAO = new GroupeDAO(conn);
@@ -58,6 +97,10 @@ public class Liste {
         }
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void listeEtudiants ()  throws Exception {
         this.etudiants = new ArrayList<Etudiant>();
         DAO<Etudiant> etudiantDAO = new EtudiantDAO(conn);
@@ -69,6 +112,10 @@ public class Liste {
         }
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void listeEnseignants ()  throws Exception {
         this.enseignants = new ArrayList<Enseignant>();
         DAO<Enseignant> enseignantDAO = new EnseignantDAO(conn);
@@ -80,6 +127,10 @@ public class Liste {
         }
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void listeSalles ()  throws Exception {
         this.salles = new ArrayList<Salle>();
         DAO<Salle> salleDAO = new SalleDAO(conn);

@@ -17,7 +17,18 @@ public class Groupe {
     private int idPromotion;
     
     // Constructeurs
+
+    /**
+     *Constructeur Groupe sans paramètres
+     */
     public Groupe () {}
+
+    /**
+     *
+     * @param id
+     * @param nom
+     * @param idPromotion
+     */
     public Groupe(int id, String nom, int idPromotion) {
         this.id = id;
         this.nom = nom;
@@ -25,14 +36,27 @@ public class Groupe {
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return int
+     */
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return String
+     */
     public String getNom() {
         return this.nom;
     }
     
+    /**
+     *
+     * @return int
+     */
     public int getIdPromotion() {
         return this.idPromotion;
     }

@@ -13,7 +13,15 @@ import java.sql.SQLException;
  */
 
 public class Controleur {
-    public static void main(String[] s) throws SQLException, ClassNotFoundException, Exception {
+
+    /**
+     *
+     * @param str
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
+    public static void main(String[] str) throws SQLException, ClassNotFoundException, Exception {
         new GenerateurConnexion();
     }
 }

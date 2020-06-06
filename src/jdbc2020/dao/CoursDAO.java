@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class CoursDAO extends DAO<Cours> {
 
+    /**
+     *
+     * @param conn
+     */
     public CoursDAO(Connexion conn) {
         super(conn);
     }
@@ -67,8 +71,13 @@ public class CoursDAO extends DAO<Cours> {
         return cours;
     }
     
+    /**
+     * Récupérer l'intégralité des cours de la BDD
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Cours> getAllCours() throws Exception {
-        ArrayList<Cours> list = new ArrayList<Cours>();
+        ArrayList<Cours> list = new ArrayList<>();
         Statement myStatement = null;
         ResultSet rset = null;
         try {
@@ -106,6 +115,7 @@ public class CoursDAO extends DAO<Cours> {
         close(null, myStmt, myRs);
     }
     
+    @Override
     public void display(Cours cours) {
         if (cours.getId() != 0) {
             System.out.println("Nom : " + cours.getNom());

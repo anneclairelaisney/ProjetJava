@@ -22,6 +22,11 @@ public class MaFenetre extends JFrame {
 
     private Panneau pan;
 
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public MaFenetre() throws SQLException, ClassNotFoundException {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(960, 700);
@@ -33,6 +38,12 @@ public class MaFenetre extends JFrame {
         this.add(pan);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param titre
+     */
     public MaFenetre(int x, int y, String titre) {
         setSize(x, y);
         setTitle(titre);

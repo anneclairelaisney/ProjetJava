@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import jdbc2020.controleur.Connexion;
+import jdbc2020.dao.GroupeDAO;
+import jdbc2020.dao.SeanceGroupesDAO;
+import jdbc2020.modele.Groupe;
 import jdbc2020.modele.Seance;
 import jdbc2020.modele.SeanceGroupes;
 import jdbc2020.modele.SeanceSalles;
@@ -22,17 +25,33 @@ import jdbc2020.modele.Site;
  * @author apple
  */
 public class Panneau extends JPanel {
+
     private Connexion maconnexion;
     private String login;
+    private int semaine;
 
-    public Panneau(String login) {
-        this.login = "annelise.herve@edu.ece.fr";
+    /**
+     *
+     */
+    public Panneau() {
         this.setLayout(null);
-        this.setSize(1000, 750);
+        this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
-    public void remplirEDT() throws SQLException, ClassNotFoundException, Exception {
+    /**
+     *
+     * @param login
+     * @param semaine
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
+    public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
+
+        System.out.println("Id login " + login);
+        this.login = login;
+        this.semaine = semaine;
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));
@@ -67,10 +86,9 @@ public class Panneau extends JPanel {
             this.add(heure);
         }
 
-        int numSemaine = 22;
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2020);
-        cal.set(Calendar.WEEK_OF_YEAR, numSemaine);
+        cal.set(Calendar.WEEK_OF_YEAR, semaine);
 
         for (int i = 2; i < 7; i++) {
             int j = 1;
@@ -110,62 +128,60 @@ public class Panneau extends JPanel {
             weekDayPanel.setBounds(insets.left + j * 200, insets.top, size.width, size.height);
             this.add(weekDayPanel);
         }
+        SeanceLabel tempSeancelabel = new SeanceLabel();
+        ArrayList<SeanceGroupes> tempSgs = tempSeancelabel.sgLogin(login);
+        for (int j = 0; j < tempSgs.size(); j++) {
 
-        JPanel jp1 = new JPanel();
-        //JPanel jp2 = new JPanel();
-        //JPanel jp3 = new JPanel();
-        for (int i = 1; i < 13; i++) {
+            SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
+            SeanceLabel seancelabel = new SeanceLabel();
+            ArrayList<SeanceGroupes> sgs = seancelabel.sgLogin(login);
+
+            seancelabel.remplirSeance(sgs.get(j).getSeance());
+            ArrayList<Site> ssites = seancelabel.site(seancelabel.getSeance());
+            ArrayList<SeanceSalles> sss = seancelabel.ss(sgs.get(j).getSeance());
+            ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(sgs.get(j).getGroupe());
+
+            GroupeDAO grpesdao = new GroupeDAO(maconnexion);
+            ArrayList<Groupe> groupes = grpesdao.getAllGroupes();
+
+            String strg = " ";
+            for (Seance seance : nouvelle) {
+                for (Groupe groupe : groupes) {
+                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT id_groupe FROM Seance_Groupes WHERE id_seance=" + seance.getId());
+                    while (rset1.next()) {
+                        if (rset1.getInt("id_groupe") == groupe.getId()) {
+                            strg += groupe.getNom() + " ";
+                        }
+                    }
+                }
+            }
+            seancelabel.remplir(strg);
+
+            String strs = " ";
+            for (SeanceSalles ss : sss) {
+                ResultSet rset2 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
+                while (rset2.next()) {
+                    String name = rset2.getString("nom");
+                    strs += name + " ";
+                }
+            }
+            seancelabel.remplir(strs);
+
+            String site = " ";
+            for (Site ssite : ssites) {
+                site = site + ssite.getNom() + " ";
+            }
+            seancelabel.remplir(site);
+
+            seancelabel.setPreferredSize(new Dimension(200, 50));
+            Dimension size = seancelabel.getPreferredSize();
+
             int n = 1;
             int m = 1;
-            SeanceLabel seance = new SeanceLabel();
-            seance.remplirSeance(i);
-            ArrayList<SeanceGroupes> sgs = seance.sg(seance.getSeance());
-            ArrayList<SeanceSalles> sss = seance.ss(seance.getSeance());
-            ArrayList<Site> ssites = seance.site(seance.getSeance());
 
-            if (seance.getSeance().getId() != 0) {
-
-                String strg = "";
-                for (SeanceGroupes sg : sgs) {
-                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Groupe WHERE id = " + sg.getGroupe());
-                    while (rset1.next()) {
-                        String name = rset1.getString("nom");
-                        strg = strg + name + " ";
-                    }
-                }
-                System.out.println(strg);
-                JLabel groupe = new JLabel(strg);
-                groupe.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(groupe);
-                seance.remplirGroupe(strg);
-
-                String strs = "";
-                for (SeanceSalles ss : sss) {
-                    ResultSet rset1 = this.maconnexion.getStatement().executeQuery("SELECT nom FROM Salle WHERE id = " + ss.getSalle());
-                    while (rset1.next()) {
-                        String name = rset1.getString("nom");
-                        strs = strs + name + " ";
-                    }
-                }
-                System.out.println(strs);
-                JLabel salle = new JLabel(strs);
-                salle.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(salle);
-                seance.remplirSalle(strs);
-
-                String site = "";
-                for (Site ssite : ssites) {
-                    site = site + ssite.getNom() + " ";
-                }
-                System.out.println(site);
-                JLabel jsite = new JLabel(site);
-                jsite.setHorizontalAlignment(SwingConstants.CENTER);
-                jp1.add(jsite);
-                seance.remplirSite(site);
-
-                seance.setPreferredSize(new Dimension(200, 50));
-                Dimension size = seance.getPreferredSize();
-                switch (seance.getSeance().getHeureDebut()) {
+            System.out.println("Id seance " + nouvelle.get(j).getId());
+            if (nouvelle.get(j).getSemaine() == semaine) {
+                switch (nouvelle.get(j).getHeureDebut()) {
                     case 8:
                         n = 1;
                         break;
@@ -207,7 +223,7 @@ public class Panneau extends JPanel {
                         break;
                 }
 
-                switch (seance.getSeance().dateToInt()) {
+                switch (nouvelle.get(j).dateToInt()) {
                     case 2:
                         m = 2;
                         break;
@@ -224,19 +240,15 @@ public class Panneau extends JPanel {
                         m = 6;
                         break;
                 }
-
-                seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-                this.add(seance);
-                this.add(jp1);
-                //this.add(jp2);
-                //this.add(jp3);
+                seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+                this.add(seancelabel);
             }
         }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(200 * i, 50 * j, 200, 50);

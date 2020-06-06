@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 19, 2020 at 11:25 AM
+-- Generation Time: Jun 02, 2020 at 06:48 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -31,7 +31,8 @@ CREATE TABLE `COURS` (
 
 INSERT INTO `COURS` (`ID`, `NOM`) VALUES
 (1, 'POO JAVA'),
-(2, 'Analyse de Fourier');
+(2, 'Analyse de Fourier'),
+(3, 'Probabilités et statistiques');
 
 -- --------------------------------------------------------
 
@@ -49,8 +50,10 @@ CREATE TABLE `ENSEIGNANT` (
 --
 
 INSERT INTO `ENSEIGNANT` (`ID_UTILISATEUR`, `ID_COURS`) VALUES
-(1, 1),
-(6, 2);
+(21, 1),
+(23, 1),
+(22, 2),
+(24, 3);
 
 -- --------------------------------------------------------
 
@@ -69,10 +72,24 @@ CREATE TABLE `ETUDIANT` (
 --
 
 INSERT INTO `ETUDIANT` (`ID_UTILISATEUR`, `NUMERO`, `ID_GROUPE`) VALUES
-(2, 1, 6),
-(3, 2, 6),
-(4, 3, 6),
-(5, 4, 7);
+(1, 2021001, 2),
+(2, 2021002, 1),
+(3, 2021003, 3),
+(4, 2021004, 1),
+(5, 2021005, 3),
+(6, 2021006, 2),
+(7, 2022001, 6),
+(8, 2022002, 4),
+(9, 2022003, 6),
+(10, 2022004, 5),
+(11, 2022005, 5),
+(12, 2022006, 4),
+(13, 2023001, 7),
+(14, 2023002, 9),
+(15, 2023003, 8),
+(16, 2023004, 7),
+(17, 2023005, 9),
+(18, 2023006, 8);
 
 -- --------------------------------------------------------
 
@@ -94,14 +111,12 @@ INSERT INTO `GROUPE` (`ID`, `NOM`, `ID_PROMOTION`) VALUES
 (1, 'TD1', 1),
 (2, 'TD2', 1),
 (3, 'TD3', 1),
-(4, 'TD4', 1),
-(5, 'TD5', 1),
-(6, 'TD6', 1),
-(7, 'TD7', 1),
-(8, 'TD8', 1),
-(9, 'TD9', 1),
-(10, 'TD10', 1),
-(11, 'TD11', 1);
+(4, 'TD1', 2),
+(5, 'TD2', 2),
+(6, 'TD3', 2),
+(7, 'TD1', 3),
+(8, 'TD2', 3),
+(9, 'TD3', 3);
 
 -- --------------------------------------------------------
 
@@ -119,8 +134,9 @@ CREATE TABLE `PROMOTION` (
 --
 
 INSERT INTO `PROMOTION` (`ID`, `NOM`) VALUES
-(1, '2022'),
-(2, '2021');
+(1, '2021'),
+(2, '2022'),
+(3, '2023');
 
 -- --------------------------------------------------------
 
@@ -142,7 +158,13 @@ CREATE TABLE `SALLE` (
 INSERT INTO `SALLE` (`ID`, `NOM`, `CAPACITE`, `ID_SITE`) VALUES
 (1, 'EM009', 200, 1),
 (2, 'EM010', 200, 1),
-(316, 'P316', 40, 2);
+(3, 'SC001', 40, 1),
+(4, 'P316', 40, 2),
+(5, 'P315', 30, 2),
+(6, 'P445', 70, 2),
+(7, 'C314', 30, 3),
+(8, 'C316', 40, 3),
+(9, 'C322', 40, 3);
 
 -- --------------------------------------------------------
 
@@ -154,8 +176,8 @@ CREATE TABLE `SEANCE` (
   `ID` int(11) NOT NULL,
   `SEMAINE` int(11) NOT NULL,
   `DATE` date NOT NULL,
-  `HEURE_DEBUT` time NOT NULL,
-  `HEURE_FIN` time NOT NULL,
+  `HEURE_DEBUT` int(11) NOT NULL,
+  `HEURE_FIN` int(11) NOT NULL,
   `ETAT` int(11) NOT NULL,
   `ID_COURS` int(11) NOT NULL,
   `ID_TYPE` int(11) NOT NULL
@@ -166,7 +188,9 @@ CREATE TABLE `SEANCE` (
 --
 
 INSERT INTO `SEANCE` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES
-(1, 21, '2020-05-20', '10:15:00', '11:45:00', 1, 1, 1);
+(1, 22, '2020-05-25', 10, 11, 1, 1, 1),
+(2, 22, '2020-05-27', 9, 10, 1, 1, 3),
+(3, 22, '2020-05-28', 14, 15, 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -184,7 +208,11 @@ CREATE TABLE `SEANCE_ENSEIGNANTS` (
 --
 
 INSERT INTO `SEANCE_ENSEIGNANTS` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES
-(316, 1);
+(1, 21),
+(1, 23),
+(1, 21),
+(3, 24),
+(2, 24);
 
 -- --------------------------------------------------------
 
@@ -202,7 +230,16 @@ CREATE TABLE `SEANCE_GROUPES` (
 --
 
 INSERT INTO `SEANCE_GROUPES` (`ID_SEANCE`, `ID_GROUPE`) VALUES
-(1, 6);
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 1),
+(1, 2),
+(3, 7),
+(3, 8),
+(3, 9),
+(2, 1),
+(2, 2);
 
 -- --------------------------------------------------------
 
@@ -220,7 +257,11 @@ CREATE TABLE `SEANCE_SALLES` (
 --
 
 INSERT INTO `SEANCE_SALLES` (`ID_SEANCE`, `ID_SALLE`) VALUES
-(1, 316);
+(1, 1),
+(1, 2),
+(2, 6),
+(3, 3),
+(3, 7);
 
 -- --------------------------------------------------------
 
@@ -239,7 +280,8 @@ CREATE TABLE `SITE` (
 
 INSERT INTO `SITE` (`ID`, `NOM`) VALUES
 (1, 'E1'),
-(2, 'E2');
+(2, 'E2'),
+(3, 'E3');
 
 -- --------------------------------------------------------
 
@@ -257,7 +299,11 @@ CREATE TABLE `TYPE_COURS` (
 --
 
 INSERT INTO `TYPE_COURS` (`ID`, `NOM`) VALUES
-(1, 'Cours magistral');
+(1, 'Cours magistral'),
+(2, 'TP'),
+(3, 'TD'),
+(4, 'Projet'),
+(5, 'Soutien');
 
 -- --------------------------------------------------------
 
@@ -279,12 +325,30 @@ CREATE TABLE `UTILISATEUR` (
 --
 
 INSERT INTO `UTILISATEUR` (`ID`, `EMAIL`, `PASSWD`, `NOM`, `PRENOM`, `DROIT`) VALUES
-(1, 'jean-pierre.segado@ece.fr', 'ece', 'SEGADO', 'JEAN-PIERRE', 3),
-(2, 'remy.ghidaglia@edu.ece.fr', 'ece', 'GHIDAGLIA', 'REMY', 4),
-(3, 'anneclaire.laisney@edu.ece.fr', 'ece', 'LAISNEY', 'ANNE-CLAIRE', 4),
-(4, 'rayan.perrin@edu.ece.fr', 'ece', 'PERRIN', 'RAYAN', 4),
-(5, 'elia.levy@edu.ece.fr', 'ece', 'LEVY', 'Elia', 4),
-(6, 'fabienne.coudray@ece.fr', 'ece', 'COUDRAY', 'FABIENNE', 3);
+(1, 'eva.dreyfus@edu.ece.fr', 'ece', 'DREYFUS', 'Eva', 4),
+(2, 'annelise.herve@edu.ece.fr', 'ece', 'HERVE', 'Anne-Lise', 4),
+(3, 'jade.laville@edu.ece.fr', 'ece', 'LAVILLE', 'Jade', 4),
+(4, 'clement.lurati@edu.ece.fr', 'ece', 'LURATI', 'Clément', 4),
+(5, 'axel.sani@edu.ece.fr', 'ece', 'SANI', 'Axel', 4),
+(6, 'mario.yammine@edu.ece.fr', 'ece', 'YAMMINE', 'Mario', 4),
+(7, 'arthur.damele@edu.ece.fr', 'ece', 'DAMELE', 'Arthur', 4),
+(8, 'rems.ghidaglia@edu.ece.fr', 'ece', 'GHIDAGLIA', 'Remy', 4),
+(9, 'anneclaire.laisney@edu.ece.fr', 'ece', 'LAISNEY', 'Anne-Claire', 4),
+(10, 'elia.levy@edu.ece.fr', 'ece', 'LEVY', 'Elia', 4),
+(11, 'rayan.perrin@edu.ece.fr', 'ece', 'PERRIN', 'Rayan', 4),
+(12, 'jeanne.roques@edu.ece.fr', 'ece', 'ROQUES', 'Jeanne', 4),
+(13, 'pierre.badault@edu.ece.fr', 'ece', 'BADAULT', 'Pierre', 4),
+(14, 'olivia.delachapelle@edu.ece.fr', 'ece', 'DE LA CHAPELLE', 'Olivia', 4),
+(15, 'lea.guignochau@edu.ece.fr', 'ece', 'GUIGNOCHAU', 'Léa', 4),
+(16, 'agathe.leseche@edu.ece.fr', 'ece', 'LESECHE', 'Agathe', 4),
+(17, 'emily.richardson@edu.ece.fr', 'ece', 'RICHARDSON', 'Emily', 4),
+(18, 'tom.sella@edu.ece.fr', 'ece', 'SELLA', 'Tom', 4),
+(19, 'admin@ece.fr', 'ece', 'ADMIN', 'ECE', 1),
+(20, 'marie.saad@ece.fr', 'ece', 'SAAD', 'Marie', 2),
+(21, 'jeanpierre.segado@ece.fr', 'ece', 'SEGADO', 'Jean-Pierre', 3),
+(22, 'fabienne.coudray@ece.fr', 'ece', 'COUDRAY', 'Fabienne', 3),
+(23, 'manolo.hina@ece.fr', 'ece', 'HINA', 'Manolo', 3),
+(24, 'luc.lecor@ece.fr', 'ece', 'LE COR', 'Luc', 3);
 
 --
 -- Indexes for dumped tables
@@ -352,6 +416,7 @@ ALTER TABLE `SEANCE_ENSEIGNANTS`
 --
 ALTER TABLE `SEANCE_GROUPES`
   ADD KEY `ID_SEANCE` (`ID_SEANCE`),
+  ADD KEY `ID_SEANCE_2` (`ID_SEANCE`),
   ADD KEY `ID_GROUPE` (`ID_GROUPE`);
 
 --
@@ -387,43 +452,43 @@ ALTER TABLE `UTILISATEUR`
 -- AUTO_INCREMENT for table `GROUPE`
 --
 ALTER TABLE `GROUPE`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `PROMOTION`
 --
 ALTER TABLE `PROMOTION`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `SALLE`
 --
 ALTER TABLE `SALLE`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=317;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `SEANCE`
 --
 ALTER TABLE `SEANCE`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `SITE`
 --
 ALTER TABLE `SITE`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `TYPE_COURS`
 --
 ALTER TABLE `TYPE_COURS`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `UTILISATEUR`
 --
 ALTER TABLE `UTILISATEUR`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
@@ -467,7 +532,7 @@ ALTER TABLE `SEANCE`
 --
 ALTER TABLE `SEANCE_ENSEIGNANTS`
   ADD CONSTRAINT `seance_enseignants_ibfk_1` FOREIGN KEY (`ID_ENSEIGNANT`) REFERENCES `ENSEIGNANT` (`ID_UTILISATEUR`),
-  ADD CONSTRAINT `seance_enseignants_ibfk_2` FOREIGN KEY (`ID_SEANCE`) REFERENCES `SALLE` (`ID`);
+  ADD CONSTRAINT `seance_enseignants_ibfk_2` FOREIGN KEY (`ID_SEANCE`) REFERENCES `SEANCE` (`ID`);
 
 --
 -- Constraints for table `SEANCE_GROUPES`
@@ -480,5 +545,5 @@ ALTER TABLE `SEANCE_GROUPES`
 -- Constraints for table `SEANCE_SALLES`
 --
 ALTER TABLE `SEANCE_SALLES`
-  ADD CONSTRAINT `seance_salles_ibfk_1` FOREIGN KEY (`ID_SALLE`) REFERENCES `SALLE` (`ID`),
-  ADD CONSTRAINT `seance_salles_ibfk_2` FOREIGN KEY (`ID_SEANCE`) REFERENCES `SEANCE` (`ID`);
+  ADD CONSTRAINT `seance_salles_ibfk_1` FOREIGN KEY (`ID_SEANCE`) REFERENCES `SEANCE` (`ID`),
+  ADD CONSTRAINT `seance_salles_ibfk_2` FOREIGN KEY (`ID_SALLE`) REFERENCES `SALLE` (`ID`);
