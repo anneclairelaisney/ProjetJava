@@ -20,6 +20,10 @@ import java.util.ArrayList;
  */
 public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
 
+    /**
+     *
+     * @param conn
+     */
     public SeanceGroupesDAO(Connexion conn) {
         super(conn);
     }
@@ -58,6 +62,11 @@ public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
         return x;
     }
 
+    /**
+     *
+     * @param id
+     * @return ArrayList
+     */
     public ArrayList<Seance> findSeance(int id) {
         Seance x = null;
         ArrayList<Seance> seancestemp = new ArrayList<>();
@@ -88,7 +97,12 @@ public class SeanceGroupesDAO extends DAO<SeanceGroupes> {
         }
         return seances;
     }
-
+    
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<SeanceGroupes> getAllSeanceGroupes() throws Exception {
         ArrayList<SeanceGroupes> list = new ArrayList<>();
         Statement myStatement = null;

@@ -32,7 +32,7 @@ import jdbc2020.dao.*;
  *
  * @author segado
  */
-public class PanneauRecapCoursEnseignant extends JPanel {
+public class PanneauRecapCoursEtudiant extends JPanel {
 
     //Attributs
     /* CONNEXION */
@@ -47,8 +47,7 @@ public class PanneauRecapCoursEnseignant extends JPanel {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-
-    public PanneauRecapCoursEnseignant() throws SQLException, ClassNotFoundException {
+    public PanneauRecapCoursEtudiant() throws SQLException, ClassNotFoundException {
         this.setSize(800, 750);
         this.setBackground(new Color(4, 116, 124));
         this.maconnexion = new Connexion("jdbc2020", "root", "root");
@@ -71,24 +70,12 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         raisedbevel = BorderFactory.createRaisedBevelBorder();
         loweredbevel = BorderFactory.createLoweredBevelBorder();
 
-        SeanceLabel seancelabel = new SeanceLabel();
-        SeanceEnseignantsDAO seancesesdao = new SeanceEnseignantsDAO(this.maconnexion);
-        GroupeDAO groupedao = new GroupeDAO(this.maconnexion);
-        EnseignantDAO enseignantdao = new EnseignantDAO(this.maconnexion);
-        UtilisateurDAO userdao = new UtilisateurDAO(this.maconnexion);
-
-        Enseignant e = enseignantdao.find(login);
-        Utilisateur u = userdao.find(login);
-        System.out.println(u.getEmail());
-        ArrayList < Cours > scs = seancelabel.cours(u.getId());
-        ArrayList<Seance> nouvelle = seancesesdao.findSeance(login);
-
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Matière - Public");
-        model.addColumn("Première Séance");
-        model.addColumn("Dernière Séance");
-        model.addColumn("Durée");
-        model.addColumn("Nb");
+        model.addColumn("Date");
+        model.addColumn("Enseignants");
+        model.addColumn("Groupes");
+        model.addColumn("Type de Cours");
         JTable table = new JTable(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -102,64 +89,92 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         TableColumn col3 = table.getColumnModel().getColumn(2);
         col3.setPreferredWidth(200);
         TableColumn col4 = table.getColumnModel().getColumn(3);
-        col4.setPreferredWidth(50);
+        col4.setPreferredWidth(200);
         TableColumn col5 = table.getColumnModel().getColumn(4);
-        col5.setPreferredWidth(50);
+        col5.setPreferredWidth(100);
 
         JPanel a = new JPanel();
         a.setLayout(new BorderLayout());
-        for (Cours cours : scs) {
-            int compteur = 1;
-            Seance tempSeance = new Seance(nouvelle.get(0).getId(), nouvelle.get(0).getSemaine(), nouvelle.get(0).getDate(), nouvelle.get(0).getHeureDebut(), nouvelle.get(0).getHeureFin(), nouvelle.get(0).getEtat(), nouvelle.get(0).getIdCours(), nouvelle.get(0).getIdType());
-            for (Seance seance : nouvelle) {
-                if (seance.getIdCours() == tempSeance.getIdCours()) {
-                    if (seance.getDate() != tempSeance.getDate()) {
-                        compteur += 1;
-                    } else if (seance.getHeureDebut() != tempSeance.getHeureDebut()) {
-                        compteur += 1;
-                    }
-                }
-            }
-            for (Seance seance : nouvelle) {
-                ArrayList<SeanceGroupes> sgs = seancelabel.seG(seance);
-                for (SeanceGroupes sg : sgs) {
-                    Groupe groupe = groupedao.find(sg.getGroupe());
-                    Calendar cal = Calendar.getInstance();
-                    cal.set(Calendar.YEAR, 2020);
-                    cal.set(Calendar.WEEK_OF_YEAR, seance.getSemaine());
-                    int j = 1;
-                    cal.set(Calendar.DAY_OF_WEEK, seance.getDate().getDay() + 1);
-                    String weekDay = "";
-                    switch (cal.get(Calendar.DAY_OF_WEEK)) {
-                        case 1:
-                            weekDay = "Dimanche";
-                            break;
-                        case 2:
-                            weekDay = "Lundi";
-                            break;
-                        case 3:
-                            weekDay = "Mardi";
-                            j = 2;
-                            break;
-                        case 4:
-                            weekDay = "Mercredi";
-                            j = 3;
-                            break;
-                        case 5:
-                            weekDay = "Jeudi";
-                            j = 4;
-                            break;
-                        case 6:
-                            weekDay = "Vendredi";
-                            j = 5;
-                            break;
-                    }
-                    weekDay += " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1);
 
-                    model.addRow(new Object[]{cours.getNom() + " " + groupe.getNom(), weekDay + " " + seance.getHeureDebut() + "h à " + seance.getHeureFin() + "h", weekDay + " " + seance.getHeureDebut() + "h à " + seance.getHeureFin() + "h", compteur + "h", compteur});
+        UtilisateurDAO userdao = new UtilisateurDAO(this.maconnexion);
+        Utilisateur u = userdao.find(login);
+        EtudiantDAO etudiantdao = new EtudiantDAO(this.maconnexion);
+        Etudiant e = etudiantdao.find(u.getId());
+        System.out.println(u.getEmail());
+        GroupeDAO groupedao = new GroupeDAO(this.maconnexion);
+        TypeCoursDAO typedao = new TypeCoursDAO(this.maconnexion);
+        SeanceGroupesDAO seancegrpesdao = new SeanceGroupesDAO(maconnexion);
+        SeanceEnseignantsDAO seanceensdao = new SeanceEnseignantsDAO(maconnexion);
+        SeanceLabel seancelabel = new SeanceLabel();
+        SeanceDAO seancedao = new SeanceDAO(this.maconnexion);
+        ArrayList<SeanceGroupes> sgs = seancelabel.sgLogin(login);
+
+        ArrayList<Cours> cours = new ArrayList<>();
+        ArrayList<Seance> nouvelle = seancegrpesdao.findSeance(e.getIdGroupe());
+
+        for (SeanceGroupes sg : sgs) {
+            Seance seance = seancedao.find(sg.getSeance());
+            try {
+                ResultSet rset = this.maconnexion.getStatement().executeQuery("SELECT * FROM Cours WHERE id = " + seance.getIdCours());
+                while (rset.next()) {
+                    cours.add(new Cours(rset.getInt("id"), rset.getString("nom")));
                 }
+            } catch (SQLException err) {
+                err.printStackTrace();
             }
         }
+
+        for (Cours c : cours) {
+            for (Seance s : nouvelle) {
+                ArrayList<SeanceEnseignants> teachers = seancelabel.seSalle(s.getId());
+                ArrayList<SeanceGroupes> groups = seancelabel.sgE(s.getId());
+                TypeCours type = typedao.find(s.getIdType());
+                String teacherstr = "";
+                String groupstr = "";
+                for (SeanceGroupes sg : groups) {
+                    Groupe groupe = groupedao.find(sg.getGroupe());
+                    groupstr += " " + groupe.getNom();
+                }
+                for (SeanceEnseignants se : teachers) {
+                    Utilisateur teacher = userdao.find(se.getEnseignant());
+                    teacherstr += " " + teacher.getPrenom() + " " + teacher.getNom();
+                }
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, 2020);
+                cal.set(Calendar.WEEK_OF_YEAR, s.getSemaine());
+                int j = 1;
+                cal.set(Calendar.DAY_OF_WEEK, s.getDate().getDay() + 1);
+                String weekDay = "";
+
+                switch (cal.get(Calendar.DAY_OF_WEEK)) {
+                    case 1:
+                        weekDay = "Dimanche";
+                        break;
+                    case 2:
+                        weekDay = "Lundi";
+                        break;
+                    case 3:
+                        weekDay = "Mardi";
+                        j = 2;
+                        break;
+                    case 4:
+                        weekDay = "Mercredi";
+                        j = 3;
+                        break;
+                    case 5:
+                        weekDay = "Jeudi";
+                        j = 4;
+                        break;
+                    case 6:
+                        weekDay = "Vendredi";
+                        j = 5;
+                        break;
+                }
+                weekDay += " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1);
+                model.addRow(new Object[]{c.getNom(), weekDay + " " + s.getHeureDebut() + "h à " + s.getHeureFin() + "h", teacherstr, groupstr, type.getNom()});
+            }
+        }
+
         TableCellRenderer rendererFromHeader = table.getTableHeader().getDefaultRenderer();
         JLabel headerLabel = (JLabel) rendererFromHeader;
         headerLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -170,14 +185,16 @@ public class PanneauRecapCoursEnseignant extends JPanel {
         table.setBorder(blackline);
         table.getTableHeader().setSize(20, 20);
         UIManager.put("Table.alternateRowColor", new Color(255, 255, 204));
+        table.setRowHeight(30);
+        table.setRowMargin(13);
+
         DefaultTableCellRenderer custom = new DefaultTableCellRenderer();
         custom.setHorizontalAlignment(JLabel.CENTER); // centre les données de ton tableau
         for (int i = 0; i < table.getColumnCount(); i++) // centre chaque cellule de ton tableau
         {
             table.getColumnModel().getColumn(i).setCellRenderer(custom);
         }
-        table.setRowHeight(30);
-        table.setRowMargin(13);
+
         a.add(table.getTableHeader(), BorderLayout.NORTH);
         a.add(table, BorderLayout.CENTER);
         a.setVisible(true);

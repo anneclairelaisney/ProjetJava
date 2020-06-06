@@ -7,10 +7,14 @@ package jdbc2020.vue;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jdbc2020.controleur.Connexion;
 import jdbc2020.dao.SeanceEnseignantsDAO;
 import jdbc2020.modele.Cours;
@@ -30,12 +34,23 @@ public class PanneauEDTEnseignant extends JPanel {
     private String login;
     private int semaine;
 
+    /**
+     *
+     */
     public PanneauEDTEnseignant() {
         this.setLayout(null);
-        this.setSize(1000, 750);
+        this.setSize(1200, 750);
         this.setBackground(new Color(4, 116, 124));
     }
 
+    /**
+     *
+     * @param login
+     * @param semaine
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public void remplirEDT(String login, int semaine) throws SQLException, ClassNotFoundException, Exception {
         this.login = login;
         this.semaine = semaine;
@@ -116,22 +131,25 @@ public class PanneauEDTEnseignant extends JPanel {
             this.add(weekDayPanel);
         }
 
-        for (int j = 0; j < 2; j++) {
+        SeanceLabel tempSeancelabel = new SeanceLabel();
+        ArrayList<SeanceEnseignants> tempSes = tempSeancelabel.se(login);
+
+        for (int j = 0; j < tempSes.size(); j++) {
 
             SeanceEnseignantsDAO seanceensdao = new SeanceEnseignantsDAO(maconnexion);
-            SeanceLabel seance = new SeanceLabel();
-            ArrayList<SeanceEnseignants> ses = seance.se(login);
-            ArrayList<Cours> cs = seance.cours(ses.get(j).getEnseignant());
-            ArrayList<SeanceGroupes> sgs = seance.sgE(ses.get(j).getSeance());
-            ArrayList<Site> ssites = seance.site(ses.get(j).getSeance());
-            ArrayList<SeanceSalles> sss = seance.ss(ses.get(j).getSeance());
+            SeanceLabel seancelabel = new SeanceLabel();
+            ArrayList<SeanceEnseignants> ses = seancelabel.se(login);
+            ArrayList<Cours> cs = seancelabel.cours(ses.get(j).getEnseignant());
+            ArrayList<SeanceGroupes> sgs = seancelabel.sgE(ses.get(j).getSeance());
+            ArrayList<SeanceSalles> sss = seancelabel.ss(ses.get(j).getSeance());
+            ArrayList<Site> ssites = seancelabel.site(sss.get(j).getSalle());
             ArrayList<Seance> nouvelle = seanceensdao.findSeance(login);
 
             String strc = "";
             for (Cours c : cs) {
                 strc += c.getNom() + " ";
             }
-            seance.remplir(strc);
+            seancelabel.remplir(strc);
 
             String strg = "";
             for (SeanceGroupes sg : sgs) {
@@ -141,7 +159,7 @@ public class PanneauEDTEnseignant extends JPanel {
                     strg += name + " ";
                 }
             }
-            seance.remplir(strg);
+            seancelabel.remplir(strg);
 
             String strs = "";
             for (SeanceSalles ss : sss) {
@@ -151,88 +169,90 @@ public class PanneauEDTEnseignant extends JPanel {
                     strs += name + " ";
                 }
             }
-            seance.remplir(strs);
+            seancelabel.remplir(strs);
 
             String site = "";
             for (Site ssite : ssites) {
                 site += ssite.getNom() + " ";
             }
-            seance.remplir(site);
+            seancelabel.remplir(site);
 
-            seance.setPreferredSize(new Dimension(200, 50));
-            Dimension size = seance.getPreferredSize();
+            seancelabel.setPreferredSize(new Dimension(200, 50));
+            Dimension size = seancelabel.getPreferredSize();
 
             int n = 1;
             int m = 1;
 
-            switch (nouvelle.get(j).getHeureDebut()) {
-                case 8:
-                    n = 1;
-                    break;
-                case 9:
-                    n = 2;
-                    break;
-                case 10:
-                    n = 3;
-                    break;
-                case 11:
-                    n = 4;
-                    break;
-                case 12:
-                    n = 5;
-                    break;
-                case 13:
-                    n = 6;
-                    break;
-                case 14:
-                    n = 7;
-                    break;
-                case 15:
-                    n = 8;
-                    break;
-                case 16:
-                    n = 9;
-                    break;
-                case 17:
-                    n = 10;
-                    break;
-                case 18:
-                    n = 11;
-                    break;
-                case 19:
-                    n = 12;
-                    break;
-                case 20:
-                    n = 13;
-                    break;
-            }
+            if (nouvelle.get(j).getSemaine() == semaine) {
+                switch (nouvelle.get(j).getHeureDebut()) {
+                    case 8:
+                        n = 1;
+                        break;
+                    case 9:
+                        n = 2;
+                        break;
+                    case 10:
+                        n = 3;
+                        break;
+                    case 11:
+                        n = 4;
+                        break;
+                    case 12:
+                        n = 5;
+                        break;
+                    case 13:
+                        n = 6;
+                        break;
+                    case 14:
+                        n = 7;
+                        break;
+                    case 15:
+                        n = 8;
+                        break;
+                    case 16:
+                        n = 9;
+                        break;
+                    case 17:
+                        n = 10;
+                        break;
+                    case 18:
+                        n = 11;
+                        break;
+                    case 19:
+                        n = 12;
+                        break;
+                    case 20:
+                        n = 13;
+                        break;
+                }
 
-            switch (nouvelle.get(j).dateToInt()) {
-                case 2:
-                    m = 2;
-                    break;
-                case 3:
-                    m = 3;
-                    break;
-                case 4:
-                    m = 4;
-                    break;
-                case 5:
-                    m = 5;
-                    break;
-                case 6:
-                    m = 6;
-                    break;
-            }
+                switch (nouvelle.get(j).dateToInt()) {
+                    case 2:
+                        m = 2;
+                        break;
+                    case 3:
+                        m = 3;
+                        break;
+                    case 4:
+                        m = 4;
+                        break;
+                    case 5:
+                        m = 5;
+                        break;
+                    case 6:
+                        m = 6;
+                        break;
+                }
 
-            seance.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
-            this.add(seance);
+                seancelabel.setBounds(insets.left + m * 200, insets.top + n * 50, size.width, size.height);
+                this.add(seancelabel);
+            }
         }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             for (int j = 0; j <= 15; j++) {
                 g.setColor(Color.WHITE);
                 g.drawRect(200 * i, 50 * j, 200, 50);

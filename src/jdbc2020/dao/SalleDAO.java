@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class SalleDAO extends DAO<Salle> {
 
+    /**
+     *
+     * @param conn
+     */
     public SalleDAO(Connexion conn) {
         super(conn);
     }
@@ -67,6 +71,11 @@ public class SalleDAO extends DAO<Salle> {
         return salle;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Salle> getAllSalles() throws Exception {
         ArrayList<Salle> list = new ArrayList<Salle>();
         Statement myStatement = null;

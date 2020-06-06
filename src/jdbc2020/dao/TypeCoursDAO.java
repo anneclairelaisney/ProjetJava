@@ -23,6 +23,10 @@ import java.util.ArrayList;
  */
 public class TypeCoursDAO extends DAO<TypeCours> {
 
+    /**
+     *
+     * @param conn
+     */
     public TypeCoursDAO(Connexion conn) {
         super(conn);
     }
@@ -71,6 +75,11 @@ public class TypeCoursDAO extends DAO<TypeCours> {
         return typeCours;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<TypeCours> getAllTypeCours() throws Exception {
         ArrayList<TypeCours> list = new ArrayList<TypeCours>();
         Statement myStatement = null;

@@ -45,6 +45,6 @@ public class Test5 {
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        new PanneauRecapCoursEnseignant("q").setVisible(true);
+        //new PanneauRecapCoursEnseignant("q").setVisible(true);
     }
 }

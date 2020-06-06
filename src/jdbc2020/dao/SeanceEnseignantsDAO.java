@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants> {
 
+    /**
+     *
+     * @param conn
+     */
     public SeanceEnseignantsDAO(Connexion conn) {
         super(conn);
     }
@@ -57,6 +61,11 @@ public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants> {
         return x;
     }
     
+    /**
+     *
+     * @param login
+     * @return ArrayList
+     */
     public ArrayList<Seance> findSeance(String login) {
         Seance x = null;
         ArrayList<Seance> seancestemp = new ArrayList<>();
@@ -88,6 +97,11 @@ public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants> {
         return seances;
     }
 
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<SeanceEnseignants> getAllSeanceTeachers() throws Exception {
         ArrayList<SeanceEnseignants> list = new ArrayList<>();
         Statement myStatement = null;

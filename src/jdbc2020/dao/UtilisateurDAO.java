@@ -21,7 +21,11 @@ import java.util.ArrayList;
 
 public class UtilisateurDAO extends DAO<Utilisateur> {
     
-  public UtilisateurDAO(Connexion conn) {
+    /**
+     *
+     * @param conn
+     */
+    public UtilisateurDAO(Connexion conn) {
     super(conn);
   }
 
@@ -37,7 +41,12 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
     return false;
   }
    
-  public Utilisateur find(String login) {
+    /**
+     *
+     * @param login
+     * @return Utilisateur
+     */
+    public Utilisateur find(String login) {
     Utilisateur utilisateur = null;    
       
     try {
@@ -69,6 +78,11 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
         return user;
     }
     
+    /**
+     *
+     * @return ArrayList
+     * @throws Exception
+     */
     public ArrayList<Utilisateur> getAllUsers() throws Exception {
         ArrayList<Utilisateur> list = new ArrayList<>();
         Statement myStatement = null;

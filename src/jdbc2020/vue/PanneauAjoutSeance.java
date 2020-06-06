@@ -32,6 +32,12 @@ import jdbc2020.modele.Seance;
 public class PanneauAjoutSeance extends JPanel {
 
     private Connexion maconnexion;
+
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public PanneauAjoutSeance() throws SQLException, ClassNotFoundException {
         this.setLayout(null);
         this.setSize(800, 750);
@@ -42,6 +48,13 @@ public class PanneauAjoutSeance extends JPanel {
 
     }
 
+    /**
+     *
+     * @param seance
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
     public void ajoutSeance(Seance seance) throws SQLException, ClassNotFoundException, Exception {
         this.setVisible(true);
         this.setBackground(new Color(4, 116, 124));

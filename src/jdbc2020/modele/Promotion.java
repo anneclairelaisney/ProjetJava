@@ -16,17 +16,36 @@ public class Promotion {
     private String nom;
     
     // Constructeurs
+
+    /**
+     *Constructeur Promotion sans paramètres
+     */
     public Promotion () {}
+
+    /**
+     *
+     * @param id
+     * @param nom
+     */
     public Promotion (int id, String nom) {
         this.id = id;
         this.nom = nom;
     }
     
     // Accesseurs
+
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return this.id;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getNom() {
         return this.nom;
     }
